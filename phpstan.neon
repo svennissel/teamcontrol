@@ -1,0 +1,11 @@
+parameters:
+    level: 5
+    paths:
+        - public
+    excludePaths:
+        - vendor
+        - node_modules
+    ignoreErrors:
+        -
+            message: '#Variable \$title on left side of \?\? is never defined\.#'
+            path: public/includes/header.php

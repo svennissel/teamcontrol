@@ -8,7 +8,6 @@ if (!$player) {
     exit;
 }
 $player_id = $player['id'];
-$player_id_footer = $player_id;
 
 $playerTeams = getPlayerTeams($player_id);
 $teams = getTeams($player_id, isClubAdmin());

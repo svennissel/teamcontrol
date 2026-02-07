@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $requested_admin_team_ids = $_POST['admin_team_ids'] ?? [];
                     $admin_team_ids = array_intersect($requested_admin_team_ids, $my_admin_team_ids);
                 }
-                createPlayer($_POST['name'], $is_club_admin, $_POST['team_ids'] ?? [], $admin_team_ids);
+                createPlayer($_POST['name'], $is_club_admin, $_POST['team_ids'], $admin_team_ids);
             }
         } elseif ($_POST['action'] === 'edit_player') {
 

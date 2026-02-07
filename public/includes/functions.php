@@ -1,7 +1,7 @@
 <?php
 require_once 'db.php';
 
-function getMatches($playerId = null, $isClubAdmin = false) {
+function getMatches(?int $playerId = null, bool $isClubAdmin = false): array {
     global $pdo;
     
     $sql = "SELECT m.* FROM matches m";
@@ -28,7 +28,7 @@ function getMatches($playerId = null, $isClubAdmin = false) {
     return $matches;
 }
 
-function getTrainings($playerId = null, $isClubAdmin = false) {
+function getTrainings(?int $playerId = null, bool $isClubAdmin = false): array {
     global $pdo;
 
     $sql = "SELECT t.* FROM trainings t";
@@ -62,7 +62,7 @@ function getTrainings($playerId = null, $isClubAdmin = false) {
     return $trainings;
 }
 
-function updateAttendance($playerId, $eventType, $eventId, $status) {
+function updateAttendance(int $playerId, string $eventType, int $eventId, string $status): bool {
     global $pdo;
     
     // Prüfen ob bereits ein Eintrag existiert
@@ -79,7 +79,7 @@ function updateAttendance($playerId, $eventType, $eventId, $status) {
     }
 }
 
-function getAttendance($eventType, $eventId) {
+function getAttendance(string $eventType, int $eventId): array {
     global $pdo;
     
     // 1. Alle Teams des Events abrufen
@@ -413,7 +413,7 @@ function getLoggedInPlayer() {
     if($player != null && $hash_lastupdate < time() - $one_day_in_seconds) {
         $next_jear = time() + 31536000;
         setcookie('hash', $player['hash'], $next_jear, '/');
-        setcookie('hash_lastupdate', time(), $next_jear, '/');
+        setcookie('hash_lastupdate', (string)time(), $next_jear, '/');
     }
 
     return $player;

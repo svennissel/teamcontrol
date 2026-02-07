@@ -5,9 +5,9 @@
     
     renderAttendanceModal();
 
-    if (isClubAdmin() || isAnyTeamAdmin($player_id_footer ?? 0)) {
-        renderAddPlayerModal($teams ?? [], $player_id_footer ?? 0);
-        renderEditPlayerModal($teams ?? [], $player_id_footer ?? 0);
+    if (isClubAdmin() || isAnyTeamAdmin($player_id ?? 0)) {
+        renderAddPlayerModal($teams ?? [], $player_id ?? 0);
+        renderEditPlayerModal($teams ?? [], $player_id ?? 0);
         renderAddMatchModal($teams ?? []);
         renderAddTrainingModal($teams ?? []);
         renderEditMatchModal($teams ?? []);

@@ -9,7 +9,7 @@ function printHeader($player, $playerTeams, $current_page) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeamControl - <?php echo $title ?? 'Termine'; ?></title>
+    <title>TeamControl - <?php echo htmlspecialchars($title ?? 'Termine'); ?></title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
