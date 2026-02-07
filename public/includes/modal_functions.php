@@ -4,7 +4,7 @@ function renderAttendanceModal() {
     ?>
     <div id="attendanceModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('attendanceModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('attendanceModal')">&times;</span>
             <h2 id="attendanceModalTitle">Teilnehmerliste</h2>
             <div id="attendanceContent">
                 <div class="attendance-group">
@@ -33,7 +33,7 @@ function renderAddMatchModal($teams) {
     ?>
     <div id="addMatchModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('addMatchModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('addMatchModal')">&times;</span>
             <h2>Neues Spiel</h2>
             <form action="action.php" method="POST">
                 <input type="hidden" name="action" value="add_match">
@@ -81,7 +81,7 @@ function renderEditMatchModal($teams) {
     ?>
     <div id="editMatchModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('editMatchModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('editMatchModal')">&times;</span>
             <h2>Spiel bearbeiten</h2>
             <form action="action.php" method="POST" id="editMatchForm">
                 <input type="hidden" name="action" value="edit_match">
@@ -130,7 +130,7 @@ function renderAddTrainingModal($teams) {
     ?>
     <div id="addTrainingModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('addTrainingModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('addTrainingModal')">&times;</span>
             <h2>Neues Training</h2>
             <form action="action.php" method="POST">
                 <input type="hidden" name="action" value="add_training">
@@ -194,7 +194,7 @@ function renderEditTrainingModal($teams) {
     ?>
     <div id="editTrainingModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('editTrainingModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('editTrainingModal')">&times;</span>
             <h2>Training bearbeiten</h2>
             <form action="action.php" method="POST" id="editTrainingForm">
                 <input type="hidden" name="action" value="edit_training">
@@ -227,7 +227,7 @@ function renderAddPlayerModal($teams, $player_id) {
     ?>
     <div id="addPlayerModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('addPlayerModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('addPlayerModal')">&times;</span>
             <h2>Neuer Spieler</h2>
             <form action="action.php" method="POST">
                 <input type="hidden" name="action" value="add_player">
@@ -274,7 +274,7 @@ function renderEditPlayerModal($teams, $player_id) {
     ?>
     <div id="editPlayerModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('editPlayerModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('editPlayerModal')">&times;</span>
             <h2>Spieler bearbeiten</h2>
             <form action="action.php" method="POST">
                 <input type="hidden" name="action" value="edit_player">
@@ -324,7 +324,7 @@ function renderAddTeamModal() {
     ?>
     <div id="addTeamModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('addTeamModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('addTeamModal')">&times;</span>
             <h2>Neue Mannschaft</h2>
             <form action="action.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="add_team">
@@ -347,7 +347,7 @@ function renderEditTeamModal() {
     ?>
     <div id="editTeamModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('editTeamModal').style.display='none'">&times;</span>
+            <span class="close" onclick="closeModal('editTeamModal')">&times;</span>
             <h2>Mannschaft bearbeiten</h2>
             <form action="action.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="edit_team">

@@ -21,6 +21,31 @@
     ?>
 
     <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+                history.pushState({ modalId: modalId }, "");
+            }
+        }
+
+        function closeModal(modalId, fromHistory = false) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                if (!fromHistory && history.state && history.state.modalId === modalId) {
+                    history.back();
+                }
+            }
+        }
+
+        window.onpopstate = function(event) {
+            // Alle Modale schließen
+            document.querySelectorAll('.modal').forEach(modal => {
+                closeModal(modal.id, true);
+            });
+        };
+
         function showAttendance(attendance, title) {
             document.getElementById('attendanceModalTitle').innerText = title;
             const lists = {
@@ -43,7 +68,7 @@
                     lists[status].appendChild(li);
                 }
             });
-            document.getElementById('attendanceModal').style.display = 'block';
+            openModal('attendanceModal');
         }
 
         async function handleVote(event) {
@@ -155,7 +180,7 @@
             document.getElementById('edit_match_location').value = match.location;
             document.getElementById('edit_match_team_id').value = match.team_id;
             toggleLocation('edit_match_is_home', 'edit_location_container');
-            document.getElementById('editMatchModal').style.display = 'block';
+            openModal('editMatchModal');
         }
 
         function editTraining(training) {
@@ -166,13 +191,13 @@
             Array.from(teamSelect.options).forEach(option => {
                 option.selected = training.teams && training.teams.includes(parseInt(option.value));
             });
-            document.getElementById('editTrainingModal').style.display = 'block';
+            openModal('editTrainingModal');
         }
 
         function editTeam(team) {
             document.getElementById('edit_team_id').value = team.id;
             document.getElementById('edit_team_name').value = team.name;
-            document.getElementById('editTeamModal').style.display = 'block';
+            openModal('editTeamModal');
         }
 
         function editPlayer(player) {
@@ -190,7 +215,7 @@
                     option.selected = player.admin_team_ids && player.admin_team_ids.includes(parseInt(option.value));
                 });
             }
-            document.getElementById('editPlayerModal').style.display = 'block';
+            openModal('editPlayerModal');
         }
 
         function toggleTrainingType(type) {
@@ -210,7 +235,7 @@
 
         window.onclick = function(event) {
             if (event.target.className === 'modal') {
-                event.target.style.display = "none";
+                closeModal(event.target.id);
             }
         }
 
