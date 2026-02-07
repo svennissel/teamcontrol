@@ -1,20 +1,24 @@
     </main>
     
-    <?php include __DIR__ . '/modals/attendance.php'; ?>
-
-    <?php if (isClubAdmin() || isAnyTeamAdmin($player_id_footer ?? 0)): ?>
-        <?php include __DIR__ . '/modals/add_player.php'; ?>
-        <?php include __DIR__ . '/modals/edit_player.php'; ?>
-        <?php include __DIR__ . '/modals/add_match.php'; ?>
-        <?php include __DIR__ . '/modals/add_training.php'; ?>
-        <?php include __DIR__ . '/modals/edit_match.php'; ?>
-        <?php include __DIR__ . '/modals/edit_training.php'; ?>
-    <?php endif; ?>
+    <?php 
+    require_once __DIR__ . '/modal_functions.php';
     
-    <?php if (isClubAdmin()): ?>
-        <?php include __DIR__ . '/modals/add_team.php'; ?>
-        <?php include __DIR__ . '/modals/edit_team.php'; ?>
-    <?php endif; ?>
+    renderAttendanceModal();
+
+    if (isClubAdmin() || isAnyTeamAdmin($player_id_footer ?? 0)) {
+        renderAddPlayerModal($teams ?? [], $player_id_footer ?? 0);
+        renderEditPlayerModal($teams ?? [], $player_id_footer ?? 0);
+        renderAddMatchModal($teams ?? []);
+        renderAddTrainingModal($teams ?? []);
+        renderEditMatchModal($teams ?? []);
+        renderEditTrainingModal($teams ?? []);
+    }
+    
+    if (isClubAdmin()) {
+        renderAddTeamModal();
+        renderEditTeamModal();
+    }
+    ?>
 
     <script>
         function showAttendance(attendance, title) {
