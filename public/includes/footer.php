@@ -52,8 +52,8 @@
             document.getElementById('attendanceModalTitle').innerText = title;
             const lists = {
                 yes: document.getElementById('list-yes'),
-                no: document.getElementById('list-no'),
                 maybe: document.getElementById('list-maybe'),
+                no: document.getElementById('list-no'),
                 none: document.getElementById('list-none')
             };
             Object.values(lists).forEach(list => list.innerHTML = '');
