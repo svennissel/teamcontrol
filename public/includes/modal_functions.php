@@ -293,12 +293,13 @@ function renderEditPlayerModal($teams, $player_id) {
                 <div>
                     <label>Mannschaftsadmin für:</label>
                     <select name="admin_team_ids[]" id="edit_player_admin_team_ids" multiple style="height: 100px;">
-                        <?php 
+                        <?php
                         $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
                         foreach ($admin_selectable_teams as $team): ?>
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
+                    <button type="button" class="edit-btn" onclick="clearAdminTeamSelection()" style="margin-top: 6px;">Auswahl aufheben</button>
                     <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <?php endif; ?>

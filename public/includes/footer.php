@@ -218,6 +218,14 @@
             openModal('editPlayerModal');
         }
 
+        function clearAdminTeamSelection() {
+            const adminTeamSelect = document.getElementById('edit_player_admin_team_ids');
+            if (!adminTeamSelect) return;
+            Array.from(adminTeamSelect.options).forEach(option => {
+                option.selected = false;
+            });
+        }
+
         function toggleTrainingType(type) {
             const singleFields = document.getElementById('single_training_fields');
             const weeklyFields = document.getElementById('weekly_training_fields');

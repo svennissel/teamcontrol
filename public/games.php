@@ -109,7 +109,21 @@ printHeader($player, $playerTeams, "games");
                             }
                         }
                         if ($playerInMatchTeam): ?>
-                            <form action="action.php" method="POST" class="vote-form" onsubmit="handleVote(event)">
+                            <?php 
+                            // Erlaubte Zielspieler (inkl. man selbst) für dieses Event ermitteln
+                            $voteTargets = [];
+                            foreach ($attendance as $a) {
+                                if (canVoteFor($player_id, $a['player_id'])) {
+                                    $voteTargets[] = $a;
+                                }
+                            }
+                            ?>
+                            <?php
+                            $voteTargetsForJs = array_map(function($t) {
+                                return ['id' => $t['player_id'], 'name' => $t['name']];
+                            }, $voteTargets);
+                            ?>
+                            <form action="action.php" method="POST" class="vote-form" data-vote-targets='<?php echo htmlspecialchars(json_encode($voteTargetsForJs), ENT_QUOTES, 'UTF-8'); ?>' onsubmit="handleVote(event)">
                                 <input type="hidden" name="action" value="vote">
                                 <input type="hidden" name="event_type" value="match">
                                 <input type="hidden" name="event_id" value="<?php echo $match['id']; ?>">
