@@ -1,0 +1,12 @@
+{
+  "name": "teamcontrol-tests",
+  "version": "1.0.0",
+  "description": "Playwright tests for TeamControl",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^25.1.0"
+  },
+  "scripts": {
+    "test": "npx playwright test"
+  }
+}

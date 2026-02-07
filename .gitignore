@@ -1,0 +1,23 @@
+# Composer
+/vendor/
+composer.phar
+
+# PHPUnit
+.phpunit.result.cache
+
+# Node.js
+node_modules/
+
+# Playwright
+test-results/
+playwright-report/
+
+# IDE
+.idea/
+
+# User uploads
+public/uploads/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,63 @@
+<?php
+session_start([
+    'cookie_lifetime' => 31536000
+]);
+require_once 'db.php';
+
+function isLoggedIn() {
+    return isset($_SESSION['hash']);
+}
+
+function getLoginHash() {
+    return $_SESSION['hash'];
+}
+
+function isClubAdmin(): bool {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT 1 FROM players WHERE hash = ? AND is_club_admin = true");
+    $stmt->execute([getLoginHash()]);
+    return (bool)$stmt->fetch();
+}
+
+function isTeamAdmin($teamId, $playerId): bool {
+    global $pdo;
+    if (isClubAdmin()) return true;
+
+    $stmt = $pdo->prepare("SELECT 1 FROM team_admins WHERE team_id = ? AND player_id = ?");
+    $stmt->execute([$teamId, $playerId]);
+    return (bool)$stmt->fetch();
+}
+
+function isAnyTeamAdmin($player_id) {
+    global $pdo;
+    if (isClubAdmin()) return true;
+    if (!isLoggedIn()) return false;
+
+
+    $stmt = $pdo->prepare("SELECT 1 FROM team_admins WHERE player_id = ?");
+    $stmt->execute([$player_id]);
+    return (bool)$stmt->fetch();
+}
+
+function loginByHash($hash) : bool {
+    global $pdo;
+    if (empty($hash)) return false;
+    
+    $stmt = $pdo->prepare("SELECT * FROM players WHERE hash = ?");
+    $stmt->execute([$hash]);
+    $player = $stmt->fetch();
+
+    if ($player) {
+        $_SESSION['hash'] = $player['hash'];
+        setcookie('hash', $player['hash'], time() + 31536000, '/');
+        return true;
+    }
+    return false;
+}
+
+function logout() : void {
+    session_destroy();
+    unset($_COOKIE['hash']);
+    setcookie('hash', '', 1, '/');
+}
+?>
