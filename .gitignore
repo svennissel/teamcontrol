@@ -15,6 +15,7 @@ playwright-report/
 
 # IDE
 .idea/
+qodana.yaml
 
 # User uploads
 public/uploads/
@@ -22,3 +23,6 @@ public/uploads/
 # OS
 .DS_Store
 Thumbs.db
+
+#test copde
+info.php
