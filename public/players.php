@@ -55,7 +55,8 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                                 }
                             }
                             if ($canEdit): ?>
-                                <button class="edit-btn" onclick='editPlayer(<?php echo json_encode(array_merge($player, ["team_ids" => $player_team_ids, "admin_team_ids" => $admin_team_ids])); ?>)' title="Bearbeiten">✎</button>
+                                <?php $voter_perm_ids = getVoterPermissions($player['id']); ?>
+                                <button class="edit-btn" onclick='editPlayer(<?php echo json_encode(array_merge($player, ["team_ids" => $player_team_ids, "admin_team_ids" => $admin_team_ids, "voter_permission_player_ids" => $voter_perm_ids])); ?>)' title="Bearbeiten">✎</button>
                             <?php endif; ?>
                             <?php if (isClubAdmin()): ?>
                                 <form action="action.php" method="POST" style="display:inline;" onsubmit="return confirm('Soll dieser Spieler wirklich gelöscht werden?');">

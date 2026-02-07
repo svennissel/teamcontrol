@@ -65,3 +65,11 @@ CREATE TABLE IF NOT EXISTS training_teams (
     FOREIGN KEY (training_id) REFERENCES trainings(id) ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS voter_permissions (
+    voter_id INT NOT NULL,
+    player_id INT NOT NULL,
+    PRIMARY KEY (voter_id, player_id),
+    FOREIGN KEY (voter_id) REFERENCES players(id) ON DELETE CASCADE,
+    FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
+);

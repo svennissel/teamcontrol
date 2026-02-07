@@ -20,6 +20,8 @@
     }
     ?>
 
+    <div id="voteTargetMenu" class="vote-target-menu" aria-hidden="true"></div>
+
     <script>
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -71,23 +73,11 @@
             openModal('attendanceModal');
         }
 
-        async function handleVote(event) {
-            event.preventDefault();
-            const form = event.currentTarget;
+        async function performVote(form, status) {
             const formData = new FormData(form);
-            
-            // Zuverlässigere Methode um den Status zu bekommen, falls event.submitter nicht existiert
-            let status = event.submitter ? event.submitter.value : null;
-            
-            // Falls handleVote anders aufgerufen wurde (nicht über submitter), suchen wir den aktiven Button
-            if (!status) {
-                // Das ist ein Fallback, falls der Browser event.submitter nicht unterstützt
-                return; // Ohne Status können wir nichts tun
-            }
-            
             formData.append('status', status);
-               try {
-                 const response = await fetch('action.php', {
+            try {
+                const response = await fetch('action.php', {
                     method: 'POST',
                     body: formData,
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -123,6 +113,88 @@
                 // Aber der User will eigentlich KEINE Weiterleitung.
                 // form.submit(); // Wir entfernen das automatische Absenden im Fehlerfall um die Weiterleitung zu vermeiden
             }
+        }
+
+        async function handleVote(event) {
+            event.preventDefault();
+            const form = event.currentTarget;
+
+            // Zuverlässigere Methode um den Status zu bekommen, falls event.submitter nicht existiert
+            let status = event.submitter ? event.submitter.value : null;
+
+            // Falls handleVote anders aufgerufen wurde (nicht über submitter), suchen wir den aktiven Button
+            if (!status) {
+                // Das ist ein Fallback, falls der Browser event.submitter nicht unterstützt
+                return; // Ohne Status können wir nichts tun
+            }
+
+            await performVote(form, status);
+        }
+
+        function getVoteTargets(form) {
+            if (!form || !form.dataset.voteTargets) return [];
+            try {
+                const parsed = JSON.parse(form.dataset.voteTargets);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function hideVoteTargetMenu() {
+            const menu = document.getElementById('voteTargetMenu');
+            if (!menu) return;
+            menu.classList.remove('open');
+            menu.setAttribute('aria-hidden', 'true');
+            menu.innerHTML = '';
+        }
+
+        function showVoteTargetMenu(button, form, status) {
+            const targets = getVoteTargets(form);
+            if (targets.length <= 1) return;
+
+            const menu = document.getElementById('voteTargetMenu');
+            if (!menu) return;
+
+            menu.innerHTML = '';
+            const title = document.createElement('div');
+            title.className = 'vote-target-menu-title';
+            title.textContent = 'Für wen abstimmen?';
+            menu.appendChild(title);
+
+            const list = document.createElement('ul');
+            list.className = 'vote-target-menu-list';
+            targets.forEach(target => {
+                const item = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'vote-target-menu-item';
+                btn.textContent = target.name;
+                btn.addEventListener('click', () => {
+                    const targetInput = form.querySelector('input[name="target_player_id"]');
+                    if (targetInput) targetInput.value = target.id;
+                    hideVoteTargetMenu();
+                    performVote(form, status);
+                });
+                item.appendChild(btn);
+                list.appendChild(item);
+            });
+            menu.appendChild(list);
+
+            const rect = button.getBoundingClientRect();
+            menu.style.left = `${rect.left + window.scrollX}px`;
+            menu.style.top = `${rect.bottom + window.scrollY + 6}px`;
+            menu.classList.add('open');
+            menu.setAttribute('aria-hidden', 'false');
+
+            requestAnimationFrame(() => {
+                const menuRect = menu.getBoundingClientRect();
+                const maxRight = window.scrollX + document.documentElement.clientWidth - 12;
+                if (menuRect.right > maxRight) {
+                    const diff = menuRect.right - maxRight;
+                    menu.style.left = `${rect.left + window.scrollX - diff}px`;
+                }
+            });
         }
 
         function toggleLocation(checkboxId, containerId) {
@@ -168,6 +240,59 @@
                     toggleLocation('edit_match_is_home', 'edit_location_container');
                 });
             }
+
+            const voteForms = document.querySelectorAll('.vote-form');
+            voteForms.forEach(form => {
+                const buttons = form.querySelectorAll('button[type="submit"]');
+                buttons.forEach(button => {
+                    button.addEventListener('contextmenu', function(event) {
+                        event.preventDefault();
+                        button.dataset.suppressClick = '1';
+                        showVoteTargetMenu(button, form, button.value);
+                    });
+
+                    let pressTimer = null;
+                    button.addEventListener('touchstart', function() {
+                        pressTimer = setTimeout(() => {
+                            button.dataset.suppressClick = '1';
+                            showVoteTargetMenu(button, form, button.value);
+                        }, 500);
+                    }, { passive: true });
+
+                    button.addEventListener('touchend', function() {
+                        if (pressTimer) clearTimeout(pressTimer);
+                    });
+
+                    button.addEventListener('touchmove', function() {
+                        if (pressTimer) clearTimeout(pressTimer);
+                    });
+
+                    button.addEventListener('click', function(event) {
+                        if (button.dataset.suppressClick === '1') {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            button.dataset.suppressClick = '';
+                        }
+                    });
+                });
+            });
+
+            document.addEventListener('click', function(event) {
+                const menu = document.getElementById('voteTargetMenu');
+                if (!menu || !menu.classList.contains('open')) return;
+                if (!menu.contains(event.target)) {
+                    hideVoteTargetMenu();
+                }
+            });
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    hideVoteTargetMenu();
+                }
+            });
+
+            window.addEventListener('scroll', hideVoteTargetMenu, true);
+            window.addEventListener('resize', hideVoteTargetMenu);
         });
 
         function editMatch(match) {
@@ -213,6 +338,12 @@
             if (adminTeamSelect) {
                 Array.from(adminTeamSelect.options).forEach(option => {
                     option.selected = player.admin_team_ids && player.admin_team_ids.includes(parseInt(option.value));
+                });
+            }
+            const voterPermSelect = document.getElementById('edit_player_voter_permissions');
+            if (voterPermSelect) {
+                Array.from(voterPermSelect.options).forEach(option => {
+                    option.selected = player.voter_permission_player_ids && player.voter_permission_player_ids.includes(parseInt(option.value));
                 });
             }
             openModal('editPlayerModal');

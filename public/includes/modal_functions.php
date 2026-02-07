@@ -224,6 +224,7 @@ function renderEditTrainingModal($teams) {
 }
 
 function renderAddPlayerModal($teams, $player_id) {
+    $all_other_players = getAllPlayers();
     ?>
     <div id="addPlayerModal" class="modal">
         <div class="modal-content">
@@ -263,6 +264,16 @@ function renderAddPlayerModal($teams, $player_id) {
                     </select>
                     <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
                 </div>
+                <div>
+                    <label>Darf abstimmen für:</label>
+                    <select name="voter_permission_player_ids[]" id="add_player_voter_permissions" multiple style="height: 100px;">
+                        <?php 
+                        foreach ($all_other_players as $other_player): ?>
+                            <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Berechtigung für bestimmte Spieler abzustimmen.</small>
+                </div>
                 <button type="submit">Spieler anlegen</button>
             </form>
         </div>
@@ -271,6 +282,7 @@ function renderAddPlayerModal($teams, $player_id) {
 }
 
 function renderEditPlayerModal($teams, $player_id) {
+    $all_other_players = getAllPlayers();
     ?>
     <div id="editPlayerModal" class="modal">
         <div class="modal-content">
@@ -313,6 +325,16 @@ function renderEditPlayerModal($teams, $player_id) {
                         <?php endforeach; ?>
                     </select>
                     <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
+                </div>
+                <div>
+                    <label>Darf abstimmen für:</label>
+                    <select name="voter_permission_player_ids[]" id="edit_player_voter_permissions" multiple style="height: 100px;">
+                        <?php 
+                        foreach ($all_other_players as $other_player): ?>
+                            <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Berechtigung für bestimmte Spieler abzustimmen.</small>
                 </div>
                 <button type="submit">Änderungen speichern</button>
             </form>

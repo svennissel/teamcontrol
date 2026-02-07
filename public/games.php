@@ -127,6 +127,7 @@ printHeader($player, $playerTeams, "games");
                                 <input type="hidden" name="action" value="vote">
                                 <input type="hidden" name="event_type" value="match">
                                 <input type="hidden" name="event_id" value="<?php echo $match['id']; ?>">
+                                <input type="hidden" name="target_player_id" value="<?php echo $player_id; ?>">
                                 <button type="submit" name="status" value="yes" title="Zusage" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'yes') ? 'active' : ''; ?>">👍 <span class="count"><?php echo $counts['yes']; ?></span></button>
                                 <button type="submit" name="status" value="maybe" title="Vielleicht" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'maybe') ? 'active' : ''; ?>">❓ <span class="count"><?php echo $counts['maybe']; ?></span></button>
                                 <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'no') ? 'active' : ''; ?>">👎 <span class="count"><?php echo $counts['no']; ?></span></button>

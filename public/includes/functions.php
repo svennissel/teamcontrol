@@ -62,7 +62,11 @@ function getTrainings(?int $playerId = null, bool $isClubAdmin = false): array {
     return $trainings;
 }
 
-function updateAttendance(int $playerId, string $eventType, int $eventId, string $status): bool {
+function updateAttendance(int $voterId, int $playerId, string $eventType, int $eventId, string $status): bool {
+    if (!canVoteFor($voterId, $playerId, $eventType, $eventId)) {
+        return false;
+    }
+    
     global $pdo;
     
     // Prüfen ob bereits ein Eintrag existiert
@@ -337,7 +341,7 @@ function getAllPlayers() {
     return $stmt->fetchAll();
 }
 
-function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = []) {
+function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = []) {
     global $pdo;
     $playerHash = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
     $stmt = $pdo->prepare("INSERT INTO players (name, hash, is_club_admin) VALUES (?, ?, ?)");
@@ -349,12 +353,15 @@ function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = []) 
         foreach ($adminTeamIds as $teamId) {
             addTeamAdmin($teamId, $playerId);
         }
+        foreach ($voterPermissionPlayerIds as $targetPlayerId) {
+            addVoterPermission($playerId, $targetPlayerId);
+        }
         return true;
     }
     return false;
 }
 
-function updatePlayer($id, $name, $is_club_admin, $teamIds = [], $adminTeamIds = []) {
+function updatePlayer($id, $name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = []) {
     global $pdo;
     $stmt = $pdo->prepare("UPDATE players SET name = ?, is_club_admin = ? WHERE id = ?");
     $result = $stmt->execute([$name, $is_club_admin ? 1 : 0, $id]);
@@ -371,6 +378,13 @@ function updatePlayer($id, $name, $is_club_admin, $teamIds = [], $adminTeamIds =
     $stmt->execute([$id]);
     foreach ($adminTeamIds as $teamId) {
         addTeamAdmin($teamId, $id);
+    }
+
+    // Voter Permissions aktualisieren
+    $stmt = $pdo->prepare("DELETE FROM voter_permissions WHERE voter_id = ?");
+    $stmt->execute([$id]);
+    foreach ($voterPermissionPlayerIds as $targetPlayerId) {
+        addVoterPermission($id, $targetPlayerId);
     }
 
     return $result;
@@ -445,5 +459,45 @@ function getAdminTeams($playerId) {
     $stmt = $pdo->prepare("SELECT t.* FROM teams t JOIN team_admins ta ON t.id = ta.team_id WHERE ta.player_id = ?");
     $stmt->execute([$playerId]);
     return $stmt->fetchAll();
+}
+
+function addVoterPermission($voterId, $playerId) {
+    global $pdo;
+    $stmt = $pdo->prepare("INSERT IGNORE INTO voter_permissions (voter_id, player_id) VALUES (?, ?)");
+    return $stmt->execute([$voterId, $playerId]);
+}
+
+function getVoterPermissions($voterId) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT player_id FROM voter_permissions WHERE voter_id = ?");
+    $stmt->execute([$voterId]);
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+function canVoteFor($voterId, $playerId, $eventType = null, $eventId = null) {
+    if ($voterId == $playerId) return true;
+    
+    global $pdo;
+    // Vereinsadmin darf alles
+    $stmt = $pdo->prepare("SELECT is_club_admin FROM players WHERE id = ?");
+    $stmt->execute([$voterId]);
+    if ($stmt->fetchColumn()) return true;
+
+    // Delegierte Berechtigung
+    $stmt = $pdo->prepare("SELECT 1 FROM voter_permissions WHERE voter_id = ? AND player_id = ?");
+    $stmt->execute([$voterId, $playerId]);
+    if ($stmt->fetch()) return true;
+
+    // Mannschaftsadmin darf für seine Mannschaftsmitglieder abstimmen
+    // Wir prüfen, ob voterId Admin in einem Team ist, in dem playerId Mitglied ist.
+    $stmt = $pdo->prepare("
+        SELECT 1 FROM team_admins ta
+        JOIN team_players tp ON ta.team_id = tp.team_id
+        WHERE ta.player_id = ? AND tp.player_id = ?
+    ");
+    $stmt->execute([$voterId, $playerId]);
+    if ($stmt->fetch()) return true;
+
+    return false;
 }
 ?>

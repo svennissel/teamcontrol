@@ -13,9 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $eventType = $_POST['event_type'];
         $eventId = (int)$_POST['event_id'];
         $status = $_POST['status'];
+        $targetPlayerId = isset($_POST['target_player_id']) ? (int)$_POST['target_player_id'] : $player_id;
         
         if (in_array($status, ['yes', 'no', 'maybe']) && in_array($eventType, ['match', 'training'])) {
-            updateAttendance($player_id, $eventType, $eventId, $status);
+            updateAttendance($player_id, $targetPlayerId, $eventType, $eventId, $status);
         }
 
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -168,7 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $requested_admin_team_ids = $_POST['admin_team_ids'] ?? [];
                     $admin_team_ids = array_intersect($requested_admin_team_ids, $my_admin_team_ids);
                 }
-                createPlayer($_POST['name'], $is_club_admin, $_POST['team_ids'], $admin_team_ids);
+                $voter_permission_player_ids = $_POST['voter_permission_player_ids'] ?? [];
+                createPlayer($_POST['name'], $is_club_admin, $_POST['team_ids'], $admin_team_ids, $voter_permission_player_ids);
             }
         } elseif ($_POST['action'] === 'edit_player') {
 
@@ -196,7 +198,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $team_ids = $_POST['team_ids'] ?? [];
                     $admin_team_ids = $_POST['admin_team_ids'] ?? [];
 
-                    updatePlayer($id, $name, $is_club_admin, $team_ids, $admin_team_ids);
+                    $voter_permission_player_ids = $_POST['voter_permission_player_ids'] ?? [];
+                    updatePlayer($id, $name, $is_club_admin, $team_ids, $admin_team_ids, $voter_permission_player_ids);
                 }
             }
         } elseif ($_POST['action'] === 'remove_player') {
