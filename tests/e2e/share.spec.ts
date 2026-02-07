@@ -3,9 +3,11 @@ import { test, expect } from '@playwright/test';
 test.describe('Teilen-Button Tests', () => {
     const testHash = 'HYmpZn_wlAwIaodR6F48SQ';
 
-    test('Teilen-Button ist im Header sichtbar und kopiert Link', async ({ page, context }) => {
-        // Berechtigungen für Clipboard setzen
-        await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    test('Teilen-Button ist im Header sichtbar und kopiert Link', async ({ page, context, browserName }) => {
+        // Berechtigungen für Clipboard setzen (Firefox unterstützt dies nicht via grantPermissions)
+        if (browserName !== 'firefox') {
+            await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+        }
 
         // Login
         await page.goto(`login.php?hash=${testHash}`);
@@ -21,7 +23,9 @@ test.describe('Teilen-Button Tests', () => {
         // Da es schnell geht, prüfen wir eher auf das Resultat im Clipboard
         
         // In Playwright kann man das Clipboard auslesen
-        const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-        expect(clipboardText).toContain('login.php?hash=' + testHash);
+        if (browserName !== 'firefox') {
+            const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+            expect(clipboardText).toContain('login.php?hash=' + testHash);
+        }
     });
 });
