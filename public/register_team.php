@@ -5,6 +5,7 @@ require_once './includes/functions.php';
 $error = '';
 $success = false;
 $team = null;
+$loggedInPlayer = null;
 
 if (isset($_GET['hash'])) {
     $team = getTeamByHash($_GET['hash']);
@@ -14,7 +15,15 @@ if (!$team) {
     die('Ungültiger Link.');
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (isLoggedIn()) {
+    $loggedInPlayer = getLoggedInPlayer();
+    if ($loggedInPlayer) {
+        addPlayerToTeam($team['id'], $loggedInPlayer['id']);
+        $success = true;
+    }
+}
+
+if (!$success && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
     $player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
     $player = getPlayer($player_id);
@@ -89,27 +98,34 @@ $selectablePlayers = array_filter($teamPlayers, function($p) {
             <div class="error"><?php echo $error; ?></div>
         <?php endif; ?>
         
-        <?php if (!empty($selectablePlayers)): ?>
-            <p>Wählen Sie einen bestehenden Spieler aus der Mannschaft:</p>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px;">
-                <?php foreach ($selectablePlayers as $p): ?>
-                    <form method="POST" style="margin: 0;">
-                        <input type="hidden" name="player_id" value="<?php echo $p['id']; ?>">
-                        <button type="submit" style="width: 100%; padding: 10px; text-align: left; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; color: #333;">
-                            <?php echo htmlspecialchars($p['name']); ?>
-                        </button>
-                    </form>
-                <?php endforeach; ?>
+        <?php if ($success): ?>
+            <div class="success" style="background: #d4edda; color: #155724; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+                Sie wurden der Mannschaft erfolgreich hinzugefügt bzw. sind bereits Mitglied.
             </div>
-            <p>Oder als neuer Spieler anmelden:</p>
+            <a href="games.php?hash=<?php echo htmlspecialchars($loggedInPlayer ? $loggedInPlayer['hash'] : ''); ?>" class="btn-add" style="display: block; text-align: center; text-decoration: none; float: none;">Zu den Spielen</a>
         <?php else: ?>
-            <p>Willkommen! Bitte geben Sie Ihren Namen ein, um sich für die Mannschaft anzumelden.</p>
-        <?php endif; ?>
+            <?php if (!empty($selectablePlayers)): ?>
+                <p>Wählen Sie einen bestehenden Spieler aus der Mannschaft:</p>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px;">
+                    <?php foreach ($selectablePlayers as $p): ?>
+                        <form method="POST" style="margin: 0;">
+                            <input type="hidden" name="player_id" value="<?php echo $p['id']; ?>">
+                            <button type="submit" style="width: 100%; padding: 10px; text-align: left; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; color: #333;">
+                                <?php echo htmlspecialchars($p['name']); ?>
+                            </button>
+                        </form>
+                    <?php endforeach; ?>
+                </div>
+                <p>Oder als neuer Spieler anmelden:</p>
+            <?php else: ?>
+                <p>Willkommen! Bitte geben Sie Ihren Namen ein, um sich für die Mannschaft anzumelden.</p>
+            <?php endif; ?>
 
-        <form method="POST">
-            <input type="text" name="name" placeholder="Dein Name" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
-            <button type="submit" class="btn-add" style="width: 100%; padding: 10px; float: none;">Anmelden</button>
-        </form>
+            <form method="POST">
+                <input type="text" name="name" placeholder="Dein Name" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <button type="submit" class="btn-add" style="width: 100%; padding: 10px; float: none;">Anmelden</button>
+            </form>
+        <?php endif; ?>
     </div>
 </body>
 </html>
