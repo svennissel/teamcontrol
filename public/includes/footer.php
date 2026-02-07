@@ -151,7 +151,7 @@
             document.getElementById('edit_match_start_time').value = match.start_time;
             document.getElementById('edit_match_meeting_time').value = match.meeting_time;
             document.getElementById('edit_match_opponent').value = match.opponent;
-            document.getElementById('edit_match_is_home').checked = match.is_home_game == 1;
+            document.getElementById('edit_match_is_home').checked = match.is_home_game === 1;
             document.getElementById('edit_match_location').value = match.location;
             document.getElementById('edit_match_team_id').value = match.team_id;
             toggleLocation('edit_match_is_home', 'edit_location_container');
