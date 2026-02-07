@@ -181,20 +181,10 @@
             });
             menu.appendChild(list);
 
-            const rect = button.getBoundingClientRect();
-            menu.style.left = `${rect.left + window.scrollX}px`;
-            menu.style.top = `${rect.bottom + window.scrollY + 6}px`;
+            menu.style.left = '50%';
+            menu.style.top = '50%';
             menu.classList.add('open');
             menu.setAttribute('aria-hidden', 'false');
-
-            requestAnimationFrame(() => {
-                const menuRect = menu.getBoundingClientRect();
-                const maxRight = window.scrollX + document.documentElement.clientWidth - 12;
-                if (menuRect.right > maxRight) {
-                    const diff = menuRect.right - maxRight;
-                    menu.style.left = `${rect.left + window.scrollX - diff}px`;
-                }
-            });
         }
 
         function toggleLocation(checkboxId, containerId) {

@@ -278,7 +278,7 @@ h2 {
 }
 
 .vote-target-menu {
-    position: absolute;
+    position: fixed;
     min-width: 200px;
     background: #fff;
     border: 1px solid #ddd;
@@ -286,6 +286,10 @@ h2 {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     padding: 0.5rem;
     z-index: 2000;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: translate(-50%, -50%);
     display: none;
 }
 
