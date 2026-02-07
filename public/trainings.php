@@ -140,8 +140,8 @@ printHeader($player, $playerTeams, "trainings");
                                 <input type="hidden" name="event_type" value="training">
                                 <input type="hidden" name="event_id" value="<?php echo $training['id']; ?>">
                                 <button type="submit" name="status" value="yes" title="Zusage" class="<?php echo (isset($myAttendance['training'][$training['id']]) && $myAttendance['training'][$training['id']] === 'yes') ? 'active' : ''; ?>">👍 <span class="count"><?php echo $counts['yes']; ?></span></button>
-                                <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['training'][$training['id']]) && $myAttendance['training'][$training['id']] === 'no') ? 'active' : ''; ?>">👎 <span class="count"><?php echo $counts['no']; ?></span></button>
                                 <button type="submit" name="status" value="maybe" title="Vielleicht" class="<?php echo (isset($myAttendance['training'][$training['id']]) && $myAttendance['training'][$training['id']] === 'maybe') ? 'active' : ''; ?>">❓ <span class="count"><?php echo $counts['maybe']; ?></span></button>
+                                <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['training'][$training['id']]) && $myAttendance['training'][$training['id']] === 'no') ? 'active' : ''; ?>">👎 <span class="count"><?php echo $counts['no']; ?></span></button>
                             </form>
                         <?php endif; ?>
                         <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "Training <?php
