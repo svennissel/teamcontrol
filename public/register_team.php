@@ -99,18 +99,18 @@ $selectablePlayers = array_filter($teamPlayers, function($p) {
         <?php endif; ?>
         
         <?php if ($success): ?>
-            <div class="success" style="background: #d4edda; color: #155724; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+            <div class="success register-success">
                 Sie wurden der Mannschaft erfolgreich hinzugefügt bzw. sind bereits Mitglied.
             </div>
-            <a href="games.php?hash=<?php echo htmlspecialchars($loggedInPlayer ? $loggedInPlayer['hash'] : ''); ?>" class="btn-add" style="display: block; text-align: center; text-decoration: none; float: none;">Zu den Spielen</a>
+            <a href="games.php?hash=<?php echo htmlspecialchars($loggedInPlayer ? $loggedInPlayer['hash'] : ''); ?>" class="btn-add register-link-btn">Zu den Spielen</a>
         <?php else: ?>
             <?php if (!empty($selectablePlayers)): ?>
                 <p>Wählen Sie einen bestehenden Spieler aus der Mannschaft:</p>
-                <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px;">
+                <div class="register-player-grid">
                     <?php foreach ($selectablePlayers as $p): ?>
-                        <form method="POST" style="margin: 0;">
+                        <form method="POST" class="register-player-form">
                             <input type="hidden" name="player_id" value="<?php echo $p['id']; ?>">
-                            <button type="submit" style="width: 100%; padding: 10px; text-align: left; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; color: #333;">
+                            <button type="submit" class="register-player-btn">
                                 <?php echo htmlspecialchars($p['name']); ?>
                             </button>
                         </form>
@@ -122,8 +122,8 @@ $selectablePlayers = array_filter($teamPlayers, function($p) {
             <?php endif; ?>
 
             <form method="POST">
-                <input type="text" name="name" placeholder="Dein Name" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
-                <button type="submit" class="btn-add" style="width: 100%; padding: 10px; float: none;">Anmelden</button>
+                <input type="text" name="name" placeholder="Dein Name" required class="register-input">
+                <button type="submit" class="btn-add register-submit">Anmelden</button>
             </form>
         <?php endif; ?>
     </div>

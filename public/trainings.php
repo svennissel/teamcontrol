@@ -66,7 +66,7 @@ printHeader($player, $playerTeams, "trainings");
                     <div class="card-header">
 
                         <?php if ($showTeamInCards && !empty($training['teams'])): ?>
-                            <div class="event-teams" style="font-size: 0.8rem; color: #777; margin-bottom: 5px;">
+                            <div class="event-teams">
                                 <?php
                                 $teamNames = [];
                                 foreach ($training['teams'] as $tid) {
@@ -91,7 +91,7 @@ printHeader($player, $playerTeams, "trainings");
                         if ($canEditTraining): ?>
                             <div class="club-admin-actions">
                                 <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten">✎</button>
-                                <form action="action.php" method="POST" style="display:inline;" onsubmit="return confirm('Soll dieses Training wirklich gelöscht werden?');">
+                                <form action="action.php" method="POST" class="inline-form" onsubmit="return confirm('Soll dieses Training wirklich gelöscht werden?');">
                                     <input type="hidden" name="action" value="delete_training">
                                     <input type="hidden" name="training_id" value="<?php echo $training['id']; ?>">
                                     <button type="submit" class="delete-btn" title="Löschen">🗑</button>
@@ -106,11 +106,11 @@ printHeader($player, $playerTeams, "trainings");
                             <?php
                             $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                             $timestamp = strtotime($training['training_date']);
-                            echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
+                            echo $days[date('w', $timestamp)] . ' ' . date('d.m.y', $timestamp);
                             ?>
                         </span>
                             <div class="time-tile">
-                                <span class="label">Zeit</span>
+                                <span class="label">Beginn</span>
                                 <span class="time"><?php echo substr($training['training_time'], 0, 5); ?></span>
                             </div>
                         </div>

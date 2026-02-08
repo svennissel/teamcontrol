@@ -135,11 +135,11 @@ function renderAddTrainingModal($teams) {
             <form action="action.php" method="POST">
                 <input type="hidden" name="action" value="add_training">
                 
-                <div style="margin-bottom: 20px;">
-                    <label style="display: inline-block; margin-right: 20px;">
+                <div class="modal-section">
+                    <label class="training-type-label">
                         <input type="radio" name="training_type" value="single" checked onclick="toggleTrainingType('single')"> Einzeltraining
                     </label>
-                    <label style="display: inline-block;">
+                    <label class="training-type-label">
                         <input type="radio" name="training_type" value="weekly" onclick="toggleTrainingType('weekly')"> Wöchentliches Training
                     </label>
                 </div>
@@ -151,7 +151,7 @@ function renderAddTrainingModal($teams) {
                     </div>
                 </div>
 
-                <div id="weekly_training_fields" style="display: none;">
+                <div id="weekly_training_fields" class="weekly-fields">
                     <div>
                         <label>Wochentag:</label>
                         <select name="day_of_week">
@@ -176,12 +176,12 @@ function renderAddTrainingModal($teams) {
                 </div>
                 <div>
                     <label>Mannschaften:</label>
-                    <select name="team_ids[]" multiple style="height: 100px;" required>
+                    <select name="team_ids[]" multiple required>
                         <?php foreach ($teams as $team): ?>
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
+                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <button type="submit">Training anlegen</button>
             </form>
@@ -209,12 +209,12 @@ function renderEditTrainingModal($teams) {
                 </div>
                 <div>
                     <label>Mannschaften:</label>
-                    <select name="team_ids[]" id="edit_training_team_ids" multiple style="height: 100px;" required>
+                    <select name="team_ids[]" id="edit_training_team_ids" multiple required>
                         <?php foreach ($teams as $team): ?>
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
+                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <button type="submit">Änderungen speichern</button>
             </form>
@@ -243,36 +243,36 @@ function renderAddPlayerModal($teams, $player_id) {
                     </div>
                     <div>
                         <label>Mannschaftsadmin für:</label>
-                        <select name="admin_team_ids[]" id="add_player_admin_team_ids" multiple style="height: 100px;">
+                        <select name="admin_team_ids[]" id="add_player_admin_team_ids" multiple>
                             <?php 
                             $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
                             foreach ($admin_selectable_teams as $team): ?>
                                 <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
+                        <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                     </div>
                 <?php endif; ?>
                 <div>
                     <label>Mannschaften:</label>
-                    <select name="team_ids[]" multiple style="height: 100px;" required>
+                    <select name="team_ids[]" multiple required>
                         <?php 
                         $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
                         foreach ($selectable_teams as $team): ?>
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
+                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <div>
                     <label>Darf abstimmen für:</label>
-                    <select name="voter_permission_player_ids[]" id="add_player_voter_permissions" multiple style="height: 100px;">
+                    <select name="voter_permission_player_ids[]" id="add_player_voter_permissions" multiple>
                         <?php 
                         foreach ($all_other_players as $other_player): ?>
                             <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Berechtigung für bestimmte Spieler abzustimmen.</small>
+                    <small class="form-hint">Berechtigung für bestimmte Spieler abzustimmen.</small>
                 </div>
                 <button type="submit">Spieler anlegen</button>
             </form>
@@ -304,37 +304,37 @@ function renderEditPlayerModal($teams, $player_id) {
                 <?php if (isClubAdmin() || isAnyTeamAdmin($player_id)): ?>
                 <div>
                     <label>Mannschaftsadmin für:</label>
-                    <select name="admin_team_ids[]" id="edit_player_admin_team_ids" multiple style="height: 100px;">
+                    <select name="admin_team_ids[]" id="edit_player_admin_team_ids" multiple>
                         <?php
                         $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
                         foreach ($admin_selectable_teams as $team): ?>
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <button type="button" class="edit-btn" onclick="clearAdminTeamSelection()" style="margin-top: 6px;">Auswahl aufheben</button>
-                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
+                    <button type="button" class="edit-btn" onclick="clearAdminTeamSelection()" class="btn-clear-selection">Auswahl aufheben</button>
+                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <?php endif; ?>
                 <div>
                     <label>Mannschaften:</label>
-                    <select name="team_ids[]" id="edit_player_team_ids" multiple style="height: 100px;" required>
+                    <select name="team_ids[]" id="edit_player_team_ids" multiple required>
                         <?php 
                         $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
                         foreach ($selectable_teams as $team): ?>
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Strg halten für Mehrfachauswahl.</small>
+                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <div>
                     <label>Darf abstimmen für:</label>
-                    <select name="voter_permission_player_ids[]" id="edit_player_voter_permissions" multiple style="height: 100px;">
+                    <select name="voter_permission_player_ids[]" id="edit_player_voter_permissions" multiple>
                         <?php 
                         foreach ($all_other_players as $other_player): ?>
                             <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small style="display: block; grid-column: 2; margin-top: -10px; color: #666;">Berechtigung für bestimmte Spieler abzustimmen.</small>
+                    <small class="form-hint">Berechtigung für bestimmte Spieler abzustimmen.</small>
                 </div>
                 <button type="submit">Änderungen speichern</button>
             </form>

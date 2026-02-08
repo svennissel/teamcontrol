@@ -27,7 +27,7 @@ printHeader($player, $playerTeams, "games");
                             <?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>)
                         </h3>
                         <?php if ($showTeamInCards && !empty($match['teams'])): ?>
-                            <div class="event-teams" style="font-size: 0.8rem; color: #777; margin-bottom: 5px;">
+                            <div class="event-teams">
                                 <?php
                                 $teamNames = [];
                                 foreach ($match['teams'] as $tid) {
@@ -52,7 +52,7 @@ printHeader($player, $playerTeams, "games");
                         if ($canEditMatch): ?>
                             <div class="club-admin-actions">
                                 <button class="edit-btn" onclick='editMatch(<?php echo json_encode($match); ?>)' title="Bearbeiten">✎</button>
-                                <form action="action.php" method="POST" style="display:inline;" onsubmit="return confirm('Soll dieses Spiel wirklich gelöscht werden?');">
+                                <form action="action.php" method="POST" class="inline-form" onsubmit="return confirm('Soll dieses Spiel wirklich gelöscht werden?');">
                                     <input type="hidden" name="action" value="delete_match">
                                     <input type="hidden" name="match_id" value="<?php echo $match['id']; ?>">
                                     <button type="submit" class="delete-btn" title="Löschen">🗑</button>
@@ -66,7 +66,7 @@ printHeader($player, $playerTeams, "games");
                             <?php
                             $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                             $timestamp = strtotime($match['match_date']);
-                            echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
+                            echo $days[date('w', $timestamp)] . ' ' . date('d.m.y', $timestamp);
                             ?>
                         </span>
                             <?php if (!empty($match['meeting_time'])): ?>

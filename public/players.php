@@ -59,7 +59,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                                 <button class="edit-btn" onclick='editPlayer(<?php echo json_encode(array_merge($player, ["team_ids" => $player_team_ids, "admin_team_ids" => $admin_team_ids, "voter_permission_player_ids" => $voter_perm_ids])); ?>)' title="Bearbeiten">✎</button>
                             <?php endif; ?>
                             <?php if (isClubAdmin()): ?>
-                                <form action="action.php" method="POST" style="display:inline;" onsubmit="return confirm('Soll dieser Spieler wirklich gelöscht werden?');">
+                                <form action="action.php" method="POST" class="inline-form" onsubmit="return confirm('Soll dieser Spieler wirklich gelöscht werden?');">
                                     <input type="hidden" name="action" value="delete_player">
                                     <input type="hidden" name="player_id" value="<?php echo $player['id']; ?>">
                                     <button type="submit" class="delete-btn" id="delete-player-btn" title="Löschen">🗑</button>
@@ -68,14 +68,14 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                         </div>
                     </div>
                     <div class="card-details">
-                        <p><strong>Vereinsadmin:</strong> <?php echo $player['is_club_admin'] ? 'Ja' : 'Nein'; ?></p>
-                        <p><strong>Mannschaftsadmin für:</strong>
+                        <p>Vereinsadmin: <?php echo $player['is_club_admin'] ? 'Ja' : 'Nein'; ?></p>
+                        <p>Mannschaftsadmin:
                             <?php
                             $admin_names = array_column($admin_teams, 'name');
                             echo !empty($admin_names) ? htmlspecialchars(implode(', ', $admin_names)) : 'Keine';
                             ?>
                         </p>
-                        <p><strong>Mannschaften:</strong>
+                        <p>Mannschaften:
                             <?php
                             $names = array_column($player_teams, 'name');
                             echo !empty($names) ? htmlspecialchars(implode(', ', $names)) : 'Keine';
@@ -86,10 +86,11 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                             ?>
                             <input type="hidden" class="player-hash-input" value="<?php echo $player['hash']; ?>">
                             <?php if (!$player['is_club_admin'] || isClubAdmin()): ?>
-                            <p><strong>Login-Link:</strong>
-                            <div style="display: flex; gap: 5px;">
-                                <input type="text" readonly value="<?php echo $login_link; ?>" style="flex-grow: 1; font-size: 0.8em;" id="login-link-<?php echo $player['id']; ?>">
-                                <button type="button" class="edit-btn" onclick="copyToClipboard('login-link-<?php echo $player['id']; ?>')" title="Link kopieren" style="padding: 2px 8px;">📋</button>
+                            <p>
+                            <div class="copy-link-row">
+                                Login-Link:
+                                <input type="text" readonly value="<?php echo $login_link; ?>" id="login-link-<?php echo $player['id']; ?>">
+                                <button type="button" class="edit-btn" onclick="copyToClipboard('login-link-<?php echo $player['id']; ?>')" title="Link kopieren">📋</button>
                             </div>
                             </p>
                         <?php endif; ?>
