@@ -139,20 +139,20 @@ section form input[type="checkbox"] { width: fit-content; }
 
 /* Modal */
 .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
-.modal-content { background: #fff; margin: 5% auto; padding: 2.5rem; border-radius: var(--border-radius); width: 90%; max-width: 500px; position: relative; }
-.modal-content h2 { margin-top: 0; margin-bottom: 2rem; font-size: 1.5rem; color: var(--dark-red); border-bottom: 2px solid var(--light-red); padding-bottom: 0.5rem; }
-.modal-content form div { display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.modal-content { background: #fff; margin: 5% auto; padding: 2.5rem; border-radius: var(--border-radius); width: 90%; max-width: 620px; position: relative; }
+.modal-content h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem; color: var(--dark-red); border-bottom: 2px solid var(--light-red); padding-bottom: 0.5rem; }
+.modal-content form div { display: grid; grid-template-columns: 145px 1fr; align-items: center;  margin-bottom: 1.5rem; }
 .modal-content form div:has(input[type="checkbox"]) { display: flex; flex-direction: row; align-items: center; gap: 0.5rem; }
 .modal-content form div:has(input[type="checkbox"]) label { margin-bottom: 0; width: auto; min-width: unset; }
 .modal-content form label { font-weight: 600; color: #444; font-size: 0.95rem; }
-.modal-content form input[type="date"], .modal-content form input[type="time"], .modal-content form input[type="text"] { padding: 0.8rem; border: 1.5px solid var(--input-border-strong); border-radius: var(--input-radius-lg); font-size: 1rem; transition: all 0.2s; background: var(--input-bg); }
+.modal-content form input[type="date"], .modal-content form input[type="time"], .modal-content form input[type="text"] { padding: 0.5rem; border: 1.5px solid var(--input-border-strong); border-radius: var(--input-radius-lg); font-size: 1rem; transition: all 0.2s; background: var(--input-bg); }
 .modal-content form input:focus { outline: none; border-color: var(--primary-red); background: #fff; box-shadow: var(--input-focus-shadow); }
 .modal-content form input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary-red); }
-.modal-content form select { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; background-color: #fff; }
+.modal-content form select { width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; background-color: #fff; }
 .modal-content form select:focus { outline: none; border-color: var(--primary-red); box-shadow: var(--input-focus-shadow); }
-.modal-content button[type="submit"] { margin-top: 1rem; padding: 1rem; font-size: 1.1rem; letter-spacing: 0.5px; box-shadow: 0 4px 6px rgba(211,47,47,0.2); }
-.close { position: absolute; right: 1.5rem; top: 1.2rem; color: #bbb; font-size: 24px; font-weight: normal; transition: all 0.2s; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-.close:hover { background: #f5f5f5; color: var(--primary-red); transform: rotate(90deg); }
+.modal-content button[type="submit"] { margin-top: 1rem; padding: 0.6rem; font-size: 1.1rem; letter-spacing: 0.5px; box-shadow: 0 4px 6px rgba(211,47,47,0.2); }
+.close { position: absolute; right: 1.2rem; top: 1.2rem; color: #bbb; font-size: 3rem; height: 32px; display: flex; align-items: center; }
+.close:hover { color: var(--primary-red); }
 
 /* Inline Form (delete buttons etc.) */
 .inline-form { display: inline; margin: 0; padding: 0; }
@@ -221,26 +221,23 @@ section form input[type="checkbox"] { width: fit-content; }
 .form-group-row label { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; cursor: pointer; }
 .form-group-row input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: var(--primary-red); }
 
-/* Responsive: Tabs ≤400px */
-@media (max-width: 400px) {
+/* Responsive: Tabs ≤410px */
+@media (max-width: 410px) {
     .tabs { display: none; }
     .tab-dropdown { display: flex; align-items: center; gap: 10px; }
     .tab-select { flex-grow: 1; }
 }
 
-/* Responsive: ≤600px */
-@media (max-width: 600px) {
+/* Responsive: ≤700px */
+@media (max-width: 700px) {
     main { padding: 0.5rem; }
     .events { grid-template-columns: 1fr; gap: 0.8rem; }
     .event-card { padding: 0.8rem; }
     .card-header h3 { font-size: 1rem; flex-wrap: wrap; }
     .event-date-inline, .time-tile { font-size: 0.85rem; padding: 1px 6px; }
-    .vote-buttons { gap: 0.5rem; }
-    .vote-buttons button { padding: 0.6rem 0.4rem; font-size: 0.9rem; flex: 1; }
+    .vote-buttons button { padding: 0.6rem 0.4rem; flex: 1; }
     .tabs { gap: 0.5rem; }
-    .tab-btn { padding: 0.4rem 0.3rem; font-size: 1rem; }
-    .modal-content { padding: 1.2rem; width: 85%; max-width: 350px; margin: 5% auto; }
-    .modal-content form div { grid-template-columns: 1fr; gap: 0.2rem; margin-bottom: 0.8rem; }
-    .modal-content form input[type="date"], .modal-content form input[type="time"], .modal-content form input[type="text"], .modal-content form input[type="email"], .modal-content form input[type="password"] { padding: 0.5rem; font-size: 0.95rem; }
-    .modal-content h2 { font-size: 1.2rem; margin-bottom: 1.2rem; }
+    .tab-btn { padding: 0.4rem 0.3rem; }
+    .modal-content { padding: 1.2rem; width: 85%; max-width: 590px; margin: 5% auto; }
+    .modal-content form div { grid-template-columns: 1fr; gap: 0.2rem; margin-bottom: 0.5rem; }
 }

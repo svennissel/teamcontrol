@@ -58,7 +58,7 @@ function renderAddMatchModal($teams) {
                     <input type="checkbox" name="is_home_game" id="add_match_is_home">
                 </div>
                 <div id="add_location_container">
-                    <label>Anschrift (für Auswärtsspiele):</label>
+                    <label>Anschrift:</label>
                     <input type="text" name="location" placeholder="Straße, PLZ Ort">
                 </div>
                 <div>
@@ -181,7 +181,6 @@ function renderAddTrainingModal($teams) {
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <button type="submit">Training anlegen</button>
             </form>
@@ -214,7 +213,6 @@ function renderEditTrainingModal($teams) {
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <button type="submit">Änderungen speichern</button>
             </form>
@@ -242,7 +240,7 @@ function renderAddPlayerModal($teams, $player_id) {
                         <input type="checkbox" name="is_club_admin" <?php echo !isClubAdmin() ? 'disabled' : ''; ?>>
                     </div>
                     <div>
-                        <label>Mannschaftsadmin für:</label>
+                        <label>Mannschaftsadmin:</label>
                         <select name="admin_team_ids[]" id="add_player_admin_team_ids" multiple>
                             <?php 
                             $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
@@ -250,7 +248,6 @@ function renderAddPlayerModal($teams, $player_id) {
                                 <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                     </div>
                 <?php endif; ?>
                 <div>
@@ -262,7 +259,6 @@ function renderAddPlayerModal($teams, $player_id) {
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <div>
                     <label>Darf abstimmen für:</label>
@@ -272,7 +268,6 @@ function renderAddPlayerModal($teams, $player_id) {
                             <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small class="form-hint">Berechtigung für bestimmte Spieler abzustimmen.</small>
                 </div>
                 <button type="submit">Spieler anlegen</button>
             </form>
@@ -303,7 +298,7 @@ function renderEditPlayerModal($teams, $player_id) {
                 <?php endif; ?>
                 <?php if (isClubAdmin() || isAnyTeamAdmin($player_id)): ?>
                 <div>
-                    <label>Mannschaftsadmin für:</label>
+                    <label>Mannschaftsadmin:</label>
                     <select name="admin_team_ids[]" id="edit_player_admin_team_ids" multiple>
                         <?php
                         $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
@@ -312,7 +307,6 @@ function renderEditPlayerModal($teams, $player_id) {
                         <?php endforeach; ?>
                     </select>
                     <button type="button" class="edit-btn" onclick="clearAdminTeamSelection()" class="btn-clear-selection">Auswahl aufheben</button>
-                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <?php endif; ?>
                 <div>
@@ -324,7 +318,6 @@ function renderEditPlayerModal($teams, $player_id) {
                             <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small class="form-hint">Strg halten für Mehrfachauswahl.</small>
                 </div>
                 <div>
                     <label>Darf abstimmen für:</label>
@@ -334,7 +327,6 @@ function renderEditPlayerModal($teams, $player_id) {
                             <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <small class="form-hint">Berechtigung für bestimmte Spieler abzustimmen.</small>
                 </div>
                 <button type="submit">Änderungen speichern</button>
             </form>

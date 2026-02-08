@@ -191,7 +191,7 @@
             const checkbox = document.getElementById(checkboxId);
             const container = document.getElementById(containerId);
             if (checkbox && container) {
-                container.style.display = checkbox.checked ? 'none' : 'block';
+                container.style.display = checkbox.checked ? 'none' : 'grid';
             }
         }
 
