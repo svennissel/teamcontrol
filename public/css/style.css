@@ -55,7 +55,7 @@ p {margin: 0.5rem;}
 
 /* Event Cards */
 .events { display: grid; grid-template-columns: repeat(auto-fill, minmax(385px, 1fr)); gap: 1rem; margin-bottom: 3.5rem; }
-.event-card { background: #fff; padding: 1rem; border-radius: var(--border-radius); box-shadow: var(--card-shadow); transition: transform 0.2s, box-shadow 0.2s; border: 2px solid #e5e5e5; }
+.event-card { background: #fff; padding: 1rem; border-radius: var(--border-radius); box-shadow: var(--card-shadow); border: 2px solid #e5e5e5; }
 .event-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
 .event-card h3 { margin-top: 0; color: var(--primary-red); font-size: 1.1rem; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.6rem; }
 .card-details { margin-bottom: 0.5rem; }
