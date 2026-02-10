@@ -11,6 +11,7 @@ $player_id = $player['id'];
 
 $playerTeams = getPlayerTeams($player_id);
 $teams = getTeams($player_id, isClubAdmin());
+$showTeamInCards = count($playerTeams) !== 1;
 $trainings = getTrainings($player_id, isClubAdmin());
 $myAttendance = getPlayerAttendance($player_id);
 
@@ -64,7 +65,7 @@ printHeader($player, $playerTeams, "trainings");
                 <div class="event-card<?php echo $teamClasses; ?>">
                     <div class="card-header">
 
-                        <?php if (!empty($training['teams'])): ?>
+                        <?php if ($showTeamInCards && !empty($training['teams'])): ?>
                             <div class="event-teams">
                                 <?php
                                 $teamNames = [];

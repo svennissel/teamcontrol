@@ -11,6 +11,7 @@ $player_id = $player['id'];
 $matches = getMatches($player_id, isClubAdmin());
 $myAttendance = getPlayerAttendance($player_id);
 $playerTeams = getPlayerTeams($player_id);
+$showTeamInCards = count($playerTeams) !== 1;
 $teams = getTeams($player_id, isClubAdmin());
 
 printHeader($player, $playerTeams, "games");
@@ -25,7 +26,7 @@ printHeader($player, $playerTeams, "games");
                         <h3>
                             <?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>)
                         </h3>
-                        <?php if (!empty($match['teams'])): ?>
+                        <?php if ($showTeamInCards && !empty($match['teams'])): ?>
                             <div class="event-teams">
                                 <?php
                                 $teamNames = [];
