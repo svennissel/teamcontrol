@@ -86,15 +86,24 @@
                     const data = await response.json();
                     if (data.success) {
                         console.info('Vote successful: ', JSON.stringify(data));
+                        const targetInput = form.querySelector('input[name="target_player_id"]');
+                        const defaultPlayerId = form.dataset.defaultPlayerId;
+                        const votedForSelf = !targetInput || !defaultPlayerId || targetInput.value === defaultPlayerId;
                         const buttons = form.querySelectorAll('button[type="submit"]');
                         buttons.forEach(btn => {
-                            if (btn.value === status) btn.classList.add('active');
-                            else btn.classList.remove('active');
+                            if (votedForSelf) {
+                                if (btn.value === status) btn.classList.add('active');
+                                else btn.classList.remove('active');
+                            }
                             if (data.counts[btn.value] !== undefined) {
                                 const countSpan = btn.querySelector('.count');
                                 if (countSpan) countSpan.textContent = data.counts[btn.value];
                             }
                         });
+                        // Reset target_player_id back to self after voting for someone else
+                        if (targetInput && defaultPlayerId) {
+                            targetInput.value = defaultPlayerId;
+                        }
                         const voteButtonsDiv = form.closest('.vote-buttons');
                         const attendanceBtn = voteButtonsDiv ? voteButtonsDiv.querySelector('.btn-attendance') : null;
                         if (attendanceBtn) {

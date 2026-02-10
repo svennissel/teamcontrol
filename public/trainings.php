@@ -149,7 +149,7 @@ printHeader($player, $playerTeams, "trainings");
                                 return ['id' => $t['player_id'], 'name' => $t['name']];
                             }, $voteTargets);
                             ?>
-                            <form action="action.php" method="POST" class="vote-form" data-vote-targets='<?php echo htmlspecialchars(json_encode($voteTargetsForJs), ENT_QUOTES, 'UTF-8'); ?>' onsubmit="handleVote(event)">
+                            <form action="action.php" method="POST" class="vote-form" data-vote-targets='<?php echo htmlspecialchars(json_encode($voteTargetsForJs), ENT_QUOTES, 'UTF-8'); ?>' data-default-player-id="<?php echo $player_id; ?>" onsubmit="handleVote(event)">
                                 <input type="hidden" name="action" value="vote">
                                 <input type="hidden" name="event_type" value="training">
                                 <input type="hidden" name="event_id" value="<?php echo $training['id']; ?>">
