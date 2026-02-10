@@ -58,22 +58,17 @@ if (!$success && $_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!empty($name)) {
         // Neuer Spieler
         $player = getPlayerByName($name);
-        global $pdo;
-        $playerHash = bin2hex(random_bytes(32));
-        $stmt = $pdo->prepare("INSERT INTO players (name, hash, is_club_admin) VALUES (?, ?, 0)");
-        if ($stmt->execute([$name, $playerHash])) {
-            $playerId = $pdo->lastInsertId();
-            addPlayerToTeam($team['id'], $playerId);
-            
-            if (loginByHash($playerHash)) {
-                header('Location: games.php?hash=' . $playerHash);
+        if (!$player) {
+            createPlayer($name, false, [$team['id']]);
+            $player = getPlayerByName($name);
+            if ($player && loginByHash($player['hash'])) {
+                header('Location: games.php?hash=' . $player['hash']);
                 exit;
             }
-        } else {
             $error = 'Fehler beim Erstellen des Spielers.';
+        } else {
+            $error = 'Spieler mit gleichen Namen existiert bereits.';
         }
-    } else {
-        $error = 'Bitte wählen Sie einen Spieler aus oder geben Sie einen Namen ein.';
     }
 }
 

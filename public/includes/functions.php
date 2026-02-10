@@ -283,7 +283,7 @@ function getTeams($playerId = null, $isClubAdmin = false) {
 
 function createTeam($name, $logo) {
     global $pdo;
-    $teamHash = bin2hex(random_bytes(32));
+    $teamHash = createHash();
     $stmt = $pdo->prepare("INSERT INTO teams (name, logo, hash) VALUES (?, ?, ?)");
     return $stmt->execute([$name, $logo, $teamHash]);
 }
@@ -343,7 +343,7 @@ function getAllPlayers() {
 
 function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = []) {
     global $pdo;
-    $playerHash = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
+    $playerHash = createHash();
     $stmt = $pdo->prepare("INSERT INTO players (name, hash, is_club_admin) VALUES (?, ?, ?)");
     if ($stmt->execute([$name, $playerHash, $is_club_admin ? 1 : 0])) {
         $playerId = $pdo->lastInsertId();
@@ -359,6 +359,17 @@ function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = [], 
         return true;
     }
     return false;
+}
+
+/**
+ * Generates a random hash of 16 bytes as a base64 string. This is used for player and team authentication.
+ * If the length is changed, it will be only changed for new users, not for existing ones.
+ *
+ * @return String
+ * @throws \Random\RandomException
+ */
+function createHash() : String {
+    return rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
 }
 
 function updatePlayer($id, $name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = []) {
@@ -435,7 +446,6 @@ function getLoggedInPlayer() {
 
 function getPlayer($id) {
     global $pdo;
-    $hash = $_SESSION['hash'];
     $stmt = $pdo->prepare("SELECT * FROM players WHERE id = ?");
     $stmt->execute([$id]);
     return $stmt->fetch();
