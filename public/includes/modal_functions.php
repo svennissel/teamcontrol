@@ -37,40 +37,54 @@ function renderAddMatchModal($teams) {
             <h2>Neues Spiel</h2>
             <form action="action.php" method="POST">
                 <input type="hidden" name="action" value="add_match">
-                <div>
-                    <label>Datum:</label>
-                    <input type="date" name="match_date" required>
+                <div class="form-row">
+                    <div>
+                        <label>Datum:</label>
+                        <input type="date" name="match_date" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Startzeit:</label>
-                    <input type="time" name="start_time" required>
+                <div class="form-row">
+                    <div>
+                        <label>Startzeit:</label>
+                        <input type="time" name="start_time" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Treffen:</label>
-                    <input type="time" name="meeting_time">
+                <div class="form-row">
+                    <div>
+                        <label>Treffen:</label>
+                        <input type="time" name="meeting_time">
+                    </div>
                 </div>
-                <div>
-                    <label>Gegner:</label>
-                    <input type="text" name="opponent" required>
+                <div class="form-row">
+                    <div>
+                        <label>Gegner:</label>
+                        <input type="text" name="opponent" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Heimspiel:</label>
-                    <input type="checkbox" name="is_home_game" id="add_match_is_home">
+                <div class="form-row">
+                    <div>
+                        <label>Heimspiel:</label>
+                        <input type="checkbox" name="is_home_game" id="add_match_is_home">
+                    </div>
                 </div>
-                <div id="add_location_container">
-                    <label>Anschrift:</label>
-                    <input type="text" name="location" placeholder="Straße, PLZ Ort">
+                <div class="form-row">
+                    <div id="add_location_container">
+                        <label>Anschrift:</label>
+                        <input type="text" name="location" placeholder="Straße, PLZ Ort">
+                    </div>
                 </div>
-                <div>
-                    <label>Mannschaft:</label>
-                    <select name="team_id" required>
-                        <option value="">-- Mannschaft wählen --</option>
-                        <?php foreach ($teams as $team): ?>
-                            <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="form-row">
+                    <div>
+                        <label>Mannschaft:</label>
+                        <select name="team_id" required>
+                            <option value="">-- Mannschaft wählen --</option>
+                            <?php foreach ($teams as $team): ?>
+                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <button type="submit">Spiel anlegen</button>
+                <button type="submit" class="btn-confirm-ok">Anlegen</button>
             </form>
         </div>
     </div>
@@ -86,40 +100,54 @@ function renderEditMatchModal($teams) {
             <form action="action.php" method="POST" id="editMatchForm">
                 <input type="hidden" name="action" value="edit_match">
                 <input type="hidden" name="match_id" id="edit_match_id">
-                <div>
-                    <label>Datum:</label>
-                    <input type="date" name="match_date" id="edit_match_date" required>
+                <div class="form-row">
+                    <div>
+                        <label>Datum:</label>
+                        <input type="date" name="match_date" id="edit_match_date" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Startzeit:</label>
-                    <input type="time" name="start_time" id="edit_match_start_time" required>
+                <div class="form-row">
+                    <div>
+                        <label>Startzeit:</label>
+                        <input type="time" name="start_time" id="edit_match_start_time" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Treffen:</label>
-                    <input type="time" name="meeting_time" id="edit_match_meeting_time">
+                <div class="form-row">
+                    <div>
+                        <label>Treffen:</label>
+                        <input type="time" name="meeting_time" id="edit_match_meeting_time">
+                    </div>
                 </div>
-                <div>
-                    <label>Gegner:</label>
-                    <input type="text" name="opponent" id="edit_match_opponent" required>
+                <div class="form-row">
+                    <div>
+                        <label>Gegner:</label>
+                        <input type="text" name="opponent" id="edit_match_opponent" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Heimspiel:</label>
-                    <input type="checkbox" name="is_home_game" id="edit_match_is_home">
+                <div class="form-row">
+                    <div>
+                        <label>Heimspiel:</label>
+                        <input type="checkbox" name="is_home_game" id="edit_match_is_home">
+                    </div>
                 </div>
-                <div id="edit_location_container">
-                    <label>Anschrift (für Auswärtsspiele):</label>
-                    <input type="text" name="location" id="edit_match_location" placeholder="Straße, PLZ Ort">
+                <div class="form-row">
+                    <div id="edit_location_container">
+                        <label>Anschrift (für Auswärtsspiele):</label>
+                        <input type="text" name="location" id="edit_match_location" placeholder="Straße, PLZ Ort">
+                    </div>
                 </div>
-                <div>
-                    <label>Mannschaft:</label>
-                    <select name="team_id" id="edit_match_team_id" required>
-                        <option value="">-- Mannschaft wählen --</option>
-                        <?php foreach ($teams as $team): ?>
-                            <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="form-row">
+                    <div>
+                        <label>Mannschaft:</label>
+                        <select name="team_id" id="edit_match_team_id" required>
+                            <option value="">-- Mannschaft wählen --</option>
+                            <?php foreach ($teams as $team): ?>
+                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <button type="submit">Änderungen speichern</button>
+                <button type="submit" class="btn-confirm-ok">Speichern</button>
             </form>
         </div>
     </div>
@@ -145,44 +173,54 @@ function renderAddTrainingModal($teams) {
                 </div>
                 
                 <div id="single_training_fields">
-                    <div>
-                        <label>Datum:</label>
-                        <input type="date" name="training_date" required>
+                    <div class="form-row">
+                        <div>
+                            <label>Datum:</label>
+                            <input type="date" name="training_date" required>
+                        </div>
                     </div>
                 </div>
 
                 <div id="weekly_training_fields" class="weekly-fields">
-                    <div>
-                        <label>Wochentag:</label>
-                        <select name="day_of_week">
-                            <option value="1">Montag</option>
-                            <option value="2">Dienstag</option>
-                            <option value="3">Mittwoch</option>
-                            <option value="4">Donnerstag</option>
-                            <option value="5">Freitag</option>
-                            <option value="6">Samstag</option>
-                            <option value="0">Sonntag</option>
-                        </select>
+                    <div class="form-row">
+                        <div>
+                            <label>Wochentag:</label>
+                            <select name="day_of_week">
+                                <option value="1">Montag</option>
+                                <option value="2">Dienstag</option>
+                                <option value="3">Mittwoch</option>
+                                <option value="4">Donnerstag</option>
+                                <option value="5">Freitag</option>
+                                <option value="6">Samstag</option>
+                                <option value="0">Sonntag</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label>Startdatum:</label>
-                        <input type="date" name="start_date" value="<?php echo date('Y-m-d'); ?>">
+                    <div class="form-row">
+                        <div>
+                            <label>Startdatum:</label>
+                            <input type="date" name="start_date" value="<?php echo date('Y-m-d'); ?>">
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label>Uhrzeit:</label>
-                    <input type="time" name="training_time" required>
+                <div class="form-row">
+                    <div>
+                        <label>Uhrzeit:</label>
+                        <input type="time" name="training_time" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Mannschaften:</label>
-                    <select name="team_ids[]" multiple required>
-                        <?php foreach ($teams as $team): ?>
-                            <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="form-row">
+                    <div>
+                        <label>Mannschaften:</label>
+                        <select name="team_ids[]" multiple required>
+                            <?php foreach ($teams as $team): ?>
+                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <button type="submit">Training anlegen</button>
+                <button type="submit" class="btn-confirm-ok">Anlegen</button>
             </form>
         </div>
     </div>
@@ -198,23 +236,29 @@ function renderEditTrainingModal($teams) {
             <form action="action.php" method="POST" id="editTrainingForm">
                 <input type="hidden" name="action" value="edit_training">
                 <input type="hidden" name="training_id" id="edit_training_id">
-                <div>
-                    <label>Datum:</label>
-                    <input type="date" name="training_date" id="edit_training_date" required>
+                <div class="form-row">
+                    <div>
+                        <label>Datum:</label>
+                        <input type="date" name="training_date" id="edit_training_date" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Uhrzeit:</label>
-                    <input type="time" name="training_time" id="edit_training_time" required>
+                <div class="form-row">
+                    <div>
+                        <label>Uhrzeit:</label>
+                        <input type="time" name="training_time" id="edit_training_time" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Mannschaften:</label>
-                    <select name="team_ids[]" id="edit_training_team_ids" multiple required>
-                        <?php foreach ($teams as $team): ?>
-                            <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="form-row">
+                    <div>
+                        <label>Mannschaften:</label>
+                        <select name="team_ids[]" id="edit_training_team_ids" multiple required>
+                            <?php foreach ($teams as $team): ?>
+                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <button type="submit">Änderungen speichern</button>
+                <button type="submit" class="btn-confirm-ok">Speichern</button>
             </form>
         </div>
     </div>
@@ -230,46 +274,56 @@ function renderAddPlayerModal($teams, $player_id) {
             <h2>Neuer Spieler</h2>
             <form action="action.php" method="POST">
                 <input type="hidden" name="action" value="add_player">
-                <div>
-                    <label>Name:</label>
-                    <input type="text" name="name" required>
+                <div class="form-row">
+                    <div>
+                        <label>Name:</label>
+                        <input type="text" name="name" required>
+                    </div>
                 </div>
                 <?php if (isClubAdmin() || isAnyTeamAdmin($player_id)): ?>
-                    <div>
-                        <label>Vereinsadmin:</label>
-                        <input type="checkbox" name="is_club_admin" <?php echo !isClubAdmin() ? 'disabled' : ''; ?>>
+                    <div class="form-row">
+                        <div>
+                            <label>Vereinsadmin:</label>
+                            <input type="checkbox" name="is_club_admin" <?php echo !isClubAdmin() ? 'disabled' : ''; ?>>
+                        </div>
                     </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Mannschaftsadmin:</label>
+                            <select name="admin_team_ids[]" id="add_player_admin_team_ids" multiple>
+                                <?php 
+                                $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
+                                foreach ($admin_selectable_teams as $team): ?>
+                                    <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <div class="form-row">
                     <div>
-                        <label>Mannschaftsadmin:</label>
-                        <select name="admin_team_ids[]" id="add_player_admin_team_ids" multiple>
+                        <label>Mannschaften:</label>
+                        <select name="team_ids[]" multiple required>
                             <?php 
-                            $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
-                            foreach ($admin_selectable_teams as $team): ?>
+                            $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
+                            foreach ($selectable_teams as $team): ?>
                                 <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                <?php endif; ?>
-                <div>
-                    <label>Mannschaften:</label>
-                    <select name="team_ids[]" multiple required>
-                        <?php 
-                        $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
-                        foreach ($selectable_teams as $team): ?>
-                            <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
                 </div>
-                <div>
-                    <label>Darf abstimmen für:</label>
-                    <select name="voter_permission_player_ids[]" id="add_player_voter_permissions" multiple>
-                        <?php 
-                        foreach ($all_other_players as $other_player): ?>
-                            <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="form-row">
+                    <div>
+                        <label>Darf abstimmen für:</label>
+                        <select name="voter_permission_player_ids[]" id="add_player_voter_permissions" multiple>
+                            <?php 
+                            foreach ($all_other_players as $other_player): ?>
+                                <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <button type="submit">Spieler anlegen</button>
+                <button type="submit" class="btn-confirm-ok">Anlegen</button>
             </form>
         </div>
     </div>
@@ -286,49 +340,59 @@ function renderEditPlayerModal($teams, $player_id) {
             <form action="action.php" method="POST">
                 <input type="hidden" name="action" value="edit_player">
                 <input type="hidden" name="player_id" id="edit_player_id">
-                <div>
-                    <label>Name:</label>
-                    <input type="text" name="name" id="edit_player_name" required>
+                <div class="form-row">
+                    <div>
+                        <label>Name:</label>
+                        <input type="text" name="name" id="edit_player_name" required>
+                    </div>
                 </div>
                 <?php if (isClubAdmin()): ?>
-                <div>
-                    <label>Vereinsadmin:</label>
-                    <input type="checkbox" name="is_club_admin" id="edit_player_is_club_admin">
+                <div class="form-row">
+                    <div>
+                        <label>Vereinsadmin:</label>
+                        <input type="checkbox" name="is_club_admin" id="edit_player_is_club_admin">
+                    </div>
                 </div>
                 <?php endif; ?>
                 <?php if (isClubAdmin() || isAnyTeamAdmin($player_id)): ?>
-                <div>
-                    <label>Mannschaftsadmin:</label>
-                    <select name="admin_team_ids[]" id="edit_player_admin_team_ids" multiple>
-                        <?php
-                        $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
-                        foreach ($admin_selectable_teams as $team): ?>
-                            <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button type="button" class="edit-btn" onclick="clearAdminTeamSelection()" class="btn-clear-selection">Auswahl aufheben</button>
+                <div class="form-row">
+                    <div>
+                        <label>Mannschaftsadmin:</label>
+                        <select name="admin_team_ids[]" id="edit_player_admin_team_ids" multiple>
+                            <?php
+                            $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
+                            foreach ($admin_selectable_teams as $team): ?>
+                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button type="button" class="edit-btn" onclick="clearAdminTeamSelection()" class="btn-clear-selection">Auswahl aufheben</button>
+                    </div>
                 </div>
                 <?php endif; ?>
-                <div>
-                    <label>Mannschaften:</label>
-                    <select name="team_ids[]" id="edit_player_team_ids" multiple required>
-                        <?php 
-                        $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
-                        foreach ($selectable_teams as $team): ?>
-                            <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="form-row">
+                    <div>
+                        <label>Mannschaften:</label>
+                        <select name="team_ids[]" id="edit_player_team_ids" multiple required>
+                            <?php 
+                            $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
+                            foreach ($selectable_teams as $team): ?>
+                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label>Darf abstimmen für:</label>
-                    <select name="voter_permission_player_ids[]" id="edit_player_voter_permissions" multiple>
-                        <?php 
-                        foreach ($all_other_players as $other_player): ?>
-                            <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="form-row">
+                    <div>
+                        <label>Darf abstimmen für:</label>
+                        <select name="voter_permission_player_ids[]" id="edit_player_voter_permissions" multiple>
+                            <?php 
+                            foreach ($all_other_players as $other_player): ?>
+                                <option value="<?php echo $other_player['id']; ?>"><?php echo htmlspecialchars($other_player['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <button type="submit">Änderungen speichern</button>
+                <button type="submit" class="btn-confirm-ok">Speichern</button>
             </form>
         </div>
     </div>
@@ -343,15 +407,19 @@ function renderAddTeamModal() {
             <h2>Neue Mannschaft</h2>
             <form action="action.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="add_team">
-                <div>
-                    <label>Name:</label>
-                    <input type="text" name="name" required>
+                <div class="form-row">
+                    <div>
+                        <label>Name:</label>
+                        <input type="text" name="name" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Logo:</label>
-                    <input type="file" name="logo" accept="image/*">
+                <div class="form-row">
+                    <div>
+                        <label>Logo:</label>
+                        <input type="file" name="logo" accept="image/*">
+                    </div>
                 </div>
-                <button type="submit">Mannschaft anlegen</button>
+                <button type="submit" class="btn-confirm-ok">Anlegen</button>
             </form>
         </div>
     </div>
@@ -382,15 +450,19 @@ function renderEditTeamModal() {
             <form action="action.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="edit_team">
                 <input type="hidden" name="team_id" id="edit_team_id">
-                <div>
-                    <label>Name:</label>
-                    <input type="text" name="name" id="edit_team_name" required>
+                <div class="form-row">
+                    <div>
+                        <label>Name:</label>
+                        <input type="text" name="name" id="edit_team_name" required>
+                    </div>
                 </div>
-                <div>
-                    <label>Logo (optional):</label>
-                    <input type="file" name="logo" accept="image/*">
+                <div class="form-row">
+                    <div>
+                        <label>Logo (optional):</label>
+                        <input type="file" name="logo" accept="image/*">
+                    </div>
                 </div>
-                <button type="submit">Änderungen speichern</button>
+                <button type="submit" class="btn-confirm-ok">Speichern</button>
             </form>
         </div>
     </div>

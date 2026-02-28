@@ -107,7 +107,7 @@ p {margin: 0.5rem;}
 section form { background: #fff; border-radius: var(--border-radius); max-width: 500px; }
 section form div { display: flex; flex-direction: column; margin-bottom: 1rem; }
 section form label { font-weight: 600; margin-bottom: 0.3rem; }
-section form input[type="date"], section form input[type="time"], section form input[type="text"] { padding: 0.6rem; border: 1px solid var(--input-border); border-radius: var(--input-radius); }
+section form input[type="date"], section form input[type="time"], section form input[type="text"] { padding: 0.6rem; border: 1px solid var(--input-border); border-radius: var(--input-radius); width: 10rem; box-sizing: border-box; }
 section form input[type="checkbox"] { width: fit-content; }
 
 /* Alerts */
@@ -139,18 +139,23 @@ section form input[type="checkbox"] { width: fit-content; }
 
 /* Modal */
 .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
-.modal-content { background: #fff; margin: 5% auto; padding: 2.5rem; border-radius: var(--border-radius); width: 90%; max-width: 620px; position: relative; }
-.modal-content h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem; color: var(--dark-red); border-bottom: 2px solid var(--light-red); padding-bottom: 0.5rem; }
-.modal-content form div { display: grid; grid-template-columns: 145px 1fr; align-items: center;  margin-bottom: 1.5rem; }
-.modal-content form div:has(input[type="checkbox"]) { display: flex; flex-direction: row; align-items: center; gap: 0.5rem; }
-.modal-content form div:has(input[type="checkbox"]) label { margin-bottom: 0; width: auto; min-width: unset; }
-.modal-content form label { font-weight: 600; color: #444; font-size: 0.95rem; }
-.modal-content form input[type="date"], .modal-content form input[type="time"], .modal-content form input[type="text"] { padding: 0.5rem; border: 1.5px solid var(--input-border-strong); border-radius: var(--input-radius-lg); font-size: 1rem; transition: all 0.2s; background: var(--input-bg); }
-.modal-content form input:focus { outline: none; border-color: var(--primary-red); background: #fff; box-shadow: var(--input-focus-shadow); }
-.modal-content form input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary-red); }
-.modal-content form select { width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; background-color: #fff; }
-.modal-content form select:focus { outline: none; border-color: var(--primary-red); box-shadow: var(--input-focus-shadow); }
-.modal-content button[type="submit"] { margin-top: 1rem; padding: 0.6rem; font-size: 1.1rem; letter-spacing: 0.5px; box-shadow: 0 4px 6px rgba(211,47,47,0.2); }
+.modal-content { background: #fff; margin: 1em auto; padding: 2.5rem; border-radius: var(--border-radius); max-width: 620px; position: relative;}
+.modal-content h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem; border-bottom: 2px solid }
+.form-row div { display: grid; grid-template-columns: 160px 1fr; margin-bottom: 1rem; justify-items: start; }
+.form-row label { font-weight: 600; color: #444; font-size: 0.95rem; }
+.form-row input:not([type="checkbox"]), .form-row select{
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--input-border-strong); border-radius: 8px; font-size: 1rem;
+}
+.form-row input[type="checkbox"] {
+    width: 1.3rem;
+    height: 1.3rem;
+    cursor: pointer;
+    accent-color: var(--primary-red);
+}
+
+
 .close { position: absolute; right: 1.2rem; top: 1.2rem; color: #bbb; font-size: 3rem; height: 32px; display: flex; align-items: center; }
 .close:hover { color: var(--primary-red); }
 .confirm-modal-content { max-width: 400px; text-align: center; }

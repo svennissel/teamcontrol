@@ -27,5 +27,7 @@ Thumbs.db
 #test copde
 info.php
 sync.sh
+/public/test.html
+
 # Test DB override
 .tc_database
