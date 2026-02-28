@@ -64,8 +64,8 @@ test.describe('Trainings-Filter Tests', () => {
       while (await trainingCard.isVisible()) {
         const deleteBtn = trainingCard.locator('.delete-btn');
         if (await deleteBtn.isVisible()) {
-          page.once('dialog', dialog => dialog.accept());
           await deleteBtn.click();
+          await page.locator('#confirmModalOk').click();
           await page.waitForTimeout(500); // Warten auf das Löschen
         } else {
           break;
@@ -81,8 +81,8 @@ test.describe('Trainings-Filter Tests', () => {
       if (await teamCard.isVisible()) {
         const deleteBtn = teamCard.locator('button#delete-team-btn');
         if (await deleteBtn.isVisible()) {
-          page.once('dialog', dialog => dialog.accept());
           await deleteBtn.click();
+          await page.locator('#confirmModalOk').click();
           await page.waitForTimeout(500);
         }
       }

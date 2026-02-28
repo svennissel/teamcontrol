@@ -40,7 +40,7 @@ printHeader($player, $playerTeams, "teams");
                         <div class="club-admin-actions">
                             <?php if (isClubAdmin()): ?>
                                 <button class="edit-btn" onclick='editTeam(<?php echo json_encode($team); ?>)' title="Bearbeiten">✎</button>
-                                <form action="action.php" method="POST" class="inline-form" onsubmit="return confirm('Soll diese Mannschaft wirklich gelöscht werden?');">
+                                <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll diese Mannschaft wirklich gelöscht werden?')">
                                     <input type="hidden" name="action" value="delete_team">
                                     <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
                                     <button type="submit" class="delete-btn" id="delete-team-btn" title="Löschen">🗑</button>

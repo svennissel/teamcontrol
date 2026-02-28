@@ -51,8 +51,8 @@ test.describe('Training-Seite Tests', () => {
     if (await playerCard.isVisible()) {
         const deleteBtn = playerCard.locator('button#delete-player-btn');
         if (await deleteBtn.isVisible()) {
-            page.once('dialog', dialog => dialog.accept());
             await deleteBtn.click();
+            await page.locator('#confirmModalOk').click();
         }
     }
 
@@ -62,8 +62,8 @@ test.describe('Training-Seite Tests', () => {
     if (await teamCard.isVisible()) {
         const deleteBtn = teamCard.locator('button#delete-team-btn');
         if (await deleteBtn.isVisible()) {
-            page.once('dialog', dialog => dialog.accept());
             await deleteBtn.click();
+            await page.locator('#confirmModalOk').click();
         }
     }
   });
@@ -138,8 +138,8 @@ test.describe('Training-Seite Tests', () => {
     await page.goto('trainings.php');
     const finalTrainingCard = page.locator('.event-card', { hasText: editedTime });
     
-    page.once('dialog', dialog => dialog.accept());
     await finalTrainingCard.locator('.delete-btn').click();
+    await page.locator('#confirmModalOk').click();
 
     await expect(page.locator('.event-card', { hasText: editedTime })).not.toBeVisible();
 

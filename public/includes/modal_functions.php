@@ -358,6 +358,21 @@ function renderAddTeamModal() {
     <?php
 }
 
+function renderConfirmModal() {
+    ?>
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confirm-modal-content">
+            <h2 id="confirmModalTitle">Bestätigung</h2>
+            <p id="confirmModalMessage"></p>
+            <div class="confirm-modal-buttons">
+                <button type="button" class="btn-confirm-cancel" onclick="closeConfirmModal()">Abbrechen</button>
+                <button type="button" class="btn-confirm-ok" id="confirmModalOk">Löschen</button>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
 function renderEditTeamModal() {
     ?>
     <div id="editTeamModal" class="modal">

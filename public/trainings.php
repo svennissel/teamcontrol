@@ -90,7 +90,7 @@ printHeader($player, $playerTeams, "trainings");
                         if ($canEditTraining): ?>
                             <div class="club-admin-actions">
                                 <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten">✎</button>
-                                <form action="action.php" method="POST" class="inline-form" onsubmit="return confirm('Soll dieses Training wirklich gelöscht werden?');">
+                                <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll dieses Training wirklich gelöscht werden?')">
                                     <input type="hidden" name="action" value="delete_training">
                                     <input type="hidden" name="training_id" value="<?php echo $training['id']; ?>">
                                     <button type="submit" class="delete-btn" title="Löschen">🗑</button>

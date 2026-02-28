@@ -52,8 +52,8 @@ test.describe('Spiele-Seite Tests', () => {
     if (await playerCard.isVisible()) {
         const deleteBtn = playerCard.locator('button#delete-player-btn');
         if (await deleteBtn.isVisible()) {
-            page.once('dialog', dialog => dialog.accept());
             await deleteBtn.click();
+            await page.locator('#confirmModalOk').click();
         }
     }
 
@@ -63,8 +63,8 @@ test.describe('Spiele-Seite Tests', () => {
     if (await teamCard.isVisible()) {
         const deleteBtn = teamCard.locator('button#delete-team-btn');
         if (await deleteBtn.isVisible()) {
-            page.once('dialog', dialog => dialog.accept());
             await deleteBtn.click();
+            await page.locator('#confirmModalOk').click();
         }
     }
   });
@@ -156,8 +156,8 @@ test.describe('Spiele-Seite Tests', () => {
 
     await finalMatchCard.locator('.delete-btn').isVisible();
     await finalMatchCard.locator('.delete-btn').isEnabled();
-    page.once('dialog', dialog => dialog.accept());
     await finalMatchCard.locator('.delete-btn').click();
+    await page.locator('#confirmModalOk').click();
 
     await expect(page.locator('.event-card', { hasText: editedOpponent })).not.toBeVisible();
 
@@ -165,8 +165,8 @@ test.describe('Spiele-Seite Tests', () => {
     await page.goto('games.php');
     const noMeetingMatchCard = page.locator('.event-card', { hasText: testOpponentNoMeeting });
     if (await noMeetingMatchCard.isVisible()) {
-        page.once('dialog', dialog => dialog.accept());
         await noMeetingMatchCard.locator('.delete-btn').click();
+        await page.locator('#confirmModalOk').click();
     }
 
     // 6. Keine Warnungen prüfen

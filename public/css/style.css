@@ -153,6 +153,15 @@ section form input[type="checkbox"] { width: fit-content; }
 .modal-content button[type="submit"] { margin-top: 1rem; padding: 0.6rem; font-size: 1.1rem; letter-spacing: 0.5px; box-shadow: 0 4px 6px rgba(211,47,47,0.2); }
 .close { position: absolute; right: 1.2rem; top: 1.2rem; color: #bbb; font-size: 3rem; height: 32px; display: flex; align-items: center; }
 .close:hover { color: var(--primary-red); }
+.confirm-modal-content { max-width: 400px; text-align: center; }
+.confirm-modal-content h2 { text-align: center; }
+.confirm-modal-content p { font-size: 1.05rem; color: #333; margin: 1.5rem 0; }
+.confirm-modal-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+.btn-confirm-cancel, .btn-confirm-ok { padding: 0.6rem 1.5rem; border-radius: var(--border-radius); font-size: 1rem; cursor: pointer; border: none; font-weight: 600; transition: all 0.2s; }
+.btn-confirm-cancel { background: #e0e0e0; color: #333; }
+.btn-confirm-cancel:hover { background: #ccc; }
+.btn-confirm-ok { background: var(--primary-red); color: #fff; box-shadow: 0 4px 6px rgba(211,47,47,0.2); }
+.btn-confirm-ok:hover { background: var(--dark-red); }
 
 /* Inline Form (delete buttons etc.) */
 .inline-form { display: inline; margin: 0; padding: 0; }

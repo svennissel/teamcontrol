@@ -4,6 +4,7 @@
     require_once __DIR__ . '/modal_functions.php';
     
     renderAttendanceModal();
+    renderConfirmModal();
 
     if (isClubAdmin() || isAnyTeamAdmin($player_id ?? 0)) {
         renderAddPlayerModal($teams ?? [], $player_id ?? 0);
@@ -375,6 +376,22 @@
             if (event.target.className === 'modal') {
                 closeModal(event.target.id);
             }
+        }
+
+        function confirmDelete(event, message) {
+            event.preventDefault();
+            const form = event.target;
+            document.getElementById('confirmModalMessage').textContent = message;
+            document.getElementById('confirmModal').style.display = 'block';
+            document.getElementById('confirmModalOk').onclick = function() {
+                closeConfirmModal();
+                form.removeAttribute('onsubmit');
+                form.submit();
+            };
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
         }
 
         function copyToClipboard(elementId) {

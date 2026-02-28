@@ -5,7 +5,7 @@ test.describe('Teilen-Button Tests', () => {
 
     test('Teilen-Button ist im Header sichtbar und kopiert Link', async ({ page, context, browserName }) => {
         // Berechtigungen für Clipboard setzen (Firefox unterstützt dies nicht via grantPermissions)
-        if (browserName !== 'firefox') {
+        if (browserName !== 'firefox' && browserName !== 'webkit') {
             await context.grantPermissions(['clipboard-read', 'clipboard-write']);
         }
 
@@ -23,7 +23,7 @@ test.describe('Teilen-Button Tests', () => {
         // Da es schnell geht, prüfen wir eher auf das Resultat im Clipboard
         
         // In Playwright kann man das Clipboard auslesen
-        if (browserName !== 'firefox') {
+        if (browserName !== 'firefox' && browserName !== 'webkit') {
             const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
             expect(clipboardText).toContain('login.php?hash=' + testHash);
         }

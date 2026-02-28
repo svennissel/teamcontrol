@@ -63,7 +63,7 @@ printHeader($player, $playerTeams, "games");
                         if ($canEditMatch): ?>
                             <div class="club-admin-actions">
                                 <button class="edit-btn" onclick='editMatch(<?php echo json_encode($match); ?>)' title="Bearbeiten">✎</button>
-                                <form action="action.php" method="POST" class="inline-form" onsubmit="return confirm('Soll dieses Spiel wirklich gelöscht werden?');">
+                                <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll dieses Spiel wirklich gelöscht werden?')">
                                     <input type="hidden" name="action" value="delete_match">
                                     <input type="hidden" name="match_id" value="<?php echo $match['id']; ?>">
                                     <button type="submit" class="delete-btn" title="Löschen">🗑</button>

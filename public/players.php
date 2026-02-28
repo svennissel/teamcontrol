@@ -59,7 +59,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                                 <button class="edit-btn" onclick='editPlayer(<?php echo json_encode(array_merge($player, ["team_ids" => $player_team_ids, "admin_team_ids" => $admin_team_ids, "voter_permission_player_ids" => $voter_perm_ids])); ?>)' title="Bearbeiten">✎</button>
                             <?php endif; ?>
                             <?php if (isClubAdmin()): ?>
-                                <form action="action.php" method="POST" class="inline-form" onsubmit="return confirm('Soll dieser Spieler wirklich gelöscht werden?');">
+                                <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll dieser Spieler wirklich gelöscht werden?')">
                                     <input type="hidden" name="action" value="delete_player">
                                     <input type="hidden" name="player_id" value="<?php echo $player['id']; ?>">
                                     <button type="submit" class="delete-btn" id="delete-player-btn" title="Löschen">🗑</button>
