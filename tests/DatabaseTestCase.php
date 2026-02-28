@@ -14,7 +14,7 @@ abstract class DatabaseTestCase extends TestCase
         // Globale $pdo Variable überschreiben für die Dauer der Tests
         global $pdo;
         
-        $pdo = new \PDO('sqlite::memory:');
+        $pdo = new Pdo\Sqlite('sqlite::memory:');
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         
