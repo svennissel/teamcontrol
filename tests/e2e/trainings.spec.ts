@@ -18,7 +18,7 @@ test.describe('Training-Seite Tests', () => {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const testDate = tomorrow.toISOString().split('T')[0];
 
-    await page.click('button#add-training-btn:has-text("+")');
+    await page.locator('button#add-training-btn:has-text("+"):visible').click();
     await page.fill('#addTrainingModal input[name="training_date"]', testDate);
     await page.fill('#addTrainingModal input[name="training_time"]', testTime);
     

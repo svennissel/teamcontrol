@@ -15,7 +15,7 @@ test.describe('Spiele-Seite Tests', () => {
     const testOpponent = 'E2E Test Gegner mit Treffzeitpunkt';
     const editedOpponent = 'E2E Test Gegner Edit';
 
-    await page.click('button#add-match-btn:has-text("+")');
+    await page.locator('button#add-match-btn:has-text("+"):visible').click();
     await page.fill('#addMatchModal input[name="match_date"]', new Date().toISOString().split('T')[0]);
     await page.fill('#addMatchModal input[name="start_time"]', '18:00');
     await page.fill('#addMatchModal input[name="meeting_time"]', '17:30');
@@ -30,7 +30,7 @@ test.describe('Spiele-Seite Tests', () => {
 
     // 1b. Spiel ohne Treffzeitpunkt erstellen
     const testOpponentNoMeeting = 'E2E Test Gegner kein Treffzeipunkt';
-    await page.click('button#add-match-btn:has-text("+")');
+    await page.locator('button#add-match-btn:has-text("+"):visible').click();
     await page.fill('#addMatchModal input[name="match_date"]', new Date().toISOString().split('T')[0]);
     await page.fill('#addMatchModal input[name="start_time"]', '19:00');
     await page.fill('#addMatchModal input[name="meeting_time"]', ''); // Leer lassen
@@ -43,11 +43,7 @@ test.describe('Spiele-Seite Tests', () => {
     await expect(matchCardNoMeeting).toBeVisible();
     await expect(matchCardNoMeeting).not.toContainText('Treffen');
 
-    // 2. Als Testspieler einloggen
-    await page.goto(`login.php?hash=${testPlayerHash}`);
-    await page.goto('games.php');
-
-    // 3. Spiel bearbeiten (Der Testspieler ist kein Admin, also wieder als Admin einloggen zum Bearbeiten)
+    // 2. Spiel bearbeiten (Der Testspieler ist kein Admin, also wieder als Admin einloggen zum Bearbeiten)
     await page.goto(`login.php?hash=${testHash}`);
     await page.goto('games.php');
     const matchCard = page.locator('.event-card', { hasText: testOpponent });
@@ -59,7 +55,7 @@ test.describe('Spiele-Seite Tests', () => {
     
     await expect(page.locator('.event-card', { hasText: editedOpponent })).toBeVisible();
 
-    // 4. Abstimmen als Spieler
+    // 3. Abstimmen als Spieler
     await page.goto(`login.php?hash=${testPlayerHash}`);
     await page.goto('games.php');
     const updatedMatchCard = page.locator('.event-card', { hasText: editedOpponent });
@@ -83,7 +79,7 @@ test.describe('Spiele-Seite Tests', () => {
     await expect(page.locator('#list-maybe')).toContainText(testPlayerName);
     await page.click('#attendanceModal .close');
 
-    // 5. Spiel löschen (als Admin)
+    // 4. Spiel löschen (als Admin)
     await page.goto(`login.php?hash=${testHash}`);
     await page.goto('games.php');
     const finalMatchCard = page.locator('.event-card', { hasText: editedOpponent });
@@ -95,7 +91,7 @@ test.describe('Spiele-Seite Tests', () => {
 
     await expect(page.locator('.event-card', { hasText: editedOpponent })).not.toBeVisible();
 
-    // 5b. Das andere Spiel auch löschen
+    // 5. Das andere Spiel auch löschen
     await page.goto('games.php');
     const noMeetingMatchCard = page.locator('.event-card', { hasText: testOpponentNoMeeting });
     if (await noMeetingMatchCard.isVisible()) {

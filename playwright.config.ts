@@ -11,6 +11,8 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost/',
     trace: 'on-first-retry',
+    locale: 'de-DE',
+    timezoneId: 'Europe/Berlin',
     video: {
       mode: 'on',
       size: { width: 1600, height: 900 }
@@ -28,6 +30,14 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+    },
+    {
+      name: 'Mobile Chrome',
+      use: { ...devices['Pixel 5'] },
+    },
+    {
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 12'] },
     },
   ],
 });
