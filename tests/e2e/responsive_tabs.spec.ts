@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Responsive Tabs Tests', () => {
-  const testHash = 'HYmpZn_wlAwIaodR6F48SQ';
+  const testHash = 'testHash';
 
   test('Tabs sollten auf Desktop sichtbar sein und Dropdown versteckt', async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 768 });

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Trainings-Filter Tests', () => {
   test.describe.configure({ mode: 'serial' });
-  const adminHash = 'HYmpZn_wlAwIaodR6F48SQ';
+  const adminHash = 'testHash';
   const team1Name = 'Filter Team 1';
   const team2Name = 'Filter Team 2';
 

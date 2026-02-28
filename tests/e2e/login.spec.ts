@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
 test('Login über Hash-Link', async ({ page }) => {
   // Gehe zur Login-Seite mit einem Test-Hash
   // WICHTIG: Ersetzen Sie 'test-hash' durch einen echten Hash aus Ihrer Datenbank
-  const testHash = 'HYmpZn_wlAwIaodR6F48SQ';
+  const testHash = 'testHash';
   await page.goto(`login.php?hash=${testHash}`);
 
   // Nach dem Login sollte localStorage gesetzt sein und eine Weiterleitung erfolgen

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Spiele-Seite Tests', () => {
   // ClubAdmin User Hash
-  const testHash = 'HYmpZn_wlAwIaodR6F48SQ';
+  const testHash = 'testHash';
   const testPlayerName = 'E2E Test Spieler Game';
   const testTeamName = 'E2E Test Team Game';
 

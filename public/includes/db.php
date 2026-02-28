@@ -1,6 +1,13 @@
 <?php
 $host = 'localhost';
 $db   = 'teamcontrol';
+$dbOverrideFile = __DIR__ . '/../../.tc_database';
+if (file_exists($dbOverrideFile)) {
+    $dbOverride = trim(file_get_contents($dbOverrideFile));
+    if ($dbOverride !== '') {
+        $db = $dbOverride;
+    }
+}
 $user = 'hb02';
 $pass = 'xSbAp5$u4_5Qkfru';
 $charset = 'utf8mb4';

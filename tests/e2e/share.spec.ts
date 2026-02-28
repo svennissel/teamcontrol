@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Teilen-Button Tests', () => {
-    const testHash = 'HYmpZn_wlAwIaodR6F48SQ';
+    const testHash = 'testHash';
 
     test('Teilen-Button ist im Header sichtbar und kopiert Link', async ({ page, context, browserName }) => {
         // Berechtigungen für Clipboard setzen (Firefox unterstützt dies nicht via grantPermissions)

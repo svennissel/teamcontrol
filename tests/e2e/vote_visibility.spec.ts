@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Vote Buttons Visibility', () => {
   test.describe.configure({ mode: 'serial' });
-  const adminHash = 'HYmpZn_wlAwIaodR6F48SQ';
+  const adminHash = 'testHash';
   const playerWithoutTeamName = 'Spieler Ohne Team';
   const playerWithTeamName = 'Spieler Mit Team';
   const playerWithOtherTeamName = 'Spieler Mit Anderem Team';
