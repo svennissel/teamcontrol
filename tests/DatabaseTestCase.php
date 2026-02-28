@@ -19,7 +19,7 @@ abstract class DatabaseTestCase extends TestCase
         $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         
         // SQLite spezifische Funktionen registrieren, um MySQL Syntax zu emulieren
-        $pdo->sqliteCreateFunction('VALUES', function($value) {
+        $pdo->createFunction('VALUES', function($value) {
             return $value;
         }, 1);
 
