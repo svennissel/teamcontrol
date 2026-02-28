@@ -16,12 +16,12 @@ test.describe('Trainings-Filter Tests', () => {
     if (!(await page.locator('.event-card', { hasText: team1Name }).isVisible())) {
       await page.click('button#add-team-btn:has-text("+")');
       await page.fill('#addTeamModal input[name="name"]', team1Name);
-      await page.click('#addTeamModal button:has-text("Mannschaft anlegen")');
+      await page.click('#addTeamModal button:has-text("Anlegen")');
     }
     if (!(await page.locator('.event-card', { hasText: team2Name }).isVisible())) {
       await page.click('button#add-team-btn:has-text("+")');
       await page.fill('#addTeamModal input[name="name"]', team2Name);
-      await page.click('#addTeamModal button:has-text("Mannschaft anlegen")');
+      await page.click('#addTeamModal button:has-text("Anlegen")');
     }
 
     // Trainings erstellen
@@ -37,7 +37,7 @@ test.describe('Trainings-Filter Tests', () => {
     await page.locator('#addTrainingModal select[name="team_ids[]"]').selectOption({ label: team1Name });
     const responsePromise = page.waitForResponse('**/action.php');
     const responsePromise2 = page.waitForResponse('**/trainings.php');
-    await page.click('#addTrainingModal button:has-text("Training anlegen")');
+    await page.click('#addTrainingModal button:has-text("Anlegen")');
     const response = await responsePromise;
     const response2 = await responsePromise2;
     await page.waitForTimeout(500);
@@ -48,7 +48,7 @@ test.describe('Trainings-Filter Tests', () => {
     await page.fill('#addTrainingModal input[name="training_date"]', testDate);
     await page.fill('#addTrainingModal input[name="training_time"]', '11:00');
     await page.locator('#addTrainingModal select[name="team_ids[]"]').selectOption({ label: team2Name });
-    await page.click('#addTrainingModal button:has-text("Training anlegen")');
+    await page.click('#addTrainingModal button:has-text("Anlegen")');
   });
 
   test.afterAll(async ({ browser }) => {

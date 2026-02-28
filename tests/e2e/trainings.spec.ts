@@ -15,7 +15,7 @@ test.describe('Training-Seite Tests', () => {
     if (await page.locator('button#add-team-btn:has-text("+")').isVisible()) {
         await page.click('button#add-team-btn:has-text("+")');
         await page.fill('#addTeamModal input[name="name"]', testTeamName);
-        await page.click('#addTeamModal button:has-text("Mannschaft anlegen")');
+        await page.click('#addTeamModal button:has-text("Anlegen")');
     }
 
     // Testspieler erstellen
@@ -27,7 +27,7 @@ test.describe('Training-Seite Tests', () => {
         if (await teamSelect.isVisible()) {
             await teamSelect.selectOption({ label: testTeamName });
         }
-        await page.click('#addPlayerModal button:has-text("Spieler anlegen")');
+        await page.click('#addPlayerModal button:has-text("Anlegen")');
     }
     
     // Hash des neuen Spielers aus dem versteckten Feld auslesen
@@ -87,7 +87,7 @@ test.describe('Training-Seite Tests', () => {
     const teamSelect = page.locator('#addTrainingModal select[name="team_ids[]"]');
     await teamSelect.selectOption({ label: testTeamName });
     
-    await page.click('#addTrainingModal button:has-text("Training anlegen")');
+    await page.click('#addTrainingModal button:has-text("Anlegen")');
 
     // 2. Als Testspieler einloggen
     await page.goto('players.php');
@@ -105,7 +105,7 @@ test.describe('Training-Seite Tests', () => {
     
     await trainingCard.locator('.edit-btn').click();
     await page.fill('#editTrainingModal input[name="training_time"]', editedTime);
-    await page.click('#editTrainingModal button:has-text("Änderungen speichern")');
+    await page.click('#editTrainingModal button:has-text("Speichern")');
     
     await expect(page.locator('.event-card', { hasText: editedTime })).toBeVisible();
 

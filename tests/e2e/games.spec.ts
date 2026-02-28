@@ -15,7 +15,7 @@ test.describe('Spiele-Seite Tests', () => {
     if (await page.locator('button#add-team-btn:has-text("+")').isVisible()) {
         await page.click('button#add-team-btn:has-text("+")');
         await page.fill('#addTeamModal input[name="name"]', testTeamName);
-        await page.click('#addTeamModal button:has-text("Mannschaft anlegen")');
+        await page.click('#addTeamModal button:has-text("Anlegen")');
     }
 
     // Testspieler erstellen
@@ -28,7 +28,7 @@ test.describe('Spiele-Seite Tests', () => {
         if (await teamSelect.isVisible()) {
             await teamSelect.selectOption({ label: testTeamName });
         }
-        await page.click('#addPlayerModal button:has-text("Spieler anlegen")');
+        await page.click('#addPlayerModal button:has-text("Anlegen")');
     }
 
     // Hash des neuen Spielers aus dem versteckten Feld auslesen
@@ -88,7 +88,7 @@ test.describe('Spiele-Seite Tests', () => {
     const teamSelect = page.locator('#addMatchModal select[name="team_id"]');
     await teamSelect.selectOption({ label: testTeamName });
     
-    await page.click('#addMatchModal button:has-text("Spiel anlegen")');
+    await page.click('#addMatchModal button:has-text("Anlegen")');
 
     // 1b. Spiel ohne Treffzeitpunkt erstellen
     const testOpponentNoMeeting = 'E2E Test Gegner kein Treffzeipunkt';
@@ -98,7 +98,7 @@ test.describe('Spiele-Seite Tests', () => {
     await page.fill('#addMatchModal input[name="meeting_time"]', ''); // Leer lassen
     await page.fill('#addMatchModal input[name="opponent"]', testOpponentNoMeeting);
     await page.selectOption('#addMatchModal select[name="team_id"]', { label: testTeamName });
-    await page.click('#addMatchModal button:has-text("Spiel anlegen")');
+    await page.click('#addMatchModal button:has-text("Anlegen")');
 
     // Prüfen ob beide Spiele da sind und beim zweiten kein "Treffen" steht
     const matchCardNoMeeting = page.locator('.event-card', { hasText: testOpponentNoMeeting });
@@ -121,7 +121,7 @@ test.describe('Spiele-Seite Tests', () => {
 
     await matchCard.locator('.edit-btn').click();
     await page.fill('#editMatchModal input[name="opponent"]', editedOpponent);
-    await page.click('#editMatchModal button:has-text("Änderungen speichern")');
+    await page.click('#editMatchModal button:has-text("Speichern")');
     
     await expect(page.locator('.event-card', { hasText: editedOpponent })).toBeVisible();
 

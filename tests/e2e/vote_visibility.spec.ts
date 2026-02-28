@@ -18,12 +18,12 @@ test.describe('Vote Buttons Visibility', () => {
     if (!(await page.locator('.event-card', { hasText: testTeamName }).isVisible())) {
       await page.click('button#add-team-btn:has-text("+")');
       await page.fill('#addTeamModal input[name="name"]', testTeamName);
-      await page.click('#addTeamModal button:has-text("Mannschaft anlegen")');
+      await page.click('#addTeamModal button:has-text("Anlegen")');
     }
     if (!(await page.locator('.event-card', { hasText: otherTeamName }).isVisible())) {
       await page.click('button#add-team-btn:has-text("+")');
       await page.fill('#addTeamModal input[name="name"]', otherTeamName);
-      await page.click('#addTeamModal button:has-text("Mannschaft anlegen")');
+      await page.click('#addTeamModal button:has-text("Anlegen")');
     }
 
     // 3. Spieler ohne Team erstellen
@@ -32,7 +32,7 @@ test.describe('Vote Buttons Visibility', () => {
       await page.click('button#add-player-btn:has-text("+")');
       await page.fill('#addPlayerModal input[name="name"]', playerWithoutTeamName);
       await page.locator('#addPlayerModal select[name="team_ids[]"]').selectOption({ label: otherTeamName });
-      await page.click('#addPlayerModal button:has-text("Spieler anlegen")');
+      await page.click('#addPlayerModal button:has-text("Anlegen")');
     }
 
     // 4. Spieler mit Team erstellen
@@ -40,7 +40,7 @@ test.describe('Vote Buttons Visibility', () => {
       await page.click('button#add-player-btn:has-text("+")');
       await page.fill('#addPlayerModal input[name="name"]', playerWithTeamName);
       await page.locator('#addPlayerModal select[name="team_ids[]"]').selectOption({ label: testTeamName });
-      await page.click('#addPlayerModal button:has-text("Spieler anlegen")');
+      await page.click('#addPlayerModal button:has-text("Anlegen")');
     }
 
     // Spieler mit anderem Team erstellen
@@ -48,7 +48,7 @@ test.describe('Vote Buttons Visibility', () => {
       await page.click('button#add-player-btn:has-text("+")');
       await page.fill('#addPlayerModal input[name="name"]', playerWithOtherTeamName);
       await page.locator('#addPlayerModal select[name="team_ids[]"]').selectOption({ label: otherTeamName });
-      await page.click('#addPlayerModal button:has-text("Spieler anlegen")');
+      await page.click('#addPlayerModal button:has-text("Anlegen")');
     }
 
     // 5. Ein Training erstellen
@@ -61,7 +61,7 @@ test.describe('Vote Buttons Visibility', () => {
         await page.fill('#addTrainingModal input[name="training_date"]', testDate);
         await page.fill('#addTrainingModal input[name="training_time"]', '18:18');
         await page.locator('#addTrainingModal select[name="team_ids[]"]').selectOption({ label: testTeamName });
-        await page.click('#addTrainingModal button:has-text("Training anlegen")');
+        await page.click('#addTrainingModal button:has-text("Anlegen")');
     }
 
     // 6. Ein Spiel erstellen, falls keins da ist
@@ -72,7 +72,7 @@ test.describe('Vote Buttons Visibility', () => {
         await page.fill('#addMatchModal input[name="match_date"]', testDate);
         await page.fill('#addMatchModal input[name="start_time"]', '19:19');
         await page.locator('#addMatchModal select[name="team_id"]').selectOption({ label: testTeamName });
-        await page.click('#addMatchModal button:has-text("Spiel anlegen")');
+        await page.click('#addMatchModal button:has-text("Anlegen")');
     }
   });
 
