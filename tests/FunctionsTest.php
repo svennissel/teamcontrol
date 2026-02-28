@@ -96,14 +96,14 @@ class FunctionsTest extends DatabaseTestCase
         $matchId = self::$pdo->lastInsertId();
         
         // Test voting 'yes'
-        updateAttendance($playerId, 'match', $matchId, 'yes');
+        updateAttendance($playerId, $playerId, 'match', $matchId, 'yes');
         
         $stmt = self::$pdo->prepare("SELECT status FROM attendance WHERE player_id = ? AND event_type = 'match' AND event_id = ?");
         $stmt->execute([$playerId, $matchId]);
         $this->assertEquals('yes', $stmt->fetchColumn());
         
         // Test updating to 'no'
-        updateAttendance($playerId, 'match', $matchId, 'no');
+        updateAttendance($playerId, $playerId, 'match', $matchId, 'no');
         $stmt->execute([$playerId, $matchId]);
         $this->assertEquals('no', $stmt->fetchColumn());
     }
@@ -125,7 +125,7 @@ class FunctionsTest extends DatabaseTestCase
         $matchId = createMatch('2026-02-01', '14:00', '13:00', 'Opponent', 1, '', $teamId);
         
         // One votes yes
-        updateAttendance($playerId, 'match', $matchId, 'yes');
+        updateAttendance($playerId, $playerId, 'match', $matchId, 'yes');
         
         $attendance = getAttendance('match', $matchId);
         

@@ -98,6 +98,13 @@ abstract class DatabaseTestCase extends TestCase
                 training_id INTEGER NOT NULL,
                 team_id INTEGER NOT NULL,
                 PRIMARY KEY (training_id, team_id)
+            )",
+            "CREATE TABLE voter_permissions (
+                voter_id INTEGER NOT NULL,
+                player_id INTEGER NOT NULL,
+                PRIMARY KEY (voter_id, player_id),
+                FOREIGN KEY (voter_id) REFERENCES players(id) ON DELETE CASCADE,
+                FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
             )"
         ];
 
