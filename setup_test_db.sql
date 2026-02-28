@@ -78,4 +78,48 @@ CREATE TABLE IF NOT EXISTS voter_permissions (
 );
 
 -- Initialer Admin-Benutzer
-INSERT INTO players (name, hash, is_club_admin) VALUES ('Admin', 'testHash', TRUE);
+INSERT INTO players (id, name, hash, is_club_admin) VALUES (1, 'Admin', 'testHash', TRUE);
+
+-- Teams für games.spec.ts und trainings.spec.ts
+INSERT INTO teams (id, name, hash) VALUES (1, 'E2E Test Team Game', 'teamHashGame');
+INSERT INTO teams (id, name, hash) VALUES (2, 'E2E Test Team Training', 'teamHashTraining');
+
+-- Teams für vote_visibility.spec.ts
+INSERT INTO teams (id, name, hash) VALUES (3, 'Sichtbarkeit Test Team', 'teamHashSichtbarkeit');
+INSERT INTO teams (id, name, hash) VALUES (4, 'Anderes Team', 'teamHashAnderes');
+
+-- Teams für trainings_filter.spec.ts
+INSERT INTO teams (id, name, hash) VALUES (5, 'Filter Team 1', 'teamHashFilter1');
+INSERT INTO teams (id, name, hash) VALUES (6, 'Filter Team 2', 'teamHashFilter2');
+
+-- Spieler für games.spec.ts
+INSERT INTO players (id, name, hash, is_club_admin) VALUES (2, 'E2E Test Spieler Game', 'playerHashGame', FALSE);
+INSERT INTO team_players (team_id, player_id) VALUES (1, 2);
+
+-- Spieler für trainings.spec.ts
+INSERT INTO players (id, name, hash, is_club_admin) VALUES (3, 'E2E Test Spieler Training', 'playerHashTraining', FALSE);
+INSERT INTO team_players (team_id, player_id) VALUES (2, 3);
+
+-- Spieler für vote_visibility.spec.ts
+INSERT INTO players (id, name, hash, is_club_admin) VALUES (4, 'Spieler Ohne Team', 'playerHashOhneTeam', FALSE);
+INSERT INTO team_players (team_id, player_id) VALUES (4, 4);
+
+INSERT INTO players (id, name, hash, is_club_admin) VALUES (5, 'Spieler Mit Team', 'playerHashMitTeam', FALSE);
+INSERT INTO team_players (team_id, player_id) VALUES (3, 5);
+
+INSERT INTO players (id, name, hash, is_club_admin) VALUES (6, 'Spieler Mit Anderem Team', 'playerHashAnderesTeam', FALSE);
+INSERT INTO team_players (team_id, player_id) VALUES (4, 6);
+
+-- Training für vote_visibility.spec.ts (Datum weit in der Zukunft)
+INSERT INTO trainings (id, training_date, training_time) VALUES (1, '2027-01-01', '18:18');
+INSERT INTO training_teams (training_id, team_id) VALUES (1, 3);
+
+-- Spiel für vote_visibility.spec.ts
+INSERT INTO matches (id, team_id, match_date, start_time, opponent, is_home_game) VALUES (1, 3, '2027-01-01', '19:19', 'Test Gegner', FALSE);
+
+-- Trainings für trainings_filter.spec.ts
+INSERT INTO trainings (id, training_date, training_time) VALUES (2, '2027-01-02', '10:00');
+INSERT INTO training_teams (training_id, team_id) VALUES (2, 5);
+
+INSERT INTO trainings (id, training_date, training_time) VALUES (3, '2027-01-02', '11:00');
+INSERT INTO training_teams (training_id, team_id) VALUES (3, 6);

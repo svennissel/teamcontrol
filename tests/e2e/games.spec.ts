@@ -3,74 +3,12 @@ import { test, expect } from '@playwright/test';
 test.describe('Spiele-Seite Tests', () => {
   // ClubAdmin User Hash
   const testHash = 'testHash';
+  const testPlayerHash = 'playerHashGame';
   const testPlayerName = 'E2E Test Spieler Game';
   const testTeamName = 'E2E Test Team Game';
 
-  test.beforeEach(async ({ page }) => {
-    // Login als ClubAdmin
-    await page.goto(`login.php?hash=${testHash}`);
-    
-    // Testmannschaft erstellen
-    await page.goto('teams.php');
-    if (await page.locator('button#add-team-btn:has-text("+")').isVisible()) {
-        await page.click('button#add-team-btn:has-text("+")');
-        await page.fill('#addTeamModal input[name="name"]', testTeamName);
-        await page.click('#addTeamModal button:has-text("Anlegen")');
-    }
-
-    // Testspieler erstellen
-    await page.goto('players.php');
-    if (await page.locator('button#add-player-btn:has-text("+")').isVisible()) {
-        await page.click('button#add-player-btn:has-text("+")');
-        await page.fill('#addPlayerModal input[name="name"]', testPlayerName);
-        // Die neu erstellte Mannschaft wählen
-        const teamSelect = page.locator('#addPlayerModal select[name="team_ids[]"]');
-        if (await teamSelect.isVisible()) {
-            await teamSelect.selectOption({ label: testTeamName });
-        }
-        await page.click('#addPlayerModal button:has-text("Anlegen")');
-    }
-
-    // Hash des neuen Spielers aus dem versteckten Feld auslesen
-    const playerCard = page.locator('.event-card', { hasText: testPlayerName });
-    const playerHash = await playerCard.locator('input.player-hash-input').inputValue();
-
-    // Als neu erstellter Spieler einloggen
-    await page.goto(`login.php?hash=${playerHash}`);
-    
-    // Zurück zur Spiele-Seite
-    await page.goto('games.php');
-  });
-
-  test.afterEach(async ({ page }) => {
-    // Wieder als ClubAdmin einloggen, um Löschrechte zu haben
-    await page.goto(`login.php?hash=${testHash}`);
-
-    // Testspieler wieder löschen
-    await page.goto('players.php');
-    const playerCard = page.locator('.event-card', { hasText: testPlayerName });
-    if (await playerCard.isVisible()) {
-        const deleteBtn = playerCard.locator('button#delete-player-btn');
-        if (await deleteBtn.isVisible()) {
-            await deleteBtn.click();
-            await page.locator('#confirmModalOk').click();
-        }
-    }
-
-    // Testmannschaft wieder löschen
-    await page.goto('teams.php');
-    const teamCard = page.locator('.event-card', { hasText: testTeamName });
-    if (await teamCard.isVisible()) {
-        const deleteBtn = teamCard.locator('button#delete-team-btn');
-        if (await deleteBtn.isVisible()) {
-            await deleteBtn.click();
-            await page.locator('#confirmModalOk').click();
-        }
-    }
-  });
-
   test('Kompletter Spiel-Lebenszyklus: Erstellen, Bearbeiten, Abstimmen, Löschen', async ({ page }) => {
-    // 1. Spiel erstellen (Wir sind aktuell als Spieler eingeloggt, brauchen aber Admin-Rechte)
+    // 1. Spiel erstellen als Admin
     await page.goto(`login.php?hash=${testHash}`);
     await page.goto('games.php');
     
@@ -106,11 +44,7 @@ test.describe('Spiele-Seite Tests', () => {
     await expect(matchCardNoMeeting).not.toContainText('Treffen');
 
     // 2. Als Testspieler einloggen
-    // Einfacher: Wir navigieren zur Spielerseite und holen ihn uns nochmal
-    await page.goto('players.php');
-    const playerCard = page.locator('.event-card', { hasText: testPlayerName });
-    const playerHash = await playerCard.locator('input.player-hash-input').inputValue();
-    await page.goto(`login.php?hash=${playerHash}`);
+    await page.goto(`login.php?hash=${testPlayerHash}`);
     await page.goto('games.php');
 
     // 3. Spiel bearbeiten (Der Testspieler ist kein Admin, also wieder als Admin einloggen zum Bearbeiten)
@@ -126,7 +60,7 @@ test.describe('Spiele-Seite Tests', () => {
     await expect(page.locator('.event-card', { hasText: editedOpponent })).toBeVisible();
 
     // 4. Abstimmen als Spieler
-    await page.goto(`login.php?hash=${playerHash}`);
+    await page.goto(`login.php?hash=${testPlayerHash}`);
     await page.goto('games.php');
     const updatedMatchCard = page.locator('.event-card', { hasText: editedOpponent });
 
