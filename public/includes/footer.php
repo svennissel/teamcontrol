@@ -410,8 +410,8 @@
             container.innerHTML = '';
             new QRCode(container, {
                 text: input.value,
-                width: 256,
-                height: 256,
+                width: 200,
+                height: 200,
                 correctLevel: QRCode.CorrectLevel.H
             });
             document.getElementById('qrCodeTitle').innerText = title || 'QR-Code';
