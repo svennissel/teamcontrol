@@ -325,7 +325,52 @@
             Array.from(teamSelect.options).forEach(option => {
                 option.selected = training.teams && training.teams.includes(parseInt(option.value));
             });
+
+            const seriesChoice = document.getElementById('edit_training_series_choice');
+            const singleFields = document.getElementById('edit_training_single_fields');
+            const seriesFields = document.getElementById('edit_training_series_fields');
+            const modeInput = document.getElementById('edit_training_mode');
+            const occurrenceDateInput = document.getElementById('edit_training_occurrence_date');
+            const dateInput = document.getElementById('edit_training_date');
+
+            if (training.is_weekly == 1) {
+                seriesChoice.style.display = 'block';
+                occurrenceDateInput.value = training.occurrence_date || training.training_date;
+                // Default: Nur diesen Termin
+                const radioSingle = document.querySelector('input[name="edit_scope"][value="single_occurrence"]');
+                if (radioSingle) radioSingle.checked = true;
+                toggleEditTrainingScope('single_occurrence');
+                // Wochentag setzen
+                document.getElementById('edit_training_day_of_week').value = training.day_of_week;
+            } else {
+                seriesChoice.style.display = 'none';
+                singleFields.style.display = 'block';
+                seriesFields.style.display = 'none';
+                modeInput.value = 'single';
+                occurrenceDateInput.value = '';
+                dateInput.required = true;
+            }
+
             openModal('editTrainingModal');
+        }
+
+        function toggleEditTrainingScope(scope) {
+            const singleFields = document.getElementById('edit_training_single_fields');
+            const seriesFields = document.getElementById('edit_training_series_fields');
+            const modeInput = document.getElementById('edit_training_mode');
+            const dateInput = document.getElementById('edit_training_date');
+
+            if (scope === 'series') {
+                singleFields.style.display = 'none';
+                seriesFields.style.display = 'block';
+                modeInput.value = 'series';
+                dateInput.required = false;
+            } else {
+                singleFields.style.display = 'block';
+                seriesFields.style.display = 'none';
+                modeInput.value = 'single_occurrence';
+                dateInput.required = true;
+            }
         }
 
         function editTeam(team) {

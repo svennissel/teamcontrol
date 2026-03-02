@@ -31,10 +31,10 @@ function getMatches(?int $playerId = null, bool $isClubAdmin = false): array {
 function getTrainings(?int $playerId = null, bool $isClubAdmin = false): array {
     global $pdo;
 
+    // Einmalige und Override-Trainings laden (nicht-wöchentlich)
     $sql = "SELECT t.* FROM trainings t";
     $params = [];
 
-    // Filter: Nur Trainings die noch nicht begonnen haben oder in den letzten 6 Stunden begonnen haben
     $filterSql = " (STR_TO_DATE(CONCAT(t.training_date, ' ', t.training_time), '%Y-%m-%d %H:%i:%s') >= NOW() - INTERVAL 6 HOUR)";
 
     if (!$isClubAdmin && $playerId !== null) {
@@ -45,24 +45,114 @@ function getTrainings(?int $playerId = null, bool $isClubAdmin = false): array {
                 JOIN team_players tp ON tt.team_id = tp.team_id
                 WHERE tp.player_id = ?
             )
-        ) AND" . $filterSql;
+        ) AND t.is_weekly = 0 AND" . $filterSql;
         $params[] = $playerId;
     } else {
-        $sql .= " WHERE" . $filterSql;
+        $sql .= " WHERE t.is_weekly = 0 AND" . $filterSql;
     }
 
     $sql .= " ORDER BY training_date ASC, training_time ASC";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
-    $trainings = $stmt->fetchAll();
+    $singleTrainings = $stmt->fetchAll();
 
-    foreach ($trainings as &$training) {
-        $training['teams'] = getEventTeams('training', $training['id']);
+    // Wöchentliche Trainings laden
+    $sqlWeekly = "SELECT t.* FROM trainings t";
+    $paramsWeekly = [];
+
+    if (!$isClubAdmin && $playerId !== null) {
+        $sqlWeekly .= " WHERE (
+            NOT EXISTS (SELECT 1 FROM training_teams tt WHERE tt.training_id = t.id)
+            OR t.id IN (
+                SELECT tt.training_id FROM training_teams tt
+                JOIN team_players tp ON tt.team_id = tp.team_id
+                WHERE tp.player_id = ?
+            )
+        ) AND t.is_weekly = 1";
+        $paramsWeekly[] = $playerId;
+    } else {
+        $sqlWeekly .= " WHERE t.is_weekly = 1";
     }
-    return $trainings;
+
+    $stmtWeekly = $pdo->prepare($sqlWeekly);
+    $stmtWeekly->execute($paramsWeekly);
+    $weeklyTrainings = $stmtWeekly->fetchAll();
+
+    // Override-Dates sammeln (Daten die durch Einzelbearbeitung ersetzt wurden)
+    $overrideDates = [];
+    foreach ($singleTrainings as $t) {
+        if (!empty($t['parent_training_id']) && !empty($t['override_date'])) {
+            $overrideDates[$t['parent_training_id']][] = $t['override_date'];
+        }
+    }
+
+    // Wöchentliche Trainings in virtuelle Einzeltermine expandieren (nächste 20 Wochen)
+    $expandedTrainings = [];
+    $now = new DateTime();
+    $now->modify('-6 hours');
+
+    foreach ($weeklyTrainings as $weekly) {
+        $start = new DateTime($weekly['training_date']);
+        $startWithTime = new DateTime($weekly['training_date'] . ' ' . $weekly['training_time']);
+        
+        // Wenn das Startdatum in der Vergangenheit liegt, ab heute starten
+        if ($startWithTime < $now) {
+            $start = new DateTime();
+            $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            if ($start->format('w') != $weekly['day_of_week']) {
+                $start->modify('next ' . $days[$weekly['day_of_week']]);
+            }
+            // Prüfen ob der heutige Termin noch gültig ist (innerhalb 6h Fenster)
+            $todayOccurrence = new DateTime($start->format('Y-m-d') . ' ' . $weekly['training_time']);
+            if ($todayOccurrence < $now) {
+                $start->modify('+1 week');
+            }
+        }
+
+        $count = 0;
+        $current = clone $start;
+        while ($count < 20) {
+            $dateStr = $current->format('Y-m-d');
+            
+            // Prüfen ob dieses Datum durch ein Override ersetzt wurde
+            if (!isset($overrideDates[$weekly['id']]) || !in_array($dateStr, $overrideDates[$weekly['id']])) {
+                $expandedTrainings[] = [
+                    'id' => $weekly['id'],
+                    'training_date' => $dateStr,
+                    'training_time' => $weekly['training_time'],
+                    'is_weekly' => 1,
+                    'day_of_week' => $weekly['day_of_week'],
+                    'parent_training_id' => null,
+                    'override_date' => null,
+                    'occurrence_date' => $dateStr,
+                ];
+            }
+            $current->modify('+1 week');
+            $count++;
+        }
+    }
+
+    // Alle Trainings zusammenführen
+    $allTrainings = array_merge($singleTrainings, $expandedTrainings);
+
+    // Nach Datum und Zeit sortieren
+    usort($allTrainings, function($a, $b) {
+        $cmp = strcmp($a['training_date'], $b['training_date']);
+        if ($cmp !== 0) return $cmp;
+        return strcmp($a['training_time'], $b['training_time']);
+    });
+
+    // Teams zuordnen
+    foreach ($allTrainings as &$training) {
+        $training['teams'] = getEventTeams('training', $training['id']);
+        if (!isset($training['occurrence_date'])) {
+            $training['occurrence_date'] = null;
+        }
+    }
+    return $allTrainings;
 }
 
-function updateAttendance(int $voterId, int $playerId, string $eventType, int $eventId, string $status): bool {
+function updateAttendance(int $voterId, int $playerId, string $eventType, int $eventId, string $status, ?string $occurrenceDate = null): bool {
     if (!canVoteFor($voterId, $playerId, $eventType, $eventId)) {
         return false;
     }
@@ -70,31 +160,42 @@ function updateAttendance(int $voterId, int $playerId, string $eventType, int $e
     global $pdo;
     
     // Prüfen ob bereits ein Eintrag existiert
-    $stmt = $pdo->prepare("SELECT id FROM attendance WHERE player_id = ? AND event_type = ? AND event_id = ?");
-    $stmt->execute([$playerId, $eventType, $eventId]);
+    if ($occurrenceDate) {
+        $stmt = $pdo->prepare("SELECT id FROM attendance WHERE player_id = ? AND event_type = ? AND event_id = ? AND occurrence_date = ?");
+        $stmt->execute([$playerId, $eventType, $eventId, $occurrenceDate]);
+    } else {
+        $stmt = $pdo->prepare("SELECT id FROM attendance WHERE player_id = ? AND event_type = ? AND event_id = ? AND occurrence_date IS NULL");
+        $stmt->execute([$playerId, $eventType, $eventId]);
+    }
     $existing = $stmt->fetch();
 
     if ($existing) {
         $stmt = $pdo->prepare("UPDATE attendance SET status = ? WHERE id = ?");
         return $stmt->execute([$status, $existing['id']]);
     } else {
-        $stmt = $pdo->prepare("INSERT INTO attendance (player_id, event_type, event_id, status) VALUES (?, ?, ?, ?)");
-        return $stmt->execute([$playerId, $eventType, $eventId, $status]);
+        $stmt = $pdo->prepare("INSERT INTO attendance (player_id, event_type, event_id, status, occurrence_date) VALUES (?, ?, ?, ?, ?)");
+        return $stmt->execute([$playerId, $eventType, $eventId, $status, $occurrenceDate]);
     }
 }
 
-function getAttendance(string $eventType, int $eventId): array {
+function getAttendance(string $eventType, int $eventId, ?string $occurrenceDate = null): array {
     global $pdo;
     
     // 1. Alle Teams des Events abrufen
     $teamIds = getEventTeams($eventType, $eventId);
     
     if (empty($teamIds)) {
-        // Wenn keine Teams zugeordnet sind, geben wir nur die ab, die abgestimmt haben (sollte eigentlich nicht vorkommen laut neuer Regeln)
-        $stmt = $pdo->prepare("SELECT a.*, p.name FROM attendance a 
-                               JOIN players p ON a.player_id = p.id 
-                               WHERE a.event_type = ? AND a.event_id = ?");
-        $stmt->execute([$eventType, $eventId]);
+        if ($occurrenceDate) {
+            $stmt = $pdo->prepare("SELECT a.*, p.name FROM attendance a 
+                                   JOIN players p ON a.player_id = p.id 
+                                   WHERE a.event_type = ? AND a.event_id = ? AND a.occurrence_date = ?");
+            $stmt->execute([$eventType, $eventId, $occurrenceDate]);
+        } else {
+            $stmt = $pdo->prepare("SELECT a.*, p.name FROM attendance a 
+                                   JOIN players p ON a.player_id = p.id 
+                                   WHERE a.event_type = ? AND a.event_id = ? AND a.occurrence_date IS NULL");
+            $stmt->execute([$eventType, $eventId]);
+        }
         return $stmt->fetchAll();
     }
 
@@ -108,9 +209,15 @@ function getAttendance(string $eventType, int $eventId): array {
     $allPlayers = $stmt->fetchAll(PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
 
     // 3. Vorhandene Abstimmungen abrufen
-    $stmt = $pdo->prepare("SELECT player_id, status FROM attendance 
-                           WHERE event_type = ? AND event_id = ?");
-    $stmt->execute([$eventType, $eventId]);
+    if ($occurrenceDate) {
+        $stmt = $pdo->prepare("SELECT player_id, status FROM attendance 
+                               WHERE event_type = ? AND event_id = ? AND occurrence_date = ?");
+        $stmt->execute([$eventType, $eventId, $occurrenceDate]);
+    } else {
+        $stmt = $pdo->prepare("SELECT player_id, status FROM attendance 
+                               WHERE event_type = ? AND event_id = ? AND occurrence_date IS NULL");
+        $stmt->execute([$eventType, $eventId]);
+    }
     $votes = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
     // 4. Kombinieren
@@ -134,7 +241,11 @@ function getPlayerAttendance($playerId) {
     
     $attendance = [];
     foreach ($results as $row) {
-        $attendance[$row['event_type']][$row['event_id']] = $row['status'];
+        $key = $row['event_id'];
+        if (!empty($row['occurrence_date'])) {
+            $key = $row['event_id'] . '_' . $row['occurrence_date'];
+        }
+        $attendance[$row['event_type']][$key] = $row['status'];
     }
     return $attendance;
 }
@@ -175,38 +286,13 @@ function createWeeklyTrainings($dayOfWeek, $time, $startDate, $teamIds = []) {
         $start->modify('next ' . $days[$dayOfWeek]);
     }
     
-    $end = clone $start;
-    $end->modify('+1 year');
-    
-    $interval = new DateInterval('P1W');
-    $period = new DatePeriod($start, $interval, $end);
-    
-    $stmt = $pdo->prepare("INSERT INTO trainings (training_date, training_time) VALUES (?, ?)");
-    
-    $nestedTransaction = $pdo->inTransaction();
-    if (!$nestedTransaction) {
-        $pdo->beginTransaction();
+    $stmt = $pdo->prepare("INSERT INTO trainings (training_date, training_time, is_weekly, day_of_week) VALUES (?, ?, 1, ?)");
+    $stmt->execute([$start->format('Y-m-d'), $time, $dayOfWeek]);
+    $trainingId = $pdo->lastInsertId();
+    if (!empty($teamIds)) {
+        assignTeamsToEvent($trainingId, 'training', $teamIds);
     }
-    
-    try {
-        foreach ($period as $dt) {
-            $stmt->execute([$dt->format('Y-m-d'), $time]);
-            $trainingId = $pdo->lastInsertId();
-            if (!empty($teamIds)) {
-                assignTeamsToEvent($trainingId, 'training', $teamIds);
-            }
-        }
-        
-        if (!$nestedTransaction) {
-            $pdo->commit();
-        }
-        return true;
-    } catch (Exception $e) {
-        if (!$nestedTransaction) {
-            $pdo->rollBack();
-        }
-        return false;
-    }
+    return $trainingId;
 }
 
 function updateTraining($id, $date, $time, $teamIds = []) {
@@ -215,6 +301,39 @@ function updateTraining($id, $date, $time, $teamIds = []) {
     $result = $stmt->execute([$date, $time, $id]);
     assignTeamsToEvent($id, 'training', $teamIds);
     return $result;
+}
+
+function updateWeeklyTrainingSeries($id, $dayOfWeek, $time, $teamIds = []) {
+    global $pdo;
+    
+    $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    $start = new DateTime();
+    if ($start->format('w') != $dayOfWeek) {
+        $start->modify('next ' . $days[$dayOfWeek]);
+    }
+    
+    $stmt = $pdo->prepare("UPDATE trainings SET training_date = ?, training_time = ?, day_of_week = ? WHERE id = ?");
+    $result = $stmt->execute([$start->format('Y-m-d'), $time, $dayOfWeek, $id]);
+    assignTeamsToEvent($id, 'training', $teamIds);
+    return $result;
+}
+
+function createTrainingOverride($parentId, $overrideDate, $newDate, $time, $teamIds = []) {
+    global $pdo;
+    $stmt = $pdo->prepare("INSERT INTO trainings (training_date, training_time, is_weekly, parent_training_id, override_date) VALUES (?, ?, 0, ?, ?)");
+    $stmt->execute([$newDate, $time, $parentId, $overrideDate]);
+    $trainingId = $pdo->lastInsertId();
+    if (!empty($teamIds)) {
+        assignTeamsToEvent($trainingId, 'training', $teamIds);
+    }
+    return $trainingId;
+}
+
+function deleteWeeklyTraining($id) {
+    global $pdo;
+    // Löscht das wöchentliche Training und alle Overrides (CASCADE)
+    $stmt = $pdo->prepare("DELETE FROM trainings WHERE id = ?");
+    return $stmt->execute([$id]);
 }
 
 function assignTeamsToEvent($eventId, $eventType, $teamIds) {

@@ -20,7 +20,12 @@ CREATE TABLE IF NOT EXISTS matches (
 CREATE TABLE IF NOT EXISTS trainings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     training_date DATE NOT NULL,
-    training_time TIME NOT NULL
+    training_time TIME NOT NULL,
+    is_weekly BOOLEAN DEFAULT FALSE,
+    day_of_week TINYINT DEFAULT NULL,
+    parent_training_id INT DEFAULT NULL,
+    override_date DATE DEFAULT NULL,
+    FOREIGN KEY (parent_training_id) REFERENCES trainings(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS attendance (
@@ -30,7 +35,8 @@ CREATE TABLE IF NOT EXISTS attendance (
     event_id INT NOT NULL,
     status ENUM('yes', 'no', 'maybe') NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_attendance (player_id, event_type, event_id),
+    occurrence_date DATE DEFAULT NULL,
+    UNIQUE KEY unique_attendance (player_id, event_type, event_id, occurrence_date),
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 

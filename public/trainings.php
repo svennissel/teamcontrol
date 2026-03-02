@@ -61,6 +61,10 @@ printHeader($player, $playerTeams, "trainings");
                     }
                 }
                 ?>
+                <?php
+                $occurrenceDate = $training['occurrence_date'] ?? null;
+                $attendanceKey = $occurrenceDate ? $training['id'] . '_' . $occurrenceDate : $training['id'];
+                ?>
                 <div class="event-card<?php echo $teamClasses; ?>">
                     <div class="card-header">
 
@@ -116,7 +120,7 @@ printHeader($player, $playerTeams, "trainings");
                     </div>
 
                     <?php
-                    $attendance = getAttendance('training', $training['id']);
+                    $attendance = getAttendance('training', $training['id'], $occurrenceDate);
                     $counts = ['yes' => 0, 'no' => 0, 'maybe' => 0, 'none' => 0];
                     foreach ($attendance as $a) { $counts[$a['status']]++; }
                     ?>
@@ -153,9 +157,10 @@ printHeader($player, $playerTeams, "trainings");
                                 <input type="hidden" name="event_type" value="training">
                                 <input type="hidden" name="event_id" value="<?php echo $training['id']; ?>">
                                 <input type="hidden" name="target_player_id" value="<?php echo $player_id; ?>">
-                                <button type="submit" name="status" value="yes" title="Zusage" class="<?php echo (isset($myAttendance['training'][$training['id']]) && $myAttendance['training'][$training['id']] === 'yes') ? 'active' : ''; ?>">👍 <span class="count"><?php echo $counts['yes']; ?></span></button>
-                                <button type="submit" name="status" value="maybe" title="Vielleicht" class="<?php echo (isset($myAttendance['training'][$training['id']]) && $myAttendance['training'][$training['id']] === 'maybe') ? 'active' : ''; ?>">❓ <span class="count"><?php echo $counts['maybe']; ?></span></button>
-                                <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['training'][$training['id']]) && $myAttendance['training'][$training['id']] === 'no') ? 'active' : ''; ?>">👎 <span class="count"><?php echo $counts['no']; ?></span></button>
+                                <input type="hidden" name="occurrence_date" value="<?php echo $occurrenceDate ?? ''; ?>">
+                                <button type="submit" name="status" value="yes" title="Zusage" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'yes') ? 'active' : ''; ?>">👍 <span class="count"><?php echo $counts['yes']; ?></span></button>
+                                <button type="submit" name="status" value="maybe" title="Vielleicht" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'maybe') ? 'active' : ''; ?>">❓ <span class="count"><?php echo $counts['maybe']; ?></span></button>
+                                <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'no') ? 'active' : ''; ?>">👎 <span class="count"><?php echo $counts['no']; ?></span></button>
                             </form>
                         <?php endif; ?>
                         <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "Training <?php

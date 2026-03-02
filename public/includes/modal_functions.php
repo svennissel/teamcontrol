@@ -236,12 +236,44 @@ function renderEditTrainingModal($teams) {
             <form action="action.php" method="POST" id="editTrainingForm">
                 <input type="hidden" name="action" value="edit_training">
                 <input type="hidden" name="training_id" id="edit_training_id">
-                <div class="form-row">
-                    <div>
-                        <label>Datum:</label>
-                        <input type="date" name="training_date" id="edit_training_date" required>
+                <input type="hidden" name="edit_mode" id="edit_training_mode" value="single">
+                <input type="hidden" name="occurrence_date" id="edit_training_occurrence_date" value="">
+
+                <div id="edit_training_series_choice" class="modal-section" style="display:none;">
+                    <label class="training-type-label">
+                        <input type="radio" name="edit_scope" value="single_occurrence" checked onclick="toggleEditTrainingScope('single_occurrence')"> Nur diesen Termin
+                    </label>
+                    <label class="training-type-label">
+                        <input type="radio" name="edit_scope" value="series" onclick="toggleEditTrainingScope('series')"> Gesamte Serie
+                    </label>
+                </div>
+
+                <div id="edit_training_single_fields">
+                    <div class="form-row">
+                        <div>
+                            <label>Datum:</label>
+                            <input type="date" name="training_date" id="edit_training_date" required>
+                        </div>
                     </div>
                 </div>
+
+                <div id="edit_training_series_fields" style="display:none;">
+                    <div class="form-row">
+                        <div>
+                            <label>Wochentag:</label>
+                            <select name="day_of_week" id="edit_training_day_of_week">
+                                <option value="1">Montag</option>
+                                <option value="2">Dienstag</option>
+                                <option value="3">Mittwoch</option>
+                                <option value="4">Donnerstag</option>
+                                <option value="5">Freitag</option>
+                                <option value="6">Samstag</option>
+                                <option value="0">Sonntag</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div>
                         <label>Uhrzeit:</label>

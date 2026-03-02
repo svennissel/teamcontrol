@@ -15,14 +15,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $status = $_POST['status'];
         $targetPlayerId = isset($_POST['target_player_id']) ? (int)$_POST['target_player_id'] : $player_id;
         
+        $occurrenceDate = isset($_POST['occurrence_date']) && $_POST['occurrence_date'] !== '' ? $_POST['occurrence_date'] : null;
+        
         if (in_array($status, ['yes', 'no', 'maybe']) && in_array($eventType, ['match', 'training'])) {
-            updateAttendance($player_id, $targetPlayerId, $eventType, $eventId, $status);
+            updateAttendance($player_id, $targetPlayerId, $eventType, $eventId, $status, $occurrenceDate);
         }
 
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
             header('Content-Type: application/json');
             if (in_array($status, ['yes', 'no', 'maybe']) && in_array($eventType, ['match', 'training'])) {
-                $attendance = getAttendance($eventType, $eventId);
+                $attendance = getAttendance($eventType, $eventId, $occurrenceDate);
                 $counts = ['yes' => 0, 'no' => 0, 'maybe' => 0, 'none' => 0];
                 foreach ($attendance as $a) { $counts[$a['status']]++; }
                 echo json_encode(['success' => true, 'counts' => $counts, 'attendance' => $attendance]);
@@ -112,7 +114,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $validated_requested_teams = array_intersect($team_ids, $my_admin_team_ids);
                     $team_ids = array_unique(array_merge($validated_requested_teams, $other_teams));
                 }
-                updateTraining($trainingId, $_POST['training_date'], $_POST['training_time'], $team_ids);
+                $editMode = $_POST['edit_mode'] ?? 'single';
+                if ($editMode === 'series') {
+                    $dayOfWeek = (int)$_POST['day_of_week'];
+                    updateWeeklyTrainingSeries($trainingId, $dayOfWeek, $_POST['training_time'], $team_ids);
+                } elseif ($editMode === 'single_occurrence') {
+                    $occurrenceDate = $_POST['occurrence_date'];
+                    createTrainingOverride($trainingId, $occurrenceDate, $_POST['training_date'], $_POST['training_time'], $team_ids);
+                } else {
+                    updateTraining($trainingId, $_POST['training_date'], $_POST['training_time'], $team_ids);
+                }
             }
         } elseif ($_POST['action'] === 'delete_match') {
             $matchId = (int)$_POST['match_id'];
