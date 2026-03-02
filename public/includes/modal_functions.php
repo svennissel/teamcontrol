@@ -165,10 +165,10 @@ function renderAddTrainingModal($teams) {
                 
                 <div class="modal-section">
                     <label class="training-type-label">
-                        <input type="radio" name="training_type" value="single" checked onclick="toggleTrainingType('single')"> Einzeltraining
+                        <input type="radio" name="training_type" value="single" checked onclick="toggleTrainingType('single')"> Einmalig
                     </label>
                     <label class="training-type-label">
-                        <input type="radio" name="training_type" value="weekly" onclick="toggleTrainingType('weekly')"> Wöchentliches Training
+                        <input type="radio" name="training_type" value="weekly" onclick="toggleTrainingType('weekly')"> Wöchentlich
                     </label>
                 </div>
                 
