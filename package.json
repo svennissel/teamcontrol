@@ -4,7 +4,8 @@
   "description": "Playwright tests for TeamControl",
   "devDependencies": {
     "@playwright/test": "^1.40.0",
-    "@types/node": "^25.1.0"
+    "@types/node": "^25.1.0",
+    "jsqr": "^1.4.0"
   },
   "scripts": {
     "test": "npx playwright test"

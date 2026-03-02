@@ -87,23 +87,3 @@ function printHeader($player, $playerTeams, $current_page) {
 <?php
 }
 ?>
-<script>
-function copyLoginLink(hash) {
-    const url = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/') + 'login.php?hash=' + hash;
-    navigator.clipboard.writeText(url).then(() => {
-        const btn = document.querySelector('.share-btn');
-        const originalContent = btn.innerHTML;
-        btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-        btn.style.backgroundColor = '#2ecc71';
-        btn.style.borderColor = '#2ecc71';
-        setTimeout(() => {
-            btn.innerHTML = originalContent;
-            btn.style.backgroundColor = '';
-            btn.style.borderColor = '';
-        }, 2000);
-    }).catch(err => {
-        console.error('Fehler beim Kopieren:', err);
-        alert('Fehler beim Kopieren des Links.');
-    });
-}
-</script>

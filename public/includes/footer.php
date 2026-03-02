@@ -23,6 +23,15 @@
 
     <div id="voteTargetMenu" class="vote-target-menu" aria-hidden="true"></div>
 
+    <div id="qrCodeModal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <span class="close" onclick="closeModal('qrCodeModal')">&times;</span>
+            <h2 id="qrCodeTitle">QR-Code</h2>
+            <div id="qrCodeContainer" style="display:flex;justify-content:center;"></div>
+        </div>
+    </div>
+
+    <script src="js/qrcode.min.js"></script>
     <script>
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -394,6 +403,21 @@
             document.getElementById('confirmModal').style.display = 'none';
         }
 
+        function showQrCode(elementId, title) {
+            const input = document.getElementById(elementId);
+            if (!input) return;
+            const container = document.getElementById('qrCodeContainer');
+            container.innerHTML = '';
+            new QRCode(container, {
+                text: input.value,
+                width: 256,
+                height: 256,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            document.getElementById('qrCodeTitle').innerText = title || 'QR-Code';
+            openModal('qrCodeModal');
+        }
+
         function copyToClipboard(elementId) {
             const copyText = document.getElementById(elementId);
             copyText.select();
@@ -408,6 +432,25 @@
                     btn.title = originalTitle;
                 }, 2000);
             });
+        }
+
+        function copyLoginLink(hash) {
+            const url = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/') + 'login.php?hash=' + hash;
+            navigator.clipboard.writeText(url).then(() => {
+            const btn = document.querySelector('.share-btn');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            btn.style.backgroundColor = '#2ecc71';
+            btn.style.borderColor = '#2ecc71';
+            setTimeout(() => {
+            btn.innerHTML = originalContent;
+            btn.style.backgroundColor = '';
+            btn.style.borderColor = '';
+        }, 2000);
+        }).catch(err => {
+            console.error('Fehler beim Kopieren:', err);
+            alert('Fehler beim Kopieren des Links.');
+        });
         }
     </script>
 </body>
