@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS trainings (
     day_of_week TINYINT DEFAULT NULL,
     parent_training_id INT DEFAULT NULL,
     override_date DATE DEFAULT NULL,
+    is_cancelled BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (parent_training_id) REFERENCES trainings(id) ON DELETE CASCADE
 );
 

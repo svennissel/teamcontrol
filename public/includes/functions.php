@@ -86,6 +86,12 @@ function getTrainings(?int $playerId = null, bool $isClubAdmin = false): array {
         }
     }
 
+    // Cancelled Overrides herausfiltern
+    $singleTrainings = array_filter($singleTrainings, function($t) {
+        return empty($t['is_cancelled']);
+    });
+    $singleTrainings = array_values($singleTrainings);
+
     // Wöchentliche Trainings in virtuelle Einzeltermine expandieren (nächste 20 Wochen)
     $expandedTrainings = [];
     $now = new DateTime();
@@ -334,6 +340,12 @@ function deleteWeeklyTraining($id) {
     // Löscht das wöchentliche Training und alle Overrides (CASCADE)
     $stmt = $pdo->prepare("DELETE FROM trainings WHERE id = ?");
     return $stmt->execute([$id]);
+}
+
+function cancelTrainingOccurrence($parentId, $occurrenceDate) {
+    global $pdo;
+    $stmt = $pdo->prepare("INSERT INTO trainings (training_date, training_time, is_weekly, parent_training_id, override_date, is_cancelled) VALUES (?, '00:00:00', 0, ?, ?, 1)");
+    return $stmt->execute([$occurrenceDate, $parentId, $occurrenceDate]);
 }
 
 function assignTeamsToEvent($eventId, $eventType, $teamIds) {

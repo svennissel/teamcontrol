@@ -436,12 +436,47 @@
             event.preventDefault();
             const form = event.target;
             document.getElementById('confirmModalMessage').textContent = message;
+            document.getElementById('confirmModalButtons').style.display = '';
+            document.getElementById('confirmModalSeriesButtons').style.display = 'none';
             document.getElementById('confirmModal').style.display = 'block';
             document.getElementById('confirmModalOk').onclick = function() {
                 closeConfirmModal();
                 form.removeAttribute('onsubmit');
                 form.submit();
             };
+        }
+
+        function confirmDeleteTraining(event, isWeekly) {
+            event.preventDefault();
+            const form = event.target;
+            if (!isWeekly) {
+                document.getElementById('confirmModalMessage').textContent = 'Soll dieses Training wirklich gelöscht werden?';
+                document.getElementById('confirmModalButtons').style.display = '';
+                document.getElementById('confirmModalSeriesButtons').style.display = 'none';
+                document.getElementById('confirmModal').style.display = 'block';
+                document.getElementById('confirmModalOk').onclick = function() {
+                    closeConfirmModal();
+                    form.removeAttribute('onsubmit');
+                    form.submit();
+                };
+            } else {
+                document.getElementById('confirmModalMessage').textContent = 'Soll nur dieser Termin oder die gesamte Trainingsserie gelöscht werden?';
+                document.getElementById('confirmModalButtons').style.display = 'none';
+                document.getElementById('confirmModalSeriesButtons').style.display = '';
+                document.getElementById('confirmModal').style.display = 'block';
+                document.getElementById('confirmModalDeleteSingle').onclick = function() {
+                    closeConfirmModal();
+                    form.querySelector('input[name="delete_mode"]').value = 'single_occurrence';
+                    form.removeAttribute('onsubmit');
+                    form.submit();
+                };
+                document.getElementById('confirmModalDeleteSeries').onclick = function() {
+                    closeConfirmModal();
+                    form.querySelector('input[name="delete_mode"]').value = 'series';
+                    form.removeAttribute('onsubmit');
+                    form.submit();
+                };
+            }
         }
 
         function closeConfirmModal() {

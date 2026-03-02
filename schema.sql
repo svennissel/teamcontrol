@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+
 CREATE TABLE IF NOT EXISTS players (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -25,6 +27,7 @@ CREATE TABLE IF NOT EXISTS trainings (
     day_of_week TINYINT DEFAULT NULL,
     parent_training_id INT DEFAULT NULL,
     override_date DATE DEFAULT NULL,
+    is_cancelled BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (parent_training_id) REFERENCES trainings(id) ON DELETE CASCADE
 );
 
@@ -79,3 +82,5 @@ CREATE TABLE IF NOT EXISTS voter_permissions (
     FOREIGN KEY (voter_id) REFERENCES players(id) ON DELETE CASCADE,
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
+
+SET FOREIGN_KEY_CHECKS=1;

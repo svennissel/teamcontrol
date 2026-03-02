@@ -150,7 +150,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     }
                 }
             }
-            if ($canDelete) deleteTraining($trainingId);
+            if ($canDelete) {
+                $deleteMode = $_POST['delete_mode'] ?? 'single';
+                if ($deleteMode === 'series') {
+                    deleteWeeklyTraining($trainingId);
+                } elseif ($deleteMode === 'single_occurrence') {
+                    $occurrenceDate = $_POST['occurrence_date'] ?? null;
+                    if ($occurrenceDate) {
+                        cancelTrainingOccurrence($trainingId, $occurrenceDate);
+                    }
+                } else {
+                    deleteTraining($trainingId);
+                }
+            }
         } elseif ($_POST['action'] === 'add_team' && isClubAdmin()) {
             $logo = '';
             if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {

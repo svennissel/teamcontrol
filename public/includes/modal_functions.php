@@ -464,9 +464,14 @@ function renderConfirmModal() {
         <div class="modal-content confirm-modal-content">
             <h2 id="confirmModalTitle">Bestätigung</h2>
             <p id="confirmModalMessage"></p>
-            <div class="confirm-modal-buttons">
+            <div class="confirm-modal-buttons" id="confirmModalButtons">
                 <button type="button" class="btn-confirm-cancel" onclick="closeConfirmModal()">Abbrechen</button>
                 <button type="button" class="btn-confirm-ok" id="confirmModalOk">Löschen</button>
+            </div>
+            <div class="confirm-modal-buttons" id="confirmModalSeriesButtons" style="display:none;">
+                <button type="button" class="btn-confirm-cancel" onclick="closeConfirmModal()">Abbrechen</button>
+                <button type="button" class="btn-confirm-ok" id="confirmModalDeleteSingle">Nur diesen Termin</button>
+                <button type="button" class="btn-confirm-ok" id="confirmModalDeleteSeries">Gesamte Serie</button>
             </div>
         </div>
     </div>
