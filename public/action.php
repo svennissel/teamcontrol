@@ -188,18 +188,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $team_player = $_POST['team_player'] ?? [];
                 // Team-IDs: alle Teams bei denen mindestens eine Option gewählt ist
                 $team_ids = array_unique(array_merge(array_keys($team_training), array_keys($team_admin), array_keys($team_player)));
-                if (!empty($team_ids)) {
-                    $is_club_admin = isset($_POST['is_club_admin']) && isClubAdmin();
-                    $admin_team_ids = array_keys($team_admin);
-                    $match_player_team_ids = array_keys($team_player);
-                    if (!isClubAdmin()) {
-                        $my_admin_teams = getAdminTeams($player_id);
-                        $my_admin_team_ids = array_column($my_admin_teams, 'id');
-                        $admin_team_ids = array_intersect($admin_team_ids, $my_admin_team_ids);
-                    }
-                    $voter_permission_player_ids = $_POST['voter_permission_player_ids'] ?? [];
-                    createPlayer($_POST['name'], $is_club_admin, $team_ids, $admin_team_ids, $voter_permission_player_ids, $match_player_team_ids);
+                $is_club_admin = isset($_POST['is_club_admin']) && isClubAdmin();
+                $admin_team_ids = array_keys($team_admin);
+                $match_player_team_ids = array_keys($team_player);
+                if (!isClubAdmin()) {
+                    $my_admin_teams = getAdminTeams($player_id);
+                    $my_admin_team_ids = array_column($my_admin_teams, 'id');
+                    $admin_team_ids = array_intersect($admin_team_ids, $my_admin_team_ids);
                 }
+                $voter_permission_player_ids = $_POST['voter_permission_player_ids'] ?? [];
+                createPlayer($_POST['name'], $is_club_admin, $team_ids, $admin_team_ids, $voter_permission_player_ids, $match_player_team_ids);
             }
         } elseif ($_POST['action'] === 'edit_player') {
 

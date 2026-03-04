@@ -29,7 +29,7 @@ if (isset($_GET['hash']) || isset($_COOKIE['hash']) || isset($_SESSION['hash']))
     <?php if($hash): ?>
     <script>
         localStorage.setItem('playerHash', '<?=$hash?>');
-        window.location.href = 'games.php';
+        window.location.href = 'trainings.php';
     </script>
     <?php endif; ?>
 

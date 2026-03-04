@@ -8,7 +8,7 @@ if (!$player) {
     exit;
 }
 $player_id = $player['id'];
-$matches = getMatches($player_id, isClubAdmin());
+$matches = getMatches($player_id);
 $myAttendance = getPlayerAttendance($player_id);
 $playerTeams = getPlayerTeams($player_id);
 $teams = getTeams($player_id, isClubAdmin());

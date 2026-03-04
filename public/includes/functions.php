@@ -446,14 +446,14 @@ function updateTeamPlayerRole($teamId, $playerId, $role, $value) {
     return $stmt->execute([$value ? 1 : 0, $teamId, $playerId]);
 }
 
-function addPlayerToTeam($teamId, $playerId) {
+function addPlayerToTeam($teamId, $playerId,  $isMatchPlayer = false) {
     global $pdo;
     $stmt = $pdo->prepare("SELECT 1 FROM team_players WHERE team_id = ? AND player_id = ?");
     $stmt->execute([$teamId, $playerId]);
     if ($stmt->fetch()) return true;
 
-    $stmt = $pdo->prepare("INSERT INTO team_players (team_id, player_id, isTeamAdmin, isMatchPlayer) VALUES (?, ?, FALSE, FALSE)");
-    return $stmt->execute([$teamId, $playerId]);
+    $stmt = $pdo->prepare("INSERT INTO team_players (team_id, player_id, isTeamAdmin, isMatchPlayer) VALUES (?, ?, FALSE, ?)");
+    return $stmt->execute([$teamId, $playerId, $isMatchPlayer ? 1 : 0]);
 }
 
 function removePlayerFromTeam($playerId, $teamId) {

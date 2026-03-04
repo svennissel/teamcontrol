@@ -80,14 +80,14 @@ printHeader($player, $playerTeams, "teams");
                                         </form>
                                         <span class="team-player-roles">
                                             <label><input type="checkbox" checked disabled> Training</label>
+                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchPlayer" <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele</label>
                                             <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isTeamAdmin" <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
-                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchPlayer" <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spieler</label>
                                         </span>
                                     <?php else: ?>
                                         <span class="team-player-roles">
                                             <label><input type="checkbox" checked disabled> Training</label>
+                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele</label>
                                             <label><input type="checkbox" disabled <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
-                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spieler</label>
                                         </span>
                                     <?php endif; ?>
                                 </li>
@@ -112,7 +112,7 @@ printHeader($player, $playerTeams, "teams");
                             $path = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
                             $registrationUrl = $protocol . "://" . $host . $path . "/register_team.php?hash=" . $team['hash'];
                             ?>
-                            <p class="reg-link-label"><strong>Anmeldelink für neue Spieler:</strong>
+                            <p class="reg-link-label"><strong>Mannschafts-Anmeldelink:</strong>
                             <div class="reg-link-row">
                                 <input type="text" readonly value="<?php echo htmlspecialchars($registrationUrl); ?>" id="reg-link-<?php echo $team['id']; ?>">
                                 <button type="button" class="edit-btn" onclick="copyToClipboard('reg-link-<?php echo $team['id']; ?>')" title="Link kopieren">📋</button>

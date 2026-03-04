@@ -2,7 +2,7 @@
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/functions.php';
 
-function printHeader($player, $playerTeams, $current_page) {
+function printHeader($player, $playerTeams, $current_page, $displayGames = true) {
     ?>
 <!DOCTYPE html>
 <html lang="de">
