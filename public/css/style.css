@@ -211,9 +211,9 @@ section form input[type="checkbox"] { width: fit-content; }
 .team-role-item input[type="checkbox"] { width: 1.1rem; height: 1.1rem; cursor: pointer; accent-color: var(--primary-red); }
 
 /* Team Player Roles in Team Overview */
-.team-player-role-item { display: flex !important; align-items: center; gap: 0.5rem; }
-.team-player-name { min-width: 120px; font-weight: 500; }
-.team-player-roles { display: flex; gap: 0.8rem; margin-left: auto; }
+.team-player-role-item { display: flex !important; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.5rem; }
+.team-player-name { font-weight: 500; flex-grow: 1; }
+.team-player-roles { display: flex; gap: 0.8rem; flex-basis: 100%; }
 .team-player-roles label { display: flex; align-items: center; gap: 0.2rem; font-size: 0.85rem; white-space: nowrap; }
 .team-player-roles input[type="checkbox"] { width: 1rem; height: 1rem; cursor: pointer; accent-color: var(--primary-red); }
 

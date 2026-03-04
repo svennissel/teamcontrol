@@ -72,17 +72,17 @@ printHeader($player, $playerTeams, "teams");
                                 <li class="team-list-item team-player-role-item">
                                     <span class="team-player-name"><?php echo htmlspecialchars($tp['name']); ?></span>
                                     <?php if ($isTeamAdminOfThisTeam || isClubAdmin()): ?>
-                                        <span class="team-player-roles">
-                                            <label><input type="checkbox" checked disabled> Training</label>
-                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isTeamAdmin" <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
-                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchPlayer" <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spieler</label>
-                                        </span>
                                         <form action="action.php" method="POST" class="inline-form">
                                             <input type="hidden" name="action" value="remove_player">
                                             <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
                                             <input type="hidden" name="player_id" value="<?php echo $tp['id']; ?>">
                                             <button type="submit" class="delete-btn">&times;</button>
                                         </form>
+                                        <span class="team-player-roles">
+                                            <label><input type="checkbox" checked disabled> Training</label>
+                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isTeamAdmin" <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
+                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchPlayer" <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spieler</label>
+                                        </span>
                                     <?php else: ?>
                                         <span class="team-player-roles">
                                             <label><input type="checkbox" checked disabled> Training</label>
@@ -98,7 +98,7 @@ printHeader($player, $playerTeams, "teams");
                                 <input type="hidden" name="action" value="assign_player">
                                 <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
                                 <select name="player_id" required>
-                                    <option value="">Spieler wählen...</option>
+                                    <option value="">Spieler hinzufügen...</option>
                                     <?php foreach ($all_players as $p): ?>
                                         <option value="<?php echo $p['id']; ?>"><?php echo htmlspecialchars($p['name']); ?></option>
                                     <?php endforeach; ?>
