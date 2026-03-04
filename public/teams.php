@@ -49,20 +49,6 @@ printHeader($player, $playerTeams, "teams");
                         </div>
                     </div>
                     <div class="card-details">
-                        <h4>Mannschaftsadmin(s)</h4>
-                        <ul class="team-list">
-                            <?php
-                            $teamAdmins = getTeamAdmins($team['id']);
-                            if (empty($teamAdmins)): ?>
-                                <li class="team-list-item empty">Keine</li>
-                            <?php else:
-                                foreach ($teamAdmins as $ta): ?>
-                                    <li class="team-list-item">
-                                        <?php echo htmlspecialchars($ta['name']); ?>
-                                    </li>
-                                <?php endforeach;
-                            endif; ?>
-                        </ul>
                         <h4>Spieler</h4>
                         <ul class="team-list">
                             <?php
