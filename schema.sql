@@ -53,18 +53,13 @@ CREATE TABLE IF NOT EXISTS teams (
 CREATE TABLE IF NOT EXISTS team_players (
     team_id INT NOT NULL,
     player_id INT NOT NULL,
+    isTeamAdmin BOOLEAN DEFAULT FALSE,
+    isMatchPlayer BOOLEAN DEFAULT TRUE,
     PRIMARY KEY (team_id, player_id),
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS team_admins (
-    team_id INT NOT NULL,
-    player_id INT NOT NULL,
-    PRIMARY KEY (team_id, player_id),
-    FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
-    FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
-);
 
 
 CREATE TABLE IF NOT EXISTS training_teams (

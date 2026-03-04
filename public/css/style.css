@@ -46,7 +46,7 @@ h2 { color: var(--dark-red); border-bottom: 3px solid var(--primary-red); displa
 h4 { margin: 0;}
 .login-container h2, section h2 { width: 100%; text-align: left; margin-top: 0; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-.card-header { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.card-header { display: flex; justify-content: left; align-items: center; gap: 0.5rem; }
 p {margin: 0.5rem;}
 
 /* Action Buttons (add, edit, delete) */
@@ -202,6 +202,20 @@ section form input[type="checkbox"] { width: fit-content; }
 .reg-link-row { display: flex; gap: 5px; margin-top: 5px; }
 .reg-link-row input[type="text"] { flex-grow: 1; font-size: 0.8em; }
 .reg-link-row .edit-btn { padding: 2px 8px; }
+
+/* Team Roles List */
+.team-roles-list { display: block !important; gap: 0.5rem; }
+.team-role-item { display: flex !important; align-items: center; gap: 1rem; background: #f9f9f9; padding: 0.5rem 0.8rem; border-radius: 6px; }
+.team-role-name { font-weight: 600; min-width: 120px; }
+.team-role-item label { display: flex; align-items: center; gap: 0.3rem; font-weight: 400; cursor: pointer; white-space: nowrap; }
+.team-role-item input[type="checkbox"] { width: 1.1rem; height: 1.1rem; cursor: pointer; accent-color: var(--primary-red); }
+
+/* Team Player Roles in Team Overview */
+.team-player-role-item { display: flex !important; align-items: center; gap: 0.5rem; }
+.team-player-name { min-width: 120px; font-weight: 500; }
+.team-player-roles { display: flex; gap: 0.8rem; margin-left: auto; }
+.team-player-roles label { display: flex; align-items: center; gap: 0.2rem; font-size: 0.85rem; white-space: nowrap; }
+.team-player-roles input[type="checkbox"] { width: 1rem; height: 1rem; cursor: pointer; accent-color: var(--primary-red); }
 
 /* Multi Select */
 .modal-content form select[multiple] { height: 100px; }

@@ -49,7 +49,7 @@ class FunctionsTest extends DatabaseTestCase
         $this->assertCount(1, $stmt->fetchAll());
 
         // Check admin assignment
-        $stmt = self::$pdo->prepare("SELECT * FROM team_admins WHERE player_id = ?");
+        $stmt = self::$pdo->prepare("SELECT * FROM team_players WHERE player_id = ? AND isTeamAdmin = TRUE");
         $stmt->execute([$player['id']]);
         $this->assertCount(1, $stmt->fetchAll());
     }
@@ -166,7 +166,7 @@ class FunctionsTest extends DatabaseTestCase
         $this->assertNotContains((string)$teamId1, array_map('strval', $teams));
         
         // Check new admin assignment
-        $stmt = self::$pdo->prepare("SELECT team_id FROM team_admins WHERE player_id = ?");
+        $stmt = self::$pdo->prepare("SELECT team_id FROM team_players WHERE player_id = ? AND isTeamAdmin = TRUE");
         $stmt->execute([$playerId]);
         $admins = $stmt->fetchAll(\PDO::FETCH_COLUMN);
         $this->assertContains((string)$teamId2, array_map('strval', $admins));
@@ -213,6 +213,7 @@ class FunctionsTest extends DatabaseTestCase
         self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('Admin Player', 'hashAdmin')");
         $playerId = self::$pdo->lastInsertId();
         
+        addPlayerToTeam($teamId, $playerId);
         addTeamAdmin($teamId, $playerId);
         
         $teams = getAdminTeams($playerId);

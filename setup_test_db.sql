@@ -55,18 +55,13 @@ CREATE TABLE IF NOT EXISTS attendance (
 CREATE TABLE IF NOT EXISTS team_players (
     team_id INT NOT NULL,
     player_id INT NOT NULL,
+    isTeamAdmin BOOLEAN DEFAULT FALSE,
+    isMatchPlayer BOOLEAN DEFAULT TRUE,
     PRIMARY KEY (team_id, player_id),
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS team_admins (
-    team_id INT NOT NULL,
-    player_id INT NOT NULL,
-    PRIMARY KEY (team_id, player_id),
-    FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
-    FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
-);
 
 CREATE TABLE IF NOT EXISTS training_teams (
     training_id INT NOT NULL,
@@ -101,21 +96,27 @@ INSERT INTO teams (id, name, hash) VALUES (6, 'Filter Team 2', 'teamHashFilter2'
 
 -- Spieler für games.spec.ts
 INSERT INTO players (id, name, hash, is_club_admin) VALUES (2, 'E2E Test Spieler Game', 'playerHashGame', FALSE);
-INSERT INTO team_players (team_id, player_id) VALUES (1, 2);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (1, 2, true);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (1, 1, true);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (2, 1, true);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (3, 1, true);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (4, 1, true);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (5, 1, true);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (6, 1, true);
 
 -- Spieler für trainings.spec.ts
 INSERT INTO players (id, name, hash, is_club_admin) VALUES (3, 'E2E Test Spieler Training', 'playerHashTraining', FALSE);
-INSERT INTO team_players (team_id, player_id) VALUES (2, 3);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (2, 3, true);
 
 -- Spieler für vote_visibility.spec.ts
 INSERT INTO players (id, name, hash, is_club_admin) VALUES (4, 'Spieler Ohne Team', 'playerHashOhneTeam', FALSE);
-INSERT INTO team_players (team_id, player_id) VALUES (4, 4);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (4, 4, true);
 
 INSERT INTO players (id, name, hash, is_club_admin) VALUES (5, 'Spieler Mit Team', 'playerHashMitTeam', FALSE);
-INSERT INTO team_players (team_id, player_id) VALUES (3, 5);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (3, 5, true);
 
 INSERT INTO players (id, name, hash, is_club_admin) VALUES (6, 'Spieler Mit Anderem Team', 'playerHashAnderesTeam', FALSE);
-INSERT INTO team_players (team_id, player_id) VALUES (4, 6);
+INSERT INTO team_players (team_id, player_id, isMatchPlayer) VALUES (4, 6, true);
 
 -- Training für vote_visibility.spec.ts (Datum weit in der Zukunft)
 INSERT INTO trainings (id, training_date, training_time) VALUES (1, '2027-01-01', '18:18');

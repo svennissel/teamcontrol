@@ -23,7 +23,7 @@ function isTeamAdmin($teamId, $playerId): bool {
     global $pdo;
     if (isClubAdmin()) return true;
 
-    $stmt = $pdo->prepare("SELECT 1 FROM team_admins WHERE team_id = ? AND player_id = ?");
+    $stmt = $pdo->prepare("SELECT 1 FROM team_players WHERE team_id = ? AND player_id = ? AND isTeamAdmin = TRUE");
     $stmt->execute([$teamId, $playerId]);
     return (bool)$stmt->fetch();
 }
@@ -34,7 +34,7 @@ function isAnyTeamAdmin($player_id) {
     if (!isLoggedIn()) return false;
 
 
-    $stmt = $pdo->prepare("SELECT 1 FROM team_admins WHERE player_id = ?");
+    $stmt = $pdo->prepare("SELECT 1 FROM team_players WHERE player_id = ? AND isTeamAdmin = TRUE");
     $stmt->execute([$player_id]);
     return (bool)$stmt->fetch();
 }

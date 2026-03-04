@@ -384,14 +384,16 @@
             document.getElementById('edit_player_name').value = player.name;
             const isClubAdminCheckbox = document.getElementById('edit_player_is_club_admin');
             if (isClubAdminCheckbox) isClubAdminCheckbox.checked = player.is_club_admin == 1;
-            const teamSelect = document.getElementById('edit_player_team_ids');
-            Array.from(teamSelect.options).forEach(option => {
-                option.selected = player.team_ids && player.team_ids.includes(parseInt(option.value));
-            });
-            const adminTeamSelect = document.getElementById('edit_player_admin_team_ids');
-            if (adminTeamSelect) {
-                Array.from(adminTeamSelect.options).forEach(option => {
-                    option.selected = player.admin_team_ids && player.admin_team_ids.includes(parseInt(option.value));
+            const rolesContainer = document.getElementById('edit_player_team_roles');
+            if (rolesContainer) {
+                rolesContainer.querySelectorAll('.team-role-item').forEach(item => {
+                    const teamId = parseInt(item.dataset.teamId);
+                    const isInTeam = player.team_ids && player.team_ids.includes(teamId);
+                    const isAdmin = player.admin_team_ids && player.admin_team_ids.includes(teamId);
+                    const isMatchPlayer = player.match_player_team_ids && player.match_player_team_ids.includes(teamId);
+                    item.querySelector('.team-training-cb').checked = isInTeam;
+                    item.querySelector('.team-admin-cb').checked = isAdmin;
+                    item.querySelector('.team-player-cb').checked = isMatchPlayer;
                 });
             }
             const voterPermSelect = document.getElementById('edit_player_voter_permissions');
@@ -401,14 +403,6 @@
                 });
             }
             openModal('editPlayerModal');
-        }
-
-        function clearAdminTeamSelection() {
-            const adminTeamSelect = document.getElementById('edit_player_admin_team_ids');
-            if (!adminTeamSelect) return;
-            Array.from(adminTeamSelect.options).forEach(option => {
-                option.selected = false;
-            });
         }
 
         function toggleTrainingType(type) {
@@ -532,6 +526,21 @@
             alert('Fehler beim Kopieren des Links.');
         });
         }
+        document.querySelectorAll('.role-checkbox').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                const data = new URLSearchParams();
+                data.append('action', 'update_team_player_role');
+                data.append('team_id', this.dataset.team);
+                data.append('player_id', this.dataset.player);
+                data.append('role', this.dataset.role);
+                data.append('value', this.checked ? '1' : '0');
+                fetch('action.php', {
+                    method: 'POST',
+                    headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    body: data
+                });
+            });
+        });
     </script>
 </body>
 </html>

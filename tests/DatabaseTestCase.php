@@ -93,11 +93,8 @@ abstract class DatabaseTestCase extends TestCase
             "CREATE TABLE team_players (
                 team_id INTEGER NOT NULL,
                 player_id INTEGER NOT NULL,
-                PRIMARY KEY (team_id, player_id)
-            )",
-            "CREATE TABLE team_admins (
-                team_id INTEGER NOT NULL,
-                player_id INTEGER NOT NULL,
+                isTeamAdmin BOOLEAN DEFAULT FALSE,
+                isMatchPlayer BOOLEAN DEFAULT TRUE,
                 PRIMARY KEY (team_id, player_id)
             )",
             "CREATE TABLE training_teams (

@@ -319,29 +319,22 @@ function renderAddPlayerModal($teams, $player_id) {
                             <input type="checkbox" name="is_club_admin" <?php echo !isClubAdmin() ? 'disabled' : ''; ?>>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div>
-                            <label>Mannschaftsadmin:</label>
-                            <select name="admin_team_ids[]" id="add_player_admin_team_ids" multiple>
-                                <?php 
-                                $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
-                                foreach ($admin_selectable_teams as $team): ?>
-                                    <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
                 <?php endif; ?>
                 <div class="form-row">
                     <div>
                         <label>Mannschaften:</label>
-                        <select name="team_ids[]" multiple required>
-                            <?php 
+                        <div class="team-roles-list">
+                            <?php
                             $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
                             foreach ($selectable_teams as $team): ?>
-                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                                <div class="team-role-item">
+                                    <span class="team-role-name"><?php echo htmlspecialchars($team['name']); ?></span>
+                                    <label><input type="checkbox" name="team_training[<?php echo $team['id']; ?>]" value="1"> Training</label>
+                                    <label><input type="checkbox" name="team_admin[<?php echo $team['id']; ?>]" value="1"> Admin</label>
+                                    <label><input type="checkbox" name="team_player[<?php echo $team['id']; ?>]" value="1"> Spieler</label>
+                                </div>
                             <?php endforeach; ?>
-                        </select>
+                        </div>
                     </div>
                 </div>
                 <div class="form-row">
@@ -386,31 +379,21 @@ function renderEditPlayerModal($teams, $player_id) {
                     </div>
                 </div>
                 <?php endif; ?>
-                <?php if (isClubAdmin() || isAnyTeamAdmin($player_id)): ?>
-                <div class="form-row">
-                    <div>
-                        <label>Mannschaftsadmin:</label>
-                        <select name="admin_team_ids[]" id="edit_player_admin_team_ids" multiple>
-                            <?php
-                            $admin_selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
-                            foreach ($admin_selectable_teams as $team): ?>
-                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button type="button" class="edit-btn" onclick="clearAdminTeamSelection()" class="btn-clear-selection">Auswahl aufheben</button>
-                    </div>
-                </div>
-                <?php endif; ?>
                 <div class="form-row">
                     <div>
                         <label>Mannschaften:</label>
-                        <select name="team_ids[]" id="edit_player_team_ids" multiple required>
-                            <?php 
+                        <div class="team-roles-list" id="edit_player_team_roles">
+                            <?php
                             $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
                             foreach ($selectable_teams as $team): ?>
-                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                                <div class="team-role-item" data-team-id="<?php echo $team['id']; ?>">
+                                    <span class="team-role-name"><?php echo htmlspecialchars($team['name']); ?></span>
+                                    <label><input type="checkbox" name="team_training[<?php echo $team['id']; ?>]" value="1" class="team-training-cb"> Training</label>
+                                    <label><input type="checkbox" name="team_admin[<?php echo $team['id']; ?>]" value="1" class="team-admin-cb"> Admin</label>
+                                    <label><input type="checkbox" name="team_player[<?php echo $team['id']; ?>]" value="1" class="team-player-cb"> Spieler</label>
+                                </div>
                             <?php endforeach; ?>
-                        </select>
+                        </div>
                     </div>
                 </div>
                 <div class="form-row">

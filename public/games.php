@@ -37,7 +37,7 @@ printHeader($player, $playerTeams, "games");
                         <h3>
                             <?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>)
                         </h3>
-                        <?php if (!empty($match['teams']) || count($displayedTeamIds) > 1): ?>
+                        <?php if (!empty($match['teams'])): ?>
                             <div class="event-teams">
                                 <?php
                                 $teamNames = [];
