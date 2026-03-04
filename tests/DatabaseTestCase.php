@@ -67,7 +67,12 @@ abstract class DatabaseTestCase extends TestCase
             "CREATE TABLE trainings (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 training_date DATE NOT NULL,
-                training_time TIME NOT NULL
+                training_time TIME NOT NULL,
+                is_weekly BOOLEAN DEFAULT FALSE,
+                day_of_week INTEGER DEFAULT NULL,
+                parent_training_id INTEGER DEFAULT NULL,
+                override_date DATE DEFAULT NULL,
+                is_cancelled BOOLEAN DEFAULT FALSE
             )",
             "CREATE TABLE attendance (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -76,7 +81,8 @@ abstract class DatabaseTestCase extends TestCase
                 event_id INTEGER NOT NULL,
                 status TEXT NOT NULL,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE (player_id, event_type, event_id)
+                occurrence_date DATE DEFAULT NULL,
+                UNIQUE (player_id, event_type, event_id, occurrence_date)
             )",
             "CREATE TABLE teams (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
