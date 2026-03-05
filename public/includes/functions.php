@@ -28,17 +28,19 @@ function getTrainings(?int $playerId): array {
     $params = [];
     $params[] = $playerId;
 
-    $sql = "SELECT t.* FROM trainings t";
-    $filterSql = " (STR_TO_DATE(CONCAT(t.training_date, ' ', t.training_time), '%Y-%m-%d %H:%i:%s') >= NOW() - INTERVAL 6 HOUR)";
-    $sql .= " WHERE (
+    $sql = "SELECT t.* FROM trainings t WHERE (
         NOT EXISTS (SELECT 1 FROM training_teams tt WHERE tt.training_id = t.id)
         OR t.id IN (
             SELECT tt.training_id FROM training_teams tt
             JOIN team_players tp ON tt.team_id = tp.team_id
             WHERE tp.player_id = ?
         )
-    ) AND t.is_weekly = 0 AND" . $filterSql;
-    $sql .= " ORDER BY training_date ASC, training_time ASC";
+    ) AND t.is_weekly = 0 
+        AND (
+            (STR_TO_DATE(CONCAT(t.training_date, ' ', t.training_time), '%Y-%m-%d %H:%i:%s') >= NOW() - INTERVAL 6 HOUR)
+            OR (is_cancelled = 1 AND override_date = CURDATE())
+        ) 
+        ORDER BY training_date ASC, training_time ASC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
@@ -48,8 +50,8 @@ function getTrainings(?int $playerId): array {
     $paramsWeekly = [];
     $paramsWeekly[] = $playerId;
 
-    $sqlWeekly = "SELECT t.* FROM trainings t";
-    $sqlWeekly .= " WHERE (
+    $sqlWeekly = "SELECT t.* FROM trainings t
+           WHERE (
         NOT EXISTS (SELECT 1 FROM training_teams tt WHERE tt.training_id = t.id)
         OR t.id IN (
             SELECT tt.training_id FROM training_teams tt
