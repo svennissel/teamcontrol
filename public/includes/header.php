@@ -24,7 +24,7 @@ function printHeader($player, $playerTeams, $current_page, $displayGames = true)
             <div class="header-left">
                 <div class="header-player-row">
                     <span class="player-name"><?php echo htmlspecialchars($player['name']); ?></span>
-                    <button class="copy-link-btn" onclick="copyLoginLink('<?php echo $player['hash']; ?>')" title="Login-Link kopieren">📋</button>
+                    <button class="copy-link-btn" onclick="copyLoginLink('<?php echo htmlspecialchars($player['hash']); ?>')" title="Login-Link kopieren">📋</button>
                 </div>
                 <div class="team-info-header">
                     <?php if (!empty($playerTeams[0]['logo'])): ?>
