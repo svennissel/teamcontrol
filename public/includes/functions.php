@@ -209,15 +209,18 @@ function getAttendanceForMatches(int $matchId): array
     return $stmt->fetchAll();
 }
 
-function getAttendanceForTraining(int $trainingId, string $occurrenceDate): array {
+function getAttendanceForTraining(int $trainingId, ?string $occurrenceDate = null): array {
     global $pdo;
     //First select alls votes
     //Then select all players that not voted for the training and are a team member
+
+    //If the training is a single event, then the occurrence_date is not set.
+    $occurrenceCondition = $occurrenceDate != null ? "AND occurrence_date = ?" : "";
     $stmt = $pdo->prepare("SELECT a.player_id, p.name, a.status
                             FROM attendance a 
                             JOIN players p ON a.player_id = p.id
                             WHERE a.event_id = ?
-                            AND a.occurrence_date = ?
+                            $occurrenceCondition
                             AND a.event_type = 'training'
                             
                             UNION
@@ -227,10 +230,13 @@ function getAttendanceForTraining(int $trainingId, string $occurrenceDate): arra
                             JOIN training_teams tt ON tt.team_id = t.id
                             JOIN team_players tp ON tt.team_id = tp.team_id 
                             JOIN players p ON tp.player_id = p.id 
-                            LEFT JOIN attendance a ON a.event_id = t.id AND a.event_type = 'training' AND a.player_id = p.id AND a.occurrence_date = ?
+                            LEFT JOIN attendance a ON a.event_id = t.id AND a.event_type = 'training' AND a.player_id = p.id $occurrenceCondition
                             WHERE t.id = ?
                             AND a.player_id IS NULL");
-    $stmt->execute([$trainingId, $occurrenceDate, $occurrenceDate, $trainingId]);
+    if($occurrenceDate != null)
+        $stmt->execute([$trainingId, $occurrenceDate, $occurrenceDate, $trainingId]);
+    else
+        $stmt->execute([$trainingId, $trainingId]);
     return $stmt->fetchAll();
 }
 
