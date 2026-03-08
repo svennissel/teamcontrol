@@ -28,7 +28,9 @@ if (isset($_GET['hash']) || isset($_COOKIE['hash']) || isset($_SESSION['hash']))
 <body>
     <?php if($hash): ?>
     <script>
-        localStorage.setItem('playerHash', '<?=$hash?>');
+        // If the hash is manipulated, it will be converted with htmlspecialchars().
+        // Normally it is not necessary, because it is base64 encoded.
+        localStorage.setItem('playerHash', '<?=htmlspecialchars($hash)?>');
         window.location.href = 'games.php';
     </script>
     <?php endif; ?>
