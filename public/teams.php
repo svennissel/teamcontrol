@@ -41,6 +41,7 @@ printHeader($player, $playerTeams, "teams");
                             <?php if (isClubAdmin()): ?>
                                 <button class="edit-btn" onclick='editTeam(<?php echo json_encode($team); ?>)' title="Bearbeiten">✎</button>
                                 <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll diese Mannschaft wirklich gelöscht werden?')">
+                                    <?php echo csrfField(); ?>
                                     <input type="hidden" name="action" value="delete_team">
                                     <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
                                     <button type="submit" class="delete-btn" id="delete-team-btn" title="Löschen">🗑</button>
@@ -59,6 +60,7 @@ printHeader($player, $playerTeams, "teams");
                                     <span class="team-player-name"><?php echo htmlspecialchars($tp['name']); ?></span>
                                     <?php if ($isTeamAdminOfThisTeam || isClubAdmin()): ?>
                                         <form action="action.php" method="POST" class="inline-form">
+                                            <?php echo csrfField(); ?>
                                             <input type="hidden" name="action" value="remove_player">
                                             <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
                                             <input type="hidden" name="player_id" value="<?php echo $tp['id']; ?>">
@@ -81,6 +83,7 @@ printHeader($player, $playerTeams, "teams");
                         </ul>
                         <?php if ($isTeamAdminOfThisTeam): ?>
                             <form action="action.php" method="POST" class="team-assign-form">
+                                <?php echo csrfField(); ?>
                                 <input type="hidden" name="action" value="assign_player">
                                 <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
                                 <select name="player_id" required>

@@ -63,6 +63,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                             <?php endif; ?>
                             <?php if (isClubAdmin()): ?>
                                 <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll dieser Spieler wirklich gelöscht werden?')">
+                                    <?php echo csrfField(); ?>
                                     <input type="hidden" name="action" value="delete_player">
                                     <input type="hidden" name="player_id" value="<?php echo $player['id']; ?>">
                                     <button type="submit" class="delete-btn" id="delete-player-btn" title="Löschen">🗑</button>

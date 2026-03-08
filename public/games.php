@@ -52,6 +52,7 @@ printHeader($player, $playerTeams, "games");
                             <div class="club-admin-actions">
                                 <button class="edit-btn" onclick='editMatch(<?php echo json_encode($match); ?>)' title="Bearbeiten">✎</button>
                                 <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll dieses Spiel wirklich gelöscht werden?')">
+                                    <?php echo csrfField(); ?>
                                     <input type="hidden" name="action" value="delete_match">
                                     <input type="hidden" name="match_id" value="<?php echo $match['id']; ?>">
                                     <button type="submit" class="delete-btn" title="Löschen">🗑</button>
@@ -142,6 +143,7 @@ printHeader($player, $playerTeams, "games");
                             }, $voteTargets);
                             ?>
                             <form action="action.php" method="POST" class="vote-form" data-vote-targets='<?php echo htmlspecialchars(json_encode($voteTargetsForJs), ENT_QUOTES, 'UTF-8'); ?>' data-default-player-id="<?php echo $player_id; ?>" onsubmit="handleVote(event)">
+                                <?php echo csrfField(); ?>
                                 <input type="hidden" name="action" value="vote">
                                 <input type="hidden" name="event_type" value="match">
                                 <input type="hidden" name="event_id" value="<?php echo $match['id']; ?>">

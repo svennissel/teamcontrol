@@ -33,6 +33,7 @@
 
     <script src="js/qrcode.min.js"></script>
     <script>
+        const csrfToken = <?php echo json_encode(generateCsrfToken()); ?>;
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -86,6 +87,7 @@
         async function performVote(form, status) {
             const formData = new FormData(form);
             formData.append('status', status);
+            if (!formData.has('csrf_token')) formData.append('csrf_token', csrfToken);
             try {
                 const response = await fetch('action.php', {
                     method: 'POST',
@@ -534,6 +536,7 @@
                 data.append('player_id', this.dataset.player);
                 data.append('role', this.dataset.role);
                 data.append('value', this.checked ? '1' : '0');
+                data.append('csrf_token', csrfToken);
                 fetch('action.php', {
                     method: 'POST',
                     headers: {'X-Requested-With': 'XMLHttpRequest'},

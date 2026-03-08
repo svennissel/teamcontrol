@@ -36,6 +36,7 @@ function renderAddMatchModal($teams) {
             <span class="close" onclick="closeModal('addMatchModal')">&times;</span>
             <h2>Neues Spiel</h2>
             <form action="action.php" method="POST">
+                <?php echo csrfField(); ?>
                 <input type="hidden" name="action" value="add_match">
                 <div class="form-row">
                     <div>
@@ -98,6 +99,7 @@ function renderEditMatchModal($teams) {
             <span class="close" onclick="closeModal('editMatchModal')">&times;</span>
             <h2>Spiel bearbeiten</h2>
             <form action="action.php" method="POST" id="editMatchForm">
+                <?php echo csrfField(); ?>
                 <input type="hidden" name="action" value="edit_match">
                 <input type="hidden" name="match_id" id="edit_match_id">
                 <div class="form-row">
@@ -161,6 +163,7 @@ function renderAddTrainingModal($teams) {
             <span class="close" onclick="closeModal('addTrainingModal')">&times;</span>
             <h2>Neues Training</h2>
             <form action="action.php" method="POST">
+                <?php echo csrfField(); ?>
                 <input type="hidden" name="action" value="add_training">
                 
                 <div class="modal-section">
@@ -234,6 +237,7 @@ function renderEditTrainingModal($teams) {
             <span class="close" onclick="closeModal('editTrainingModal')">&times;</span>
             <h2>Training bearbeiten</h2>
             <form action="action.php" method="POST" id="editTrainingForm">
+                <?php echo csrfField(); ?>
                 <input type="hidden" name="action" value="edit_training">
                 <input type="hidden" name="training_id" id="edit_training_id">
                 <input type="hidden" name="edit_mode" id="edit_training_mode" value="single">
@@ -305,6 +309,7 @@ function renderAddPlayerModal($teams, $player_id) {
             <span class="close" onclick="closeModal('addPlayerModal')">&times;</span>
             <h2>Neuer Spieler</h2>
             <form action="action.php" method="POST">
+                <?php echo csrfField(); ?>
                 <input type="hidden" name="action" value="add_player">
                 <div class="form-row">
                     <div>
@@ -363,6 +368,7 @@ function renderEditPlayerModal($teams, $player_id) {
             <span class="close" onclick="closeModal('editPlayerModal')">&times;</span>
             <h2>Spieler bearbeiten</h2>
             <form action="action.php" method="POST">
+                <?php echo csrfField(); ?>
                 <input type="hidden" name="action" value="edit_player">
                 <input type="hidden" name="player_id" id="edit_player_id">
                 <div class="form-row">
@@ -421,6 +427,7 @@ function renderAddTeamModal() {
             <span class="close" onclick="closeModal('addTeamModal')">&times;</span>
             <h2>Neue Mannschaft</h2>
             <form action="action.php" method="POST" enctype="multipart/form-data">
+                <?php echo csrfField(); ?>
                 <input type="hidden" name="action" value="add_team">
                 <div class="form-row">
                     <div>
@@ -468,6 +475,7 @@ function renderEditTeamModal() {
             <span class="close" onclick="closeModal('editTeamModal')">&times;</span>
             <h2>Mannschaft bearbeiten</h2>
             <form action="action.php" method="POST" enctype="multipart/form-data">
+                <?php echo csrfField(); ?>
                 <input type="hidden" name="action" value="edit_team">
                 <input type="hidden" name="team_id" id="edit_team_id">
                 <div class="form-row">

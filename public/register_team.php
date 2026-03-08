@@ -24,6 +24,9 @@ if (isLoggedIn()) {
 }
 
 if (!$success && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validateCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = 'Ungültiges CSRF-Token. Bitte versuchen Sie es erneut.';
+    } else {
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
 
     $team = null;
@@ -79,6 +82,7 @@ if (!$success && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Spieler mit gleichen Namen existiert bereits.';
         }
     }
+    }
 }
 
 $teamPlayers = getTeamPlayers($team['id']);
@@ -113,6 +117,7 @@ $selectablePlayers = array_filter($teamPlayers, function($p) {
                 <div class="register-player-grid">
                     <?php foreach ($selectablePlayers as $p): ?>
                         <form method="POST" class="register-player-form">
+                            <?php echo csrfField(); ?>
                             <input type="hidden" name="player_id" value="<?php echo $p['id']; ?>">
                             <input type="hidden" name="hash" value="<?php echo $team['hash']; ?>">
                             <button type="submit" class="register-player-btn">
@@ -127,6 +132,8 @@ $selectablePlayers = array_filter($teamPlayers, function($p) {
             <?php endif; ?>
 
             <form method="POST">
+                <?php echo csrfField(); ?>
+                <input type="hidden" name="hash" value="<?php echo htmlspecialchars($team['hash']); ?>">
                 <input type="text" name="name" placeholder="Dein Name" required class="register-input">
                 <button type="submit" class="btn-add register-submit">Anmelden</button>
             </form>

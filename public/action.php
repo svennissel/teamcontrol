@@ -3,6 +3,10 @@ require_once './includes/auth.php';
 require_once './includes/functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    if (!validateCsrfToken($_POST['csrf_token'] ?? null)) {
+        http_response_code(403);
+        exit('Ungültiges CSRF-Token.');
+    }
     $player = getLoggedInPlayer();
     if (!$player) {
         exit;
@@ -172,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             if($_POST['action'] === 'add_team')
                 createTeam($_POST['name'], $logo);
-            elseif ($_POST['action'] === 'edit_team' && isClubAdmin())
+            else
                 updateTeam((int)$_POST['team_id'], $_POST['name'], $logo);
         } elseif ($_POST['action'] === 'delete_team' && isClubAdmin()) {
             deleteTeam((int)$_POST['team_id']);
