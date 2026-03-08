@@ -64,10 +64,32 @@ printHeader($player, $playerTeams, "trainings");
                 <?php
                 $occurrenceDate = $training['occurrence_date'] ?? null;
                 $attendanceKey = $occurrenceDate ? $training['id'] . '_' . $occurrenceDate : $training['id'];
+                $canEditTraining = isClubAdmin();
+                if (!$canEditTraining && isAnyTeamAdmin($player_id)) {
+                    foreach ($training['teams'] as $tid) {
+                        if (isTeamAdmin($tid, $player_id)) {
+                            $canEditTraining = true;
+                            break;
+                        }
+                    }
+                }
                 ?>
                 <div class="event-card<?php echo $teamClasses; ?>">
+                    <?php if ($canEditTraining): ?>
                     <div class="card-header">
-
+                            <div class="club-admin-actions">
+                                <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten">✎</button>
+                                <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDeleteTraining(event, <?php echo !empty($training['is_weekly']) ? 'true' : 'false'; ?>)">
+                                    <input type="hidden" name="action" value="delete_training">
+                                    <input type="hidden" name="training_id" value="<?php echo $training['id']; ?>">
+                                    <input type="hidden" name="delete_mode" value="single">
+                                    <input type="hidden" name="occurrence_date" value="<?php echo $training['occurrence_date'] ?? ''; ?>">
+                                    <button type="submit" class="delete-btn" title="Löschen">🗑</button>
+                                </form>
+                            </div>
+                    </div>
+                    <?php endif; ?>
+                    <div class="card-subtitle">
                         <?php if (!empty($training['teams'])): ?>
                             <div class="event-teams">
                                 <?php
@@ -79,28 +101,6 @@ printHeader($player, $playerTeams, "trainings");
                                 }
                                 echo implode(', ', $teamNames);
                                 ?>
-                            </div>
-                        <?php endif; ?>
-                        <?php
-                        $canEditTraining = isClubAdmin();
-                        if (!$canEditTraining && isAnyTeamAdmin($player_id)) {
-                            foreach ($training['teams'] as $tid) {
-                                if (isTeamAdmin($tid, $player_id)) {
-                                    $canEditTraining = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if ($canEditTraining): ?>
-                            <div class="club-admin-actions">
-                                <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten">✎</button>
-                                <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDeleteTraining(event, <?php echo !empty($training['is_weekly']) ? 'true' : 'false'; ?>)">
-                                    <input type="hidden" name="action" value="delete_training">
-                                    <input type="hidden" name="training_id" value="<?php echo $training['id']; ?>">
-                                    <input type="hidden" name="delete_mode" value="single">
-                                    <input type="hidden" name="occurrence_date" value="<?php echo $training['occurrence_date'] ?? ''; ?>">
-                                    <button type="submit" class="delete-btn" title="Löschen">🗑</button>
-                                </form>
                             </div>
                         <?php endif; ?>
                     </div>
