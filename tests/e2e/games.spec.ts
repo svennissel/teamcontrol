@@ -7,13 +7,13 @@ test.describe('Spiele-Seite Tests', () => {
   const testPlayerName = 'E2E Test Spieler Game';
   const testTeamName = 'E2E Test Team Game';
 
-  test('Kompletter Spiel-Lebenszyklus: Erstellen, Bearbeiten, Abstimmen, Löschen', async ({ page }) => {
+  test('Kompletter Spiel-Lebenszyklus: Erstellen, Bearbeiten, Abstimmen, Löschen', async ({page}, testInfo) => {
     // 1. Spiel erstellen als Admin
     await page.goto(`login.php?hash=${testHash}`);
     await page.goto('games.php');
     
-    const testOpponent = 'E2E Test Gegner mit Treffzeitpunkt';
-    const editedOpponent = 'E2E Test Gegner Edit';
+    const testOpponent = "E2E Test Gegner mit Treffzeitpunkt-" + testInfo.workerIndex;
+    const editedOpponent = "E2E Test Gegner Edit-" + testInfo.workerIndex;
 
     await page.locator('button#add-match-btn:has-text("+"):visible').click();
     await page.fill('#addMatchModal input[name="match_date"]', new Date().toISOString().split('T')[0]);
@@ -29,7 +29,7 @@ test.describe('Spiele-Seite Tests', () => {
     await page.click('#addMatchModal button:has-text("Anlegen")');
 
     // 1b. Spiel ohne Treffzeitpunkt erstellen
-    const testOpponentNoMeeting = 'E2E Test Gegner kein Treffzeipunkt';
+    const testOpponentNoMeeting = "E2E Test Gegner kein Treffzeipunkt-" + testInfo.workerIndex;
     await page.locator('button#add-match-btn:has-text("+"):visible').click();
     await page.fill('#addMatchModal input[name="match_date"]', new Date().toISOString().split('T')[0]);
     await page.fill('#addMatchModal input[name="start_time"]', '19:00');

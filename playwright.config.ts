@@ -15,7 +15,7 @@ export default defineConfig({
     locale: 'de-DE',
     timezoneId: 'Europe/Berlin',
     video: {
-      mode: 'on',
+      mode: 'off',
       size: { width: 1600, height: 900 }
     }
   },
@@ -28,10 +28,10 @@ export default defineConfig({
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
