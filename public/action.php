@@ -163,22 +163,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     deleteTraining($trainingId);
                 }
             }
-        } elseif ($_POST['action'] === 'add_team' && isClubAdmin()) {
+        } elseif (($_POST['action'] === 'add_team' || $_POST['action'] === 'edit_team')
+            && isClubAdmin()) {
             $logo = '';
             if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-                $ext = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
-                $logo = uniqid() . '.' . $ext;
+                $logo = uniqid();
                 move_uploaded_file($_FILES['logo']['tmp_name'], 'uploads/logos/' . $logo);
             }
-            createTeam($_POST['name'], $logo);
-        } elseif ($_POST['action'] === 'edit_team' && isClubAdmin()) {
-            $logo = '';
-            if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-                $ext = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
-                $logo = uniqid() . '.' . $ext;
-                move_uploaded_file($_FILES['logo']['tmp_name'], 'uploads/logos/' . $logo);
-            }
-            updateTeam((int)$_POST['team_id'], $_POST['name'], $logo);
+            if($_POST['action'] === 'add_team')
+                createTeam($_POST['name'], $logo);
+            elseif ($_POST['action'] === 'edit_team' && isClubAdmin())
+                updateTeam((int)$_POST['team_id'], $_POST['name'], $logo);
         } elseif ($_POST['action'] === 'delete_team' && isClubAdmin()) {
             deleteTeam((int)$_POST['team_id']);
         } elseif ($_POST['action'] === 'add_player') {
