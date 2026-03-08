@@ -8,8 +8,8 @@ if (file_exists($dbOverrideFile)) {
         $db = $dbOverride;
     }
 }
-$user = 'hb02';
-$pass = 'xSbAp5$u4_5Qkfru';
+$user = '';
+$pass = '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
