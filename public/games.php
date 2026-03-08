@@ -35,21 +35,9 @@ printHeader($player, $playerTeams, "games");
                 <div class="event-card">
                     <div class="card-header">
                         <h3>
-                            <?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>)
+                            <?php echo htmlspecialchars($match['opponent']); ?>
                         </h3>
-                        <?php if (!empty($match['teams'])): ?>
-                            <div class="event-teams">
-                                <?php
-                                $teamNames = [];
-                                foreach ($match['teams'] as $tid) {
-                                    foreach ($teams as $t) {
-                                        if ($t['id'] == $tid) $teamNames[] = htmlspecialchars($t['name']);
-                                    }
-                                }
-                                echo implode(', ', $teamNames);
-                                ?>
-                            </div>
-                        <?php endif; ?>
+
                         <?php
                         $canEditMatch = isClubAdmin();
                         if (!$canEditMatch && isAnyTeamAdmin($player_id)) {
@@ -71,6 +59,25 @@ printHeader($player, $playerTeams, "games");
                             </div>
                         <?php endif; ?>
                     </div>
+                    <div class="card-subtitle">
+                        <div class="event-type">
+                            <?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>
+                        </div>
+                        <?php if (!empty($match['teams'])): ?>
+                            <div class="event-teams">
+                                <?php
+                                $teamNames = [];
+                                foreach ($match['teams'] as $tid) {
+                                    foreach ($teams as $t) {
+                                        if ($t['id'] == $tid) $teamNames[] = htmlspecialchars($t['name']);
+                                    }
+                                }
+                                echo implode(', ', $teamNames);
+                                ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
                     <div class="card-details">
                         <div class="time-tiles">
                          <span class="event-date-inline">

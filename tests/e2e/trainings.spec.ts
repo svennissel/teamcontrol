@@ -28,10 +28,6 @@ test.describe('Training-Seite Tests', () => {
     
     await page.click('#addTrainingModal button:has-text("Anlegen")');
 
-    // 2. Als Testspieler einloggen
-    await page.goto(`login.php?hash=${testPlayerHash}`);
-    await page.goto('trainings.php');
-
     // 3. Training bearbeiten (Der Testspieler ist kein Admin, also wieder als Admin einloggen zum Bearbeiten)
     await page.goto(`login.php?hash=${testHash}`);
     await page.goto('trainings.php');

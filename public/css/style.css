@@ -10,7 +10,7 @@
     --chip-bg: #f0f0f0;
     --chip-border: 1px solid #eee;
     --chip-radius: 6px;
-    --chip-padding: 2px 8px;
+    --chip-padding: 0.3rem 0.6rem;
     --chip-color: #666;
     --chip-font-size: 0.95rem;
     --chip-font-weight: 600;
@@ -47,6 +47,8 @@ h4 { margin: 0;}
 .login-container h2, section h2 { width: 100%; text-align: left; margin-top: 0; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
 .card-header { display: flex; justify-content: left; align-items: center; gap: 0.5rem; }
+.card-subtitle { display: flex; justify-content: left; align-items: center; gap: 0.5rem; font-size: 1.1rem; padding-bottom: 0.3rem;  }
+.event-teams { margin-left: auto;}
 p {margin: 0.5rem;}
 
 /* Action Buttons (add, edit, delete) */
@@ -57,7 +59,7 @@ p {margin: 0.5rem;}
 .events { display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 1rem; margin-bottom: 3.5rem; }
 .event-card { background: #fff; padding: 1rem; border-radius: var(--border-radius); box-shadow: var(--card-shadow); border: 2px solid #e5e5e5; }
 .event-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
-.event-card h3 { margin-top: 0; color: var(--primary-red); font-size: 1.1rem; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.6rem; }
+.event-card h3 { margin-top: 0; color: var(--primary-red); font-size: 1.1rem; margin-bottom: 0rem; display: flex; align-items: center; gap: 0.6rem; }
 .card-details { margin-bottom: 0.5rem; }
 .location-info { font-size: 0.85rem; margin-top: 2px; }
 .location-link { color: var(--primary-red); text-decoration: none; font-weight: 500; }
@@ -65,8 +67,8 @@ p {margin: 0.5rem;}
 
 /* Meta Chips (date, time tiles) */
 .time-tiles { display: flex; gap: 8px; margin-bottom: 0.3rem; }
-.event-date-inline, .time-tile { background: var(--chip-bg); padding: var(--chip-padding); border-radius: var(--chip-radius); border: var(--chip-border); color: var(--chip-color); font-size: var(--chip-font-size); font-weight: var(--chip-font-weight); }
-.time-tile { display: flex; align-items: center; gap: 6px; }
+.event-date-inline, .time-tile { background: var(--chip-bg); padding: var(--chip-padding); border-radius: var(--chip-radius); border: var(--chip-border); color: var(--text-dark); font-size: var(--chip-font-size); font-weight: var(--chip-font-weight); }
+.time-tile { align-items: center; gap: 6px; }
 .time-tile .label { font-size: 0.7rem; text-transform: uppercase; color: #999; }
 .time-tile .time { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
 
@@ -253,8 +255,8 @@ section form input[type="checkbox"] { width: fit-content; }
 .form-group-row label { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; cursor: pointer; }
 .form-group-row input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: var(--primary-red); }
 
-/* Responsive: Tabs ≤410px */
-@media (max-width: 410px) {
+/* Responsive: Tabs ≤355px */
+@media (max-width: 355px) {
     .tabs { display: none; }
     .tab-dropdown { display: flex; align-items: center; gap: 10px; }
     .tab-select { flex-grow: 1; }
@@ -262,14 +264,17 @@ section form input[type="checkbox"] { width: fit-content; }
 
 /* Responsive: ≤700px */
 @media (max-width: 700px) {
-    main { padding: 0.5rem; }
+    main { padding: 0.3rem; }
     .events { grid-template-columns: 1fr; gap: 0.8rem; }
     .event-card { padding: 0.8rem; }
     .card-header h3 { font-size: 1rem; flex-wrap: wrap; }
-    .event-date-inline, .time-tile { font-size: 0.85rem; padding: 1px 6px; }
+    .card-subtitle { font-size: 0.9rem; }
+    .event-date-inline, .time-tile { font-size: 0.8rem; padding: 0.1rem 0.2rem; }
+    .vote-buttons button { padding: 0.5rem 0.3rem; flex: 1; }
+    .event-date-inline, .time-tile { font-size: 0.9rem; padding: 0.2rem 0.2rem; }
     .vote-buttons button { padding: 0.6rem 0.4rem; flex: 1; }
-    .tabs { gap: 0.5rem; }
-    .tab-btn { padding: 0.4rem 0.3rem; }
+    .tabs { gap: 0.2rem;}
+    .tab-btn { padding: 0.4rem 0.2rem; font-size: 1rem }
     .modal-content { padding: 1.2rem; width: 85%; max-width: 590px; margin: 5% auto; }
     .modal-content form div { grid-template-columns: 1fr; gap: 0.2rem; margin-bottom: 0.5rem; }
 }

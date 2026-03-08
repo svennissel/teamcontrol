@@ -16,7 +16,7 @@ test.describe('Responsive Tabs Tests', () => {
   });
 
   test('Tabs sollten auf Mobile versteckt sein und Dropdown sichtbar', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
+    await page.setViewportSize({ width: 350, height: 667 });
     await page.goto(`login.php?hash=${testHash}`);
     await page.goto('games.php');
 
@@ -28,7 +28,7 @@ test.describe('Responsive Tabs Tests', () => {
   });
 
   test('Dropdown Navigation sollte funktionieren', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
+    await page.setViewportSize({ width: 350, height: 667 });
     await page.goto(`login.php?hash=${testHash}`);
     await page.goto('games.php');
 
