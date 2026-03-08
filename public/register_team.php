@@ -25,6 +25,15 @@ if (isLoggedIn()) {
 
 if (!$success && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
+
+    $team = null;
+    if (isset($_POST['hash'])) {
+        $team = getTeamByHash($_POST['hash']);
+    }
+    if (!$team) {
+        die('Ungültiger Link.');
+    }
+
     $player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
     $player = getPlayer($player_id);
 
@@ -105,6 +114,7 @@ $selectablePlayers = array_filter($teamPlayers, function($p) {
                     <?php foreach ($selectablePlayers as $p): ?>
                         <form method="POST" class="register-player-form">
                             <input type="hidden" name="player_id" value="<?php echo $p['id']; ?>">
+                            <input type="hidden" name="hash" value="<?php echo $team['hash']; ?>">
                             <button type="submit" class="register-player-btn">
                                 <?php echo htmlspecialchars($p['name']); ?>
                             </button>
