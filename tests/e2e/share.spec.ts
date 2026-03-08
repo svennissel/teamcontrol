@@ -13,7 +13,7 @@ test.describe('Teilen-Button Tests', () => {
         await page.goto(`login.php?hash=${testHash}`);
         
         // Prüfen ob der Button da ist
-        const shareBtn = page.locator('.share-btn');
+        const shareBtn = page.locator('.copy-link-btn');
         await expect(shareBtn).toBeVisible();
         
         // Klick auf den Button

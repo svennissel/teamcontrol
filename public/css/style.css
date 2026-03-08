@@ -36,8 +36,8 @@ header nav a.logout-btn:hover { background: rgba(255,255,255,0.1); border-color:
 .team-name { font-size: 0.8rem; opacity: 0.9; }
 .team-info-header { display: flex; align-items: center; gap: 1rem; margin-top: 2px; }
 .header-team-logo { height: 24px; width: 24px; object-fit: contain; border-radius: 4px; background: white; padding: 2px; }
-.share-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 4px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; line-height: 1; }
-.share-btn:hover { background: rgba(255,255,255,0.3); border-color: white; }
+.copy-link-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 4px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; line-height: 1; }
+.copy-link-btn:hover { background: rgba(255,255,255,0.3); border-color: white; }
 
 /* Layout */
 main { padding: 0.5rem; max-width: 1400px; margin: auto; }

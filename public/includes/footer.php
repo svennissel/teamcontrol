@@ -511,7 +511,7 @@
         function copyLoginLink(hash) {
             const url = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/') + 'login.php?hash=' + hash;
             navigator.clipboard.writeText(url).then(() => {
-            const btn = document.querySelector('.share-btn');
+            const btn = document.querySelector('.copy-link-btn');
             const originalContent = btn.innerHTML;
             btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
             btn.style.backgroundColor = '#2ecc71';
