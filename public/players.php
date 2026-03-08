@@ -25,6 +25,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
 
 <div id="players" class="tab-content active">
     <section>
+        <input type="text" id="player-search" class="register-input" placeholder="Spieler suchen..." style="margin-bottom: 10px;">
         <div class="events">
             <?php foreach ($all_players as $player):
                 $player_teams = getPlayerTeams($player['id']);
@@ -107,4 +108,21 @@ printHeader($loggedInPlayer, $playerTeams, "players");
     </section>
 </div>
 
+<script>
+(function() {
+    const searchInput = document.getElementById('player-search');
+    const cards = document.querySelectorAll('#players .events .event-card');
+    let timer;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(function() {
+            const query = searchInput.value.toLowerCase();
+            cards.forEach(function(card) {
+                const name = card.querySelector('.card-header h3').textContent.toLowerCase();
+                card.style.display = name.includes(query) ? '' : 'none';
+            });
+        }, 500);
+    });
+})();
+</script>
 <?php include './includes/footer.php'; ?>
