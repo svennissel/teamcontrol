@@ -170,59 +170,68 @@ function updateAttendance(int $voterId, int $playerId, string $eventType, int $e
     }
 }
 
+/**
+ * @throws Exception if the event type is invalid
+ */
 function getAttendance(string $eventType, int $eventId, ?string $occurrenceDate = null): array {
     global $pdo;
     
-    // 1. Alle Teams des Events abrufen
-    $teamIds = getEventTeams($eventType, $eventId);
-    
-    if (empty($teamIds)) {
-        if ($occurrenceDate) {
-            $stmt = $pdo->prepare("SELECT a.*, p.name FROM attendance a 
-                                   JOIN players p ON a.player_id = p.id 
-                                   WHERE a.event_type = ? AND a.event_id = ? AND a.occurrence_date = ?");
-            $stmt->execute([$eventType, $eventId, $occurrenceDate]);
-        } else {
-            $stmt = $pdo->prepare("SELECT a.*, p.name FROM attendance a 
-                                   JOIN players p ON a.player_id = p.id 
-                                   WHERE a.event_type = ? AND a.event_id = ? AND a.occurrence_date IS NULL");
-            $stmt->execute([$eventType, $eventId]);
-        }
-        return $stmt->fetchAll();
+    if($eventType === 'match') {
+        return getAttendanceForMatches($eventId);
+    } else if ($eventType === 'training') {
+        return getAttendanceForTraining($eventId, $occurrenceDate);
     }
+    throw new Exception("Invalid event type: $eventType");
+}
 
-    // 2. Alle Spieler dieser Teams abrufen
-    $placeholders = implode(',', array_fill(0, count($teamIds), '?'));
-    $stmt = $pdo->prepare("SELECT DISTINCT p.id, p.name FROM players p 
-                           JOIN team_players tp ON p.id = tp.player_id 
-                           WHERE tp.team_id IN ($placeholders)
-                           ORDER BY p.name ASC");
-    $stmt->execute($teamIds);
-    $allPlayers = $stmt->fetchAll(PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
+function getAttendanceForMatches(int $matchId): array
+{
+    global $pdo;
+    //First select alls votes
+    //Then select all players that not voted for the match and are a match player
+    $stmt = $pdo->prepare("SELECT a.player_id, p.name, a.status 
+                            FROM attendance a 
+                            JOIN players p ON a.player_id = p.id
+                            WHERE a.event_id = ?
+                            AND a.event_type = 'match'
+                            
+                            UNION
+                            
+                            SELECT p.id AS player_id, p.name, 'none' AS status 
+                            FROM matches m
+                            JOIN team_players tp ON m.team_id = tp.team_id 
+                            JOIN players p ON tp.player_id = p.id 
+                            LEFT JOIN attendance a ON a.event_id = m.id AND a.event_type = 'match' AND a.player_id = p.id
+                            WHERE m.id = ?
+                            AND tp.isMatchPlayer = true
+                            AND a.player_id IS NULL");
+    $stmt->execute([$matchId, $matchId]);
+    return $stmt->fetchAll();
+}
 
-    // 3. Vorhandene Abstimmungen abrufen
-    if ($occurrenceDate) {
-        $stmt = $pdo->prepare("SELECT player_id, status FROM attendance 
-                               WHERE event_type = ? AND event_id = ? AND occurrence_date = ?");
-        $stmt->execute([$eventType, $eventId, $occurrenceDate]);
-    } else {
-        $stmt = $pdo->prepare("SELECT player_id, status FROM attendance 
-                               WHERE event_type = ? AND event_id = ? AND occurrence_date IS NULL");
-        $stmt->execute([$eventType, $eventId]);
-    }
-    $votes = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-
-    // 4. Kombinieren
-    $results = [];
-    foreach ($allPlayers as $playerId => $playerData) {
-        $results[] = [
-            'player_id' => $playerId,
-            'name' => $playerData['name'],
-            'status' => $votes[$playerId] ?? 'none'
-        ];
-    }
-
-    return $results;
+function getAttendanceForTraining(int $trainingId, string $occurrenceDate): array {
+    global $pdo;
+    //First select alls votes
+    //Then select all players that not voted for the training and are a team member
+    $stmt = $pdo->prepare("SELECT a.player_id, p.name, a.status
+                            FROM attendance a 
+                            JOIN players p ON a.player_id = p.id
+                            WHERE a.event_id = ?
+                            AND a.occurrence_date = ?
+                            AND a.event_type = 'training'
+                            
+                            UNION
+                            
+                            SELECT p.id AS player_id, p.name, 'none' AS status
+                            FROM trainings t
+                            JOIN training_teams tt ON tt.team_id = t.id
+                            JOIN team_players tp ON tt.team_id = tp.team_id 
+                            JOIN players p ON tp.player_id = p.id 
+                            LEFT JOIN attendance a ON a.event_id = t.id AND a.event_type = 'training' AND a.player_id = p.id AND a.occurrence_date = ?
+                            WHERE t.id = ?
+                            AND a.player_id IS NULL");
+    $stmt->execute([$trainingId, $occurrenceDate, $occurrenceDate, $trainingId]);
+    return $stmt->fetchAll();
 }
 
 function getPlayerAttendance($playerId) {

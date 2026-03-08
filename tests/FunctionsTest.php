@@ -120,8 +120,8 @@ class FunctionsTest extends DatabaseTestCase
         
         self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('Player B', 'hashB')");
         $playerBId = self::$pdo->lastInsertId();
-        addPlayerToTeam($teamId, $playerBId);
-        
+        addPlayerToTeam($teamId, $playerBId, true);
+
         $matchId = createMatch('2026-02-01', '14:00', '13:00', 'Opponent', 1, '', $teamId);
         
         // One votes yes
