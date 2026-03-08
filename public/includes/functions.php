@@ -594,9 +594,22 @@ function getLoggedInPlayer() {
     $hash_lastupdate = $_COOKIE['hash_lastupdate'] ?? 0;
     $one_day_in_seconds = 86400;
     if($player != null && $hash_lastupdate < time() - $one_day_in_seconds) {
-        $next_jear = time() + 31536000;
-        setcookie('hash', $player['hash'], $next_jear, '/');
-        setcookie('hash_lastupdate', (string)time(), $next_jear, '/');
+        setcookie('hash', $player['hash'], [
+            "expires" => time() + 31536000,
+            "path" => '/',
+            "domain" => $_SERVER['SERVER_NAME'],
+            "secure" => true,
+            "httponly" => true,
+            "samesite" => "Strict"
+        ]);
+        setcookie('hash_lastupdate', (string)time(), [
+            "expires" => time() + 31536000,
+            "path" => '/',
+            "domain" => $_SERVER['SERVER_NAME'],
+            "secure" => true,
+            "httponly" => true,
+            "samesite" => "Strict"
+        ]);
     }
 
     return $player;

@@ -1,6 +1,9 @@
 <?php
 session_start([
-    'cookie_lifetime' => 31536000
+    'cookie_lifetime' => 31536000,
+    'cookie_httponly' => true,
+    'cookie_samesite' => 'Strict',
+    'cookie_secure' => true
 ]);
 require_once 'db.php';
 
@@ -49,7 +52,14 @@ function loginByHash($hash) : bool {
 
     if ($player) {
         $_SESSION['hash'] = $player['hash'];
-        setcookie('hash', $player['hash'], time() + 31536000, '/');
+        setcookie('hash', $player['hash'], [
+            "expires" => time() + 31536000,
+            "path" => '/',
+            "domain" => $_SERVER['SERVER_NAME'],
+            "secure" => true,
+            "httponly" => true,
+            "samesite" => "Strict"
+            ]);
         return true;
     }
     return false;
