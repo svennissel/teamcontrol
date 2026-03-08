@@ -1,9 +1,19 @@
 <?php
+function isSecureServer() : bool {
+    if (isset($_SERVER['HTTPS']) &&
+        ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
+        isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+        return true;
+    }
+    return false;
+}
+
 session_start([
     'cookie_lifetime' => 31536000,
     'cookie_httponly' => true,
     'cookie_samesite' => 'Strict',
-    'cookie_secure' => true
+    'cookie_secure' => isSecureServer() //Safari block session on localhost if it is secure but running on http
 ]);
 require_once 'db.php';
 
@@ -52,14 +62,16 @@ function loginByHash($hash) : bool {
 
     if ($player) {
         $_SESSION['hash'] = $player['hash'];
+        var_dump($_SESSION);
         setcookie('hash', $player['hash'], [
-            "expires" => time() + 31536000,
+            "expires" => time() + 86400,
             "path" => '/',
             "domain" => $_SERVER['SERVER_NAME'],
-            "secure" => true,
+            "secure" => isSecureServer(),
             "httponly" => true,
             "samesite" => "Strict"
             ]);
+        echo "Login successful!";
         return true;
     }
     return false;

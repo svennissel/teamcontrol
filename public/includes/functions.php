@@ -598,7 +598,7 @@ function getLoggedInPlayer() {
             "expires" => time() + 31536000,
             "path" => '/',
             "domain" => $_SERVER['SERVER_NAME'],
-            "secure" => true,
+            "secure" => isSecureServer(),
             "httponly" => true,
             "samesite" => "Strict"
         ]);
@@ -606,7 +606,7 @@ function getLoggedInPlayer() {
             "expires" => time() + 31536000,
             "path" => '/',
             "domain" => $_SERVER['SERVER_NAME'],
-            "secure" => true,
+            "secure" => isSecureServer(),
             "httponly" => true,
             "samesite" => "Strict"
         ]);
