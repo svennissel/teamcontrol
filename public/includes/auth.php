@@ -27,9 +27,18 @@ function getLoginHash() {
 
 function isClubAdmin(): bool {
     global $pdo;
+
+    $twoMinutes = 120;
+    if(isset($_SESSION['isClubAdmin']) && isset($_SESSION['isClubAdmin_update']) && $_SESSION['isClubAdmin_update'] + $twoMinutes > time() ) {
+        return $_SESSION['isClubAdmin'];
+    }
     $stmt = $pdo->prepare("SELECT 1 FROM players WHERE hash = ? AND is_club_admin = true");
     $stmt->execute([getLoginHash()]);
-    return (bool)$stmt->fetch();
+
+    $_SESSION['isClubAdmin'] = (bool)$stmt->fetch();
+    $_SESSION['isClubAdmin_update'] = time();
+
+    return $_SESSION['isClubAdmin'];
 }
 
 function isTeamAdmin($teamId, $playerId): bool {
