@@ -13,18 +13,6 @@ $myAttendance = getPlayerAttendance($player_id);
 $playerTeams = getPlayerTeams($player_id);
 $teams = getTeams($player_id, isClubAdmin());
 
-// Teams sammeln, die in den Spielen vorkommen
-$displayedTeamIds = [];
-foreach ($teams as $t) {
-    if (!empty($t['teams'])) {
-        foreach ($t['teams'] as $tid) {
-            $displayedTeamIds[] = $tid;
-        }
-    }
-}
-$displayedTeamIds = array_unique($displayedTeamIds);
-
-
 printHeader($player, $playerTeams, "games");
 ?>
 
@@ -39,15 +27,7 @@ printHeader($player, $playerTeams, "games");
                         </h3>
 
                         <?php
-                        $canEditMatch = isClubAdmin();
-                        if (!$canEditMatch && isAnyTeamAdmin($player_id)) {
-                            foreach ($match['teams'] as $tid) {
-                                if (isTeamAdmin($tid, $player_id)) {
-                                    $canEditMatch = true;
-                                    break;
-                                }
-                            }
-                        }
+                        $canEditMatch = isClubAdmin() || isTeamAdmin($match['team_id'], $player_id);
                         if ($canEditMatch): ?>
                             <div class="club-admin-actions">
                                 <button class="edit-btn" onclick='editMatch(<?php echo json_encode($match); ?>)' title="Bearbeiten">✎</button>
@@ -64,19 +44,16 @@ printHeader($player, $playerTeams, "games");
                         <div class="event-type">
                             <?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>
                         </div>
-                        <?php if (!empty($match['teams'])): ?>
-                            <div class="event-teams">
-                                <?php
-                                $teamNames = [];
-                                foreach ($match['teams'] as $tid) {
-                                    foreach ($teams as $t) {
-                                        if ($t['id'] == $tid) $teamNames[] = htmlspecialchars($t['name']);
-                                    }
+                        <div class="event-teams">
+                            <?php
+                            foreach ($teams as $t) {
+                                if ($t['id'] == $match['team_id']) {
+                                    echo htmlspecialchars($t['name']);
+                                    break;
                                 }
-                                echo implode(', ', $teamNames);
-                                ?>
-                            </div>
-                        <?php endif; ?>
+                            }
+                            ?>
+                        </div>
                     </div>
 
                     <div class="card-details">
@@ -118,13 +95,10 @@ printHeader($player, $playerTeams, "games");
                     <div class="vote-buttons">
                         <?php
                         $playerInMatchTeam = false;
-                        if (!empty($playerTeams) && !empty($match['teams'])) {
+                        if (!empty($playerTeams)) {
                             $playerTeamIds = array_column($playerTeams, 'id');
-                            foreach ($match['teams'] as $mtid) {
-                                if (in_array($mtid, $playerTeamIds)) {
-                                    $playerInMatchTeam = true;
-                                    break;
-                                }
+                            if (in_array($match['team_id'], $playerTeamIds)) {
+                                $playerInMatchTeam = true;
                             }
                         }
                         if ($playerInMatchTeam): ?>

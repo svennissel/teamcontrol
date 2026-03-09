@@ -3,20 +3,19 @@ require_once 'db.php';
 
 function getMatches(?int $playerId = null): array {
     global $pdo;
-    
 
-    $params = [];
-    $params[] = $playerId;
-
-    $sql = "SELECT m.* FROM matches m JOIN team_players tp ON m.team_id = tp.team_id WHERE tp.player_id = ? AND tp.isMatchPlayer = 1 AND (STR_TO_DATE(CONCAT(m.match_date, ' ', m.start_time), '%Y-%m-%d %H:%i:%s') >= NOW() - INTERVAL 6 HOUR) ORDER BY match_date ASC, start_time ASC";
+    $sql = "SELECT m.* 
+            FROM matches m 
+            JOIN team_players tp ON m.team_id = tp.team_id 
+           WHERE tp.player_id = ? 
+             AND tp.isMatchPlayer = 1 
+             AND (STR_TO_DATE(CONCAT(m.match_date, ' ', m.start_time), '%Y-%m-%d %H:%i:%s') >= NOW() - INTERVAL 6 HOUR) 
+           ORDER BY match_date ASC, start_time ASC";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
+    $stmt->execute([$playerId]);
     $matches = $stmt->fetchAll();
 
-    foreach ($matches as &$match) {
-        $match['teams'] = [$match['team_id']];
-    }
     return $matches;
 }
 
