@@ -62,7 +62,6 @@ function loginByHash($hash) : bool {
 
     if ($player) {
         $_SESSION['hash'] = $player['hash'];
-        var_dump($_SESSION);
         setcookie('hash', $player['hash'], [
             "expires" => time() + 86400,
             "path" => '/',
