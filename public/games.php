@@ -8,10 +8,11 @@ if (!$player) {
     exit;
 }
 $player_id = $player['id'];
+$isClubAdmin = $player['is_club_admin'];
 $matches = getMatches($player_id);
 $myAttendance = getPlayerAttendance($player_id);
 $playerTeams = getPlayerTeams($player_id);
-$teams = getTeams($player_id, isClubAdmin());
+$teams = getTeams($player_id, $isClubAdmin);
 
 printHeader($player, $playerTeams, "games");
 ?>
@@ -27,7 +28,7 @@ printHeader($player, $playerTeams, "games");
                         </h3>
 
                         <?php
-                        $canEditMatch = isClubAdmin() || isTeamAdmin($match['team_id'], $player_id);
+                        $canEditMatch = $isClubAdmin || isTeamAdmin($match['team_id'], $player_id);
                         if ($canEditMatch): ?>
                             <div class="club-admin-actions">
                                 <button class="edit-btn" onclick='editMatch(<?php echo json_encode($match); ?>)' title="Bearbeiten">✎</button>

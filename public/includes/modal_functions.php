@@ -303,6 +303,7 @@ function renderEditTrainingModal($teams) {
 
 function renderAddPlayerModal($teams, $player_id) {
     $all_other_players = getAllPlayers();
+    $isClubAdmin = isClubAdmin();
     ?>
     <div id="addPlayerModal" class="modal">
         <div class="modal-content">
@@ -317,11 +318,11 @@ function renderAddPlayerModal($teams, $player_id) {
                         <input type="text" name="name" required>
                     </div>
                 </div>
-                <?php if (isClubAdmin() || isAnyTeamAdmin($player_id)): ?>
+                <?php if ($isClubAdmin || isAnyTeamAdmin($player_id)): ?>
                     <div class="form-row">
                         <div>
                             <label>Vereinsadmin:</label>
-                            <input type="checkbox" name="is_club_admin" <?php echo !isClubAdmin() ? 'disabled' : ''; ?>>
+                            <input type="checkbox" name="is_club_admin" <?php echo !$isClubAdmin? 'disabled' : ''; ?>>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -330,7 +331,7 @@ function renderAddPlayerModal($teams, $player_id) {
                         <label>Mannschaften:</label>
                         <div class="team-roles-list">
                             <?php
-                            $selectable_teams = isClubAdmin() ? $teams : getAdminTeams($player_id);
+                            $selectable_teams = $isClubAdmin ? $teams : getAdminTeams($player_id);
                             foreach ($selectable_teams as $team): ?>
                                 <div class="team-role-item">
                                     <span class="team-role-name"><?php echo htmlspecialchars($team['name']); ?></span>

@@ -6,7 +6,8 @@
     renderAttendanceModal();
     renderConfirmModal();
 
-    if (isClubAdmin() || isAnyTeamAdmin($player_id ?? 0)) {
+    $isClubAdmin = isClubAdmin();
+    if ($isClubAdmin || isAnyTeamAdmin($player_id ?? 0)) {
         renderAddPlayerModal($teams ?? [], $player_id ?? 0);
         renderEditPlayerModal($teams ?? [], $player_id ?? 0);
         renderAddMatchModal($teams ?? []);
@@ -15,7 +16,7 @@
         renderEditTrainingModal($teams ?? []);
     }
     
-    if (isClubAdmin()) {
+    if ($isClubAdmin) {
         renderAddTeamModal();
         renderEditTeamModal();
     }

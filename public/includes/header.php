@@ -2,7 +2,8 @@
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/functions.php';
 
-function printHeader($player, $playerTeams, $current_page, $displayGames = true) {
+function printHeader($player, $playerTeams, $current_page) {
+    $isClubAdmin = $player['is_club_admin'];
     ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -45,18 +46,18 @@ function printHeader($player, $playerTeams, $current_page, $displayGames = true)
             <select class="tab-select" onchange="window.location.href=this.value">
                 <option value="games.php" <?php echo $current_page === 'games' ? 'selected' : ''; ?>>Spiele</option>
                 <option value="trainings.php" <?php echo $current_page === 'trainings' ? 'selected' : ''; ?>>Training</option>
-                <?php if (isClubAdmin() || isAnyTeamAdmin($player['id'])): ?>
+                <?php if ($isClubAdmin || isAnyTeamAdmin($player['id'])): ?>
                     <option value="teams.php" <?php echo $current_page === 'teams' ? 'selected' : ''; ?>>Mannschaften</option>
                     <option value="players.php" <?php echo $current_page === 'players' ? 'selected' : ''; ?>>Spieler</option>
                 <?php endif; ?>
             </select>
-            <?php if (isClubAdmin() || isAnyTeamAdmin($player['id'])): ?>
+            <?php if ($isClubAdmin || isAnyTeamAdmin($player['id'])): ?>
             <div class="tab-actions">
                 <?php if ($current_page === 'games'): ?>
                     <button id="add-match-btn" onclick="openModal('addMatchModal')" class="btn-add" title="Spiel hinzufügen">+</button>
                 <?php elseif ($current_page === 'trainings'): ?>
                     <button id="add-training-btn" onclick="openModal('addTrainingModal')" class="btn-add" title="Training hinzufügen">+</button>
-                <?php elseif ($current_page === 'teams' && isClubAdmin()): ?>
+                <?php elseif ($current_page === 'teams' && $isClubAdmin): ?>
                     <button id="add-team-btn" onclick="openModal('addTeamModal')" class="btn-add" title="Mannschaft hinzufügen">+</button>
                 <?php elseif ($current_page === 'players'): ?>
                     <button id="add-player-btn" onclick="openModal('addPlayerModal')" class="btn-add" title="Spieler hinzufügen">+</button>
@@ -68,7 +69,7 @@ function printHeader($player, $playerTeams, $current_page, $displayGames = true)
         <div class="tabs">
             <a href="games.php" class="tab-btn <?php echo $current_page === 'games' ? 'active' : ''; ?>">Spiele</a>
             <a href="trainings.php" class="tab-btn <?php echo $current_page === 'trainings' ? 'active' : ''; ?>">Training</a>
-            <?php if (isClubAdmin() || isAnyTeamAdmin($player['id'])): ?>
+            <?php if ($isClubAdmin || isAnyTeamAdmin($player['id'])): ?>
                 <a href="teams.php" class="tab-btn <?php echo $current_page === 'teams' ? 'active' : ''; ?>">Mannschaften</a>
                 <a href="players.php" class="tab-btn <?php echo $current_page === 'players' ? 'active' : ''; ?>">Spieler</a>
                 <div class="tab-actions">
@@ -76,7 +77,7 @@ function printHeader($player, $playerTeams, $current_page, $displayGames = true)
                         <button id="add-match-btn" onclick="openModal('addMatchModal')" class="btn-add" title="Spiel hinzufügen">+</button>
                     <?php elseif ($current_page === 'trainings'): ?>
                         <button id="add-training-btn" onclick="openModal('addTrainingModal')" class="btn-add" title="Training hinzufügen">+</button>
-                    <?php elseif ($current_page === 'teams' && isClubAdmin()): ?>
+                    <?php elseif ($current_page === 'teams' && $isClubAdmin): ?>
                         <button id="add-team-btn" onclick="openModal('addTeamModal')" class="btn-add" title="Mannschaft hinzufügen">+</button>
                     <?php elseif ($current_page === 'players'): ?>
                         <button id="add-player-btn" onclick="openModal('addPlayerModal')" class="btn-add" title="Spieler hinzufügen">+</button>

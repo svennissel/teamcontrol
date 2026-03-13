@@ -8,9 +8,10 @@ if (!$player) {
     exit;
 }
 $player_id = $player['id'];
+$isClubAdmin = $player['is_club_admin'];
 
 $playerTeams = getPlayerTeams($player_id);
-$teams = getTeams($player_id, isClubAdmin());
+$teams = getTeams($player_id, $isClubAdmin);
 $trainings = getTrainings($player_id);
 $myAttendance = getPlayerAttendance($player_id);
 
@@ -64,7 +65,7 @@ printHeader($player, $playerTeams, "trainings");
                 <?php
                 $occurrenceDate = $training['occurrence_date'] ?? null;
                 $attendanceKey = $occurrenceDate ? $training['id'] . '_' . $occurrenceDate : $training['id'];
-                $canEditTraining = isClubAdmin();
+                $canEditTraining = $isClubAdmin;
                 if (!$canEditTraining && isAnyTeamAdmin($player_id)) {
                     foreach ($training['teams'] as $tid) {
                         if (isTeamAdmin($tid, $player_id)) {

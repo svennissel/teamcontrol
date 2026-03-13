@@ -10,15 +10,16 @@ if (!$loggedInPlayer) {
     exit;
 }
 $player_id = $loggedInPlayer['id'];
+$isClubAdmin = $loggedInPlayer['is_club_admin'];
 
-if (!isClubAdmin() && !isAnyTeamAdmin($player_id)) {
+if (!$isClubAdmin && !isAnyTeamAdmin($player_id)) {
     header('Location: games.php');
     exit;
 }
 
 $all_players = getAllPlayers();
 $playerTeams = getPlayerTeams($player_id);
-$teams = getTeams($player_id, isClubAdmin());
+$teams = getTeams($player_id, $isClubAdmin);
 
 printHeader($loggedInPlayer, $playerTeams, "players");
 ?>
@@ -36,7 +37,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                 $match_player_team_ids = array_column(array_filter($player_team_roles, fn($r) => $r['isMatchPlayer']), 'team_id');
 
                 // Wenn Team-Admin, nur Spieler der eigenen Teams sehen
-                if (!isClubAdmin() && isAnyTeamAdmin($player_id)) {
+                if (!$isClubAdmin && isAnyTeamAdmin($player_id)) {
                     $my_admin_teams = getAdminTeams($player_id);
                     $my_admin_team_ids = array_column($my_admin_teams, 'id');
                     $overlap = array_intersect($player_team_ids, $my_admin_team_ids);
@@ -48,7 +49,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                         <h3><?php echo htmlspecialchars($player['name']); ?></h3>
                         <div class="club-admin-actions">
                             <?php
-                            $canEdit = isClubAdmin();
+                            $canEdit = $isClubAdmin;
                             if (!$canEdit && isAnyTeamAdmin($player_id)) {
                                 foreach ($player_team_ids as $tid) {
                                     if (isTeamAdmin($tid, $player_id)) {
@@ -61,7 +62,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                                 <?php $voter_perm_ids = getVoterPermissions($player['id']); ?>
                                 <button class="edit-btn" onclick='editPlayer(<?php echo json_encode(array_merge($player, ["team_ids" => $player_team_ids, "admin_team_ids" => $admin_team_ids, "match_player_team_ids" => $match_player_team_ids, "voter_permission_player_ids" => $voter_perm_ids])); ?>)' title="Bearbeiten">✎</button>
                             <?php endif; ?>
-                            <?php if (isClubAdmin()): ?>
+                            <?php if ($isClubAdmin): ?>
                                 <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll dieser Spieler wirklich gelöscht werden?')">
                                     <?php echo csrfField(); ?>
                                     <input type="hidden" name="action" value="delete_player">
@@ -89,7 +90,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                             $login_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "/login.php?hash=" . $player['hash'];
                             ?>
                             <input type="hidden" class="player-hash-input" value="<?php echo $player['hash']; ?>">
-                            <?php if (!$player['is_club_admin'] || isClubAdmin()): ?>
+                            <?php if (!$player['is_club_admin'] || $isClubAdmin): ?>
                             <p>
                             <div class="copy-link-row">
                                 Login-Link:

@@ -10,8 +10,9 @@ if (!$player) {
     exit;
 }
 $player_id = $player['id'];
+$isClubAdmin = $player['is_club_admin'];
 
-if (!isClubAdmin() && !isAnyTeamAdmin($player_id)) {
+if (!$isClubAdmin && !isAnyTeamAdmin($player_id)) {
     header('Location: games.php');
     exit;
 }
@@ -19,7 +20,7 @@ if (!isClubAdmin() && !isAnyTeamAdmin($player_id)) {
 
 $all_players = getAllPlayers();
 $playerTeams = getPlayerTeams($player_id);
-$teams = getTeams($player_id, isClubAdmin());
+$teams = getTeams($player_id, $isClubAdmin);
 
 
 printHeader($player, $playerTeams, "teams");
@@ -38,7 +39,7 @@ printHeader($player, $playerTeams, "teams");
                             <?php echo htmlspecialchars($team['name']); ?>
                         </h3>
                         <div class="club-admin-actions">
-                            <?php if (isClubAdmin()): ?>
+                            <?php if ($isClubAdmin): ?>
                                 <button class="edit-btn" onclick='editTeam(<?php echo json_encode($team); ?>)' title="Bearbeiten">✎</button>
                                 <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll diese Mannschaft wirklich gelöscht werden?')">
                                     <?php echo csrfField(); ?>
@@ -58,7 +59,7 @@ printHeader($player, $playerTeams, "teams");
                             foreach ($teamPlayers as $tp): ?>
                                 <li class="team-list-item team-player-role-item">
                                     <span class="team-player-name"><?php echo htmlspecialchars($tp['name']); ?></span>
-                                    <?php if ($isTeamAdminOfThisTeam || isClubAdmin()): ?>
+                                    <?php if ($isTeamAdminOfThisTeam || $isClubAdmin): ?>
                                         <form action="action.php" method="POST" class="inline-form">
                                             <?php echo csrfField(); ?>
                                             <input type="hidden" name="action" value="remove_player">
