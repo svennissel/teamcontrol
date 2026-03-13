@@ -78,22 +78,8 @@ printHeader($player, $playerTeams, "trainings");
                 <div class="event-card<?php echo $teamClasses; ?>">
                     <?php if ($canEditTraining): ?>
                     <div class="card-header">
-                            <div class="club-admin-actions">
-                                <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten">✎</button>
-                                <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDeleteTraining(event, <?php echo !empty($training['is_weekly']) ? 'true' : 'false'; ?>)">
-                                    <?php echo csrfField(); ?>
-                                    <input type="hidden" name="action" value="delete_training">
-                                    <input type="hidden" name="training_id" value="<?php echo $training['id']; ?>">
-                                    <input type="hidden" name="delete_mode" value="single">
-                                    <input type="hidden" name="occurrence_date" value="<?php echo $training['occurrence_date'] ?? ''; ?>">
-                                    <button type="submit" class="delete-btn" title="Löschen">🗑</button>
-                                </form>
-                            </div>
-                    </div>
-                    <?php endif; ?>
-                    <div class="card-subtitle">
-                        <?php if (!empty($training['teams'])): ?>
-                            <div class="event-teams">
+                        <h3>
+                            <?php if (!empty($training['teams'])): ?>
                                 <?php
                                 $teamNames = [];
                                 foreach ($training['teams'] as $tid) {
@@ -103,8 +89,23 @@ printHeader($player, $playerTeams, "trainings");
                                 }
                                 echo implode(', ', $teamNames);
                                 ?>
-                            </div>
-                        <?php endif; ?>
+                            <?php endif; ?>
+                        </h3>
+                        <div class="club-admin-actions">
+                            <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten">✎</button>
+                            <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDeleteTraining(event, <?php echo !empty($training['is_weekly']) ? 'true' : 'false'; ?>)">
+                                <?php echo csrfField(); ?>
+                                <input type="hidden" name="action" value="delete_training">
+                                <input type="hidden" name="training_id" value="<?php echo $training['id']; ?>">
+                                <input type="hidden" name="delete_mode" value="single">
+                                <input type="hidden" name="occurrence_date" value="<?php echo $training['occurrence_date'] ?? ''; ?>">
+                                <button type="submit" class="delete-btn" title="Löschen">🗑</button>
+                            </form>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <div class="card-subtitle">
+
                     </div>
                     <div class="card-details">
 
