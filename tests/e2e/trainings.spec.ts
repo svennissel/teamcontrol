@@ -18,7 +18,7 @@ test.describe('Training-Seite Tests', () => {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const testDate = tomorrow.toISOString().split('T')[0];
 
-    await page.locator('button#add-training-btn:has-text("+"):visible').click();
+    await page.locator('button#add-training-btn:visible').click();
     await page.fill('#addTrainingModal input[name="training_date"]', testDate);
     await page.fill('#addTrainingModal input[name="training_time"]', testTime);
     
@@ -89,7 +89,7 @@ test.describe('Training-Seite Tests', () => {
 
     const testTime = '09:09';
 
-    await page.locator('button#add-training-btn:has-text("+"):visible').click();
+    await page.locator('button#add-training-btn:visible').click();
 
     // Auf wöchentlich umschalten
     await page.locator('#addTrainingModal input[name="training_type"][value="weekly"]').click();
@@ -165,7 +165,7 @@ test.describe('Training-Seite Tests', () => {
     await page.goto('trainings.php');
 
     // Erstes wöchentliches Training (Montag)
-    await page.locator('button#add-training-btn:has-text("+"):visible').click();
+    await page.locator('button#add-training-btn:visible').click();
     await page.locator('#addTrainingModal input[name="training_type"][value="weekly"]').click();
     await page.locator('#addTrainingModal select[name="day_of_week"]').selectOption('1');
     await page.fill('#addTrainingModal input[name="training_time"]', time1);
@@ -173,7 +173,7 @@ test.describe('Training-Seite Tests', () => {
     await page.click('#addTrainingModal button:has-text("Anlegen")');
 
     // Zweites wöchentliches Training (Mittwoch)
-    await page.locator('button#add-training-btn:has-text("+"):visible').click();
+    await page.locator('button#add-training-btn:visible').click();
     await page.locator('#addTrainingModal input[name="training_type"][value="weekly"]').click();
     await page.locator('#addTrainingModal select[name="day_of_week"]').selectOption('3');
     await page.fill('#addTrainingModal input[name="training_time"]', time2);

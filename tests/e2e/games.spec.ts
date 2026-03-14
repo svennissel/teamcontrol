@@ -15,7 +15,7 @@ test.describe('Spiele-Seite Tests', () => {
     const testOpponent = "E2E Test Gegner mit Treffzeitpunkt-" + testInfo.workerIndex;
     const editedOpponent = "E2E Test Gegner Edit-" + testInfo.workerIndex;
 
-    await page.locator('button#add-match-btn:has-text("+"):visible').click();
+    await page.locator('button#add-match-btn:visible').click();
     await page.fill('#addMatchModal input[name="match_date"]', new Date().toISOString().split('T')[0]);
     await page.fill('#addMatchModal input[name="start_time"]', '18:00');
     await page.fill('#addMatchModal input[name="meeting_time"]', '17:30');
@@ -30,7 +30,7 @@ test.describe('Spiele-Seite Tests', () => {
 
     // 1b. Spiel ohne Treffzeitpunkt erstellen
     const testOpponentNoMeeting = "E2E Test Gegner kein Treffzeipunkt-" + testInfo.workerIndex;
-    await page.locator('button#add-match-btn:has-text("+"):visible').click();
+    await page.locator('button#add-match-btn:visible').click();
     await page.fill('#addMatchModal input[name="match_date"]', new Date().toISOString().split('T')[0]);
     await page.fill('#addMatchModal input[name="start_time"]', '19:00');
     await page.fill('#addMatchModal input[name="meeting_time"]', ''); // Leer lassen
