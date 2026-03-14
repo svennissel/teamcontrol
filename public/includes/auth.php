@@ -79,7 +79,6 @@ function loginByHash($hash) : bool {
             "httponly" => true,
             "samesite" => "Strict"
             ]);
-        echo "Login successful!";
         return true;
     }
     return false;
