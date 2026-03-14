@@ -1,5 +1,6 @@
 <?php
 require_once 'db.php';
+require_once 'config.php';
 
 function getMatches(?int $playerId = null): array {
     global $pdo;
@@ -102,7 +103,7 @@ function getTrainings(?int $playerId): array {
 
         $count = 0;
         $current = clone $start;
-        while ($count < 20) {
+        while ($count < TRAINING_DISPLAY_COUNT) {
             $dateStr = $current->format('Y-m-d');
             
             // Prüfen ob dieses Datum durch ein Override ersetzt wurde
