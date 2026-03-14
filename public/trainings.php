@@ -15,6 +15,10 @@ $teams = getTeams($player_id, $isClubAdmin);
 $trainings = getTrainings($player_id);
 $myAttendance = getPlayerAttendance($player_id);
 
+// Batch: Alle Attendance-Daten und Voter-Daten vorladen
+$allTrainingAttendance = getAttendanceBatchForTrainings($trainings);
+$voterData = loadVoterData($player_id);
+
 // Teams sammeln, die in den Trainings vorkommen
 $displayedTeamIds = [];
 foreach ($trainings as $t) {
@@ -125,7 +129,8 @@ printHeader($player, $playerTeams, "trainings");
                     </div>
 
                     <?php
-                    $attendance = getAttendance('training', $training['id'], $occurrenceDate);
+                    $trainingAttKey = $occurrenceDate ? $training['id'] . '_' . $occurrenceDate : (string) $training['id'];
+                    $attendance = $allTrainingAttendance[$trainingAttKey] ?? [];
                     $counts = ['yes' => 0, 'no' => 0, 'maybe' => 0, 'none' => 0];
                     foreach ($attendance as $a) { $counts[$a['status']]++; }
                     ?>
@@ -147,7 +152,7 @@ printHeader($player, $playerTeams, "trainings");
                             // Erlaubte Zielspieler (inkl. man selbst) für dieses Event ermitteln
                             $voteTargets = [];
                             foreach ($attendance as $a) {
-                                if (canVoteFor($player_id, $a['player_id'])) {
+                                if (canVoteForWithData($voterData, $a['player_id'])) {
                                     $voteTargets[] = $a;
                                 }
                             }

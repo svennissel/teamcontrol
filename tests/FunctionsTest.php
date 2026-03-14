@@ -798,4 +798,282 @@ class FunctionsTest extends DatabaseTestCase
         $this->assertNotEmpty($hash2);
         $this->assertNotEquals($hash1, $hash2);
     }
+
+    // === Tests für Batch-Funktionen ===
+
+    public function testLoadVoterDataRegularPlayer()
+    {
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('Regular', 'lvd1', 0)");
+        $playerId = self::$pdo->lastInsertId();
+
+        $data = loadVoterData($playerId);
+
+        $this->assertEquals($playerId, $data['voterId']);
+        $this->assertFalse($data['isClubAdmin']);
+        $this->assertEmpty($data['voterPermissions']);
+        $this->assertEmpty($data['teamMembers']);
+    }
+
+    public function testLoadVoterDataClubAdmin()
+    {
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('Admin', 'lvd2', 1)");
+        $adminId = self::$pdo->lastInsertId();
+
+        $data = loadVoterData($adminId);
+
+        $this->assertTrue($data['isClubAdmin']);
+    }
+
+    public function testLoadVoterDataWithVoterPermissions()
+    {
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('Voter', 'lvd3', 0)");
+        $voterId = self::$pdo->lastInsertId();
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('Target', 'lvd4', 0)");
+        $targetId = self::$pdo->lastInsertId();
+
+        self::$pdo->prepare("INSERT INTO voter_permissions (voter_id, player_id) VALUES (?, ?)")->execute([$voterId, $targetId]);
+
+        $data = loadVoterData($voterId);
+
+        $this->assertArrayHasKey($targetId, $data['voterPermissions']);
+    }
+
+    public function testLoadVoterDataWithTeamAdminMembers()
+    {
+        createTeam("VD Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('TeamAdmin', 'lvd5', 0)");
+        $adminId = self::$pdo->lastInsertId();
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('Member', 'lvd6', 0)");
+        $memberId = self::$pdo->lastInsertId();
+
+        addPlayerToTeam($teamId, $adminId);
+        addPlayerToTeam($teamId, $memberId);
+        addTeamAdmin($teamId, $adminId);
+
+        $data = loadVoterData($adminId);
+
+        $this->assertArrayHasKey($memberId, $data['teamMembers']);
+        $this->assertArrayHasKey($adminId, $data['teamMembers']);
+    }
+
+    public function testCanVoteForWithDataSelf()
+    {
+        $data = ['voterId' => 1, 'isClubAdmin' => false, 'voterPermissions' => [], 'teamMembers' => []];
+        $this->assertTrue(canVoteForWithData($data, 1));
+    }
+
+    public function testCanVoteForWithDataClubAdmin()
+    {
+        $data = ['voterId' => 1, 'isClubAdmin' => true, 'voterPermissions' => [], 'teamMembers' => []];
+        $this->assertTrue(canVoteForWithData($data, 99));
+    }
+
+    public function testCanVoteForWithDataVoterPermission()
+    {
+        $data = ['voterId' => 1, 'isClubAdmin' => false, 'voterPermissions' => [5 => 0], 'teamMembers' => []];
+        $this->assertTrue(canVoteForWithData($data, 5));
+        $this->assertFalse(canVoteForWithData($data, 6));
+    }
+
+    public function testCanVoteForWithDataTeamMember()
+    {
+        $data = ['voterId' => 1, 'isClubAdmin' => false, 'voterPermissions' => [], 'teamMembers' => [10 => 0]];
+        $this->assertTrue(canVoteForWithData($data, 10));
+        $this->assertFalse(canVoteForWithData($data, 11));
+    }
+
+    public function testCanVoteForWithDataUnrelated()
+    {
+        $data = ['voterId' => 1, 'isClubAdmin' => false, 'voterPermissions' => [], 'teamMembers' => []];
+        $this->assertFalse(canVoteForWithData($data, 99));
+    }
+
+    public function testCanVoteForWithDataMatchesCanVoteFor()
+    {
+        createTeam("Consistency Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('ConsAdmin', 'cvf1', 0)");
+        $adminId = self::$pdo->lastInsertId();
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('ConsMember', 'cvf2', 0)");
+        $memberId = self::$pdo->lastInsertId();
+        self::$pdo->exec("INSERT INTO players (name, hash, is_club_admin) VALUES ('ConsOutsider', 'cvf3', 0)");
+        $outsiderId = self::$pdo->lastInsertId();
+
+        addPlayerToTeam($teamId, $adminId);
+        addPlayerToTeam($teamId, $memberId);
+        addTeamAdmin($teamId, $adminId);
+
+        $voterData = loadVoterData($adminId);
+
+        $this->assertEquals(canVoteFor($adminId, $adminId), canVoteForWithData($voterData, $adminId));
+        $this->assertEquals(canVoteFor($adminId, $memberId), canVoteForWithData($voterData, $memberId));
+        $this->assertEquals(canVoteFor($adminId, $outsiderId), canVoteForWithData($voterData, $outsiderId));
+    }
+
+    public function testGetAttendanceBatchForMatchesEmpty()
+    {
+        $result = getAttendanceBatchForMatches([]);
+        $this->assertEmpty($result);
+    }
+
+    public function testGetAttendanceBatchForMatchesSingle()
+    {
+        createTeam("Batch Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('BatchPlayer1', 'bp1')");
+        $p1 = self::$pdo->lastInsertId();
+        addPlayerToTeam($teamId, $p1);
+        setMatchPlayer($teamId, $p1);
+
+        $matchId = createMatch('2026-03-15', '15:00', null, 'Gegner A', true, 'Ort', $teamId);
+
+        $result = getAttendanceBatchForMatches([$matchId]);
+
+        $this->assertArrayHasKey($matchId, $result);
+        $this->assertCount(1, $result[$matchId]);
+        $this->assertEquals($p1, $result[$matchId][0]['player_id']);
+        $this->assertEquals('none', $result[$matchId][0]['status']);
+    }
+
+    public function testGetAttendanceBatchForMatchesWithVotes()
+    {
+        createTeam("Batch Vote Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('BVPlayer', 'bvp1')");
+        $p1 = self::$pdo->lastInsertId();
+        addPlayerToTeam($teamId, $p1);
+        setMatchPlayer($teamId, $p1);
+
+        $matchId = createMatch('2026-03-16', '15:00', null, 'Gegner B', true, 'Ort', $teamId);
+
+        self::$pdo->prepare("INSERT INTO attendance (player_id, event_type, event_id, status) VALUES (?, 'match', ?, 'yes')")
+            ->execute([$p1, $matchId]);
+
+        $result = getAttendanceBatchForMatches([$matchId]);
+
+        $this->assertArrayHasKey($matchId, $result);
+        $this->assertCount(1, $result[$matchId]);
+        $this->assertEquals('yes', $result[$matchId][0]['status']);
+    }
+
+    public function testGetAttendanceBatchForMatchesMultiple()
+    {
+        createTeam("Multi Batch Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('MBPlayer', 'mbp1')");
+        $p1 = self::$pdo->lastInsertId();
+        addPlayerToTeam($teamId, $p1);
+        setMatchPlayer($teamId, $p1);
+
+        $match1 = createMatch('2026-03-17', '15:00', null, 'Gegner C', true, 'Ort', $teamId);
+        $match2 = createMatch('2026-03-18', '16:00', null, 'Gegner D', false, 'Ort2', $teamId);
+
+        self::$pdo->prepare("INSERT INTO attendance (player_id, event_type, event_id, status) VALUES (?, 'match', ?, 'no')")
+            ->execute([$p1, $match1]);
+
+        $result = getAttendanceBatchForMatches([$match1, $match2]);
+
+        $this->assertArrayHasKey($match1, $result);
+        $this->assertArrayHasKey($match2, $result);
+        $this->assertEquals('no', $result[$match1][0]['status']);
+        $this->assertEquals('none', $result[$match2][0]['status']);
+    }
+
+    public function testGetAttendanceBatchForMatchesConsistentWithGetAttendance()
+    {
+        createTeam("Cons Batch Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('CBPlayer', 'cbp1')");
+        $p1 = self::$pdo->lastInsertId();
+        addPlayerToTeam($teamId, $p1);
+        setMatchPlayer($teamId, $p1);
+
+        $matchId = createMatch('2026-03-19', '15:00', null, 'Gegner E', true, 'Ort', $teamId);
+
+        self::$pdo->prepare("INSERT INTO attendance (player_id, event_type, event_id, status) VALUES (?, 'match', ?, 'maybe')")
+            ->execute([$p1, $matchId]);
+
+        $single = getAttendance('match', $matchId);
+        $batch = getAttendanceBatchForMatches([$matchId]);
+
+        $this->assertCount(count($single), $batch[$matchId]);
+        $singleByPlayer = array_column($single, 'status', 'player_id');
+        $batchByPlayer = array_column($batch[$matchId], 'status', 'player_id');
+        $this->assertEquals($singleByPlayer, $batchByPlayer);
+    }
+
+    public function testGetAttendanceBatchForTrainingsEmpty()
+    {
+        $result = getAttendanceBatchForTrainings([]);
+        $this->assertEmpty($result);
+    }
+
+    public function testGetAttendanceBatchForTrainingsWithoutOccurrence()
+    {
+        createTeam("Train Batch Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('TBPlayer', 'tbp1')");
+        $p1 = self::$pdo->lastInsertId();
+        addPlayerToTeam($teamId, $p1);
+
+        $trainingId = createTraining('2026-03-20', '18:00', [$teamId]);
+
+        $trainings = [['id' => $trainingId, 'occurrence_date' => null]];
+        $result = getAttendanceBatchForTrainings($trainings);
+
+        $key = (string) $trainingId;
+        $this->assertArrayHasKey($key, $result);
+        $this->assertNotEmpty($result[$key]);
+    }
+
+    public function testGetAttendanceBatchForTrainingsWithOccurrence()
+    {
+        createTeam("Train Occ Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('TOPlayer', 'top1')");
+        $p1 = self::$pdo->lastInsertId();
+        addPlayerToTeam($teamId, $p1);
+
+        $trainingId = createWeeklyTrainings(1, '18:00', '2026-03-16', [$teamId]);
+
+        self::$pdo->prepare("INSERT INTO attendance (player_id, event_type, event_id, status, occurrence_date) VALUES (?, 'training', ?, 'yes', '2026-03-16')")
+            ->execute([$p1, $trainingId]);
+
+        $trainings = [['id' => $trainingId, 'occurrence_date' => '2026-03-16']];
+        $result = getAttendanceBatchForTrainings($trainings);
+
+        $key = $trainingId . '_2026-03-16';
+        $this->assertArrayHasKey($key, $result);
+    }
+
+    public function testGetAttendanceBatchForTrainingsMixed()
+    {
+        createTeam("Train Mix Team", null);
+        $teamId = self::$pdo->lastInsertId();
+
+        self::$pdo->exec("INSERT INTO players (name, hash) VALUES ('TMPlayer', 'tmp1')");
+        $p1 = self::$pdo->lastInsertId();
+        addPlayerToTeam($teamId, $p1);
+
+        $singleId = createTraining('2026-03-21', '18:00', [$teamId]);
+        $weeklyId = createWeeklyTrainings(1, '19:00', '2026-03-23', [$teamId]);
+
+        $trainings = [
+            ['id' => $singleId, 'occurrence_date' => null],
+            ['id' => $weeklyId, 'occurrence_date' => '2026-03-23'],
+        ];
+        $result = getAttendanceBatchForTrainings($trainings);
+
+        $this->assertArrayHasKey((string) $singleId, $result);
+        $this->assertArrayHasKey($weeklyId . '_2026-03-23', $result);
+    }
 }

@@ -14,6 +14,11 @@ $myAttendance = getPlayerAttendance($player_id);
 $playerTeams = getPlayerTeams($player_id);
 $teams = getTeams($player_id, $isClubAdmin);
 
+// Batch: Alle Attendance-Daten und Voter-Daten vorladen
+$matchIds = array_column($matches, 'id');
+$allAttendance = getAttendanceBatchForMatches($matchIds);
+$voterData = loadVoterData($player_id);
+
 printHeader($player, $playerTeams, "games");
 ?>
 
@@ -88,7 +93,7 @@ printHeader($player, $playerTeams, "games");
                     </div>
 
                     <?php
-                    $attendance = getAttendance('match', $match['id']);
+                    $attendance = $allAttendance[$match['id']] ?? [];
                     $counts = ['yes' => 0, 'no' => 0, 'maybe' => 0, 'none' => 0];
                     foreach ($attendance as $a) { $counts[$a['status']]++; }
                     ?>
@@ -107,7 +112,7 @@ printHeader($player, $playerTeams, "games");
                             // Erlaubte Zielspieler (inkl. man selbst) für dieses Event ermitteln
                             $voteTargets = [];
                             foreach ($attendance as $a) {
-                                if (canVoteFor($player_id, $a['player_id'])) {
+                                if (canVoteForWithData($voterData, $a['player_id'])) {
                                     $voteTargets[] = $a;
                                 }
                             }

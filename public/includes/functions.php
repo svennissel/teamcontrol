@@ -687,4 +687,144 @@ function canVoteFor($voterId, $playerId, $eventType = null, $eventId = null) {
 
     return false;
 }
+
+/**
+ * Lädt die Voter-Berechtigungsdaten für einen Voter vor,
+ * damit canVoteForWithData() ohne weitere Queries arbeiten kann.
+ */
+function loadVoterData(int $voterId): array {
+    global $pdo;
+
+    // Ist der Voter ein Vereinsadmin?
+    $stmt = $pdo->prepare("SELECT is_club_admin FROM players WHERE id = ?");
+    $stmt->execute([$voterId]);
+    $isClubAdmin = (bool) $stmt->fetchColumn();
+
+    // Delegierte Berechtigungen
+    $stmt = $pdo->prepare("SELECT player_id FROM voter_permissions WHERE voter_id = ?");
+    $stmt->execute([$voterId]);
+    $voterPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    // Team-Mitglieder der Teams, in denen der Voter Admin ist
+    $stmt = $pdo->prepare("
+        SELECT DISTINCT tp.player_id FROM team_players ta
+        JOIN team_players tp ON ta.team_id = tp.team_id
+        WHERE ta.player_id = ? AND ta.isTeamAdmin = TRUE
+    ");
+    $stmt->execute([$voterId]);
+    $teamMembers = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    return [
+        'voterId' => $voterId,
+        'isClubAdmin' => $isClubAdmin,
+        'voterPermissions' => array_flip($voterPermissions),
+        'teamMembers' => array_flip($teamMembers),
+    ];
+}
+
+/**
+ * Prüft die Abstimmungsberechtigung anhand vorgeladener Daten (keine DB-Queries).
+ */
+function canVoteForWithData(array $voterData, int $playerId): bool {
+    if ($voterData['voterId'] == $playerId) return true;
+    if ($voterData['isClubAdmin']) return true;
+    if (isset($voterData['voterPermissions'][$playerId])) return true;
+    if (isset($voterData['teamMembers'][$playerId])) return true;
+    return false;
+}
+
+/**
+ * Lädt Attendance-Daten für alle Matches auf einmal (Batch).
+ */
+function getAttendanceBatchForMatches(array $matchIds): array {
+    global $pdo;
+    if (empty($matchIds)) return [];
+
+    $placeholders = implode(',', array_fill(0, count($matchIds), '?'));
+
+    $stmt = $pdo->prepare("
+        SELECT a.player_id, p.name, a.status, a.event_id
+        FROM attendance a
+        JOIN players p ON a.player_id = p.id
+        WHERE a.event_type = 'match' AND a.event_id IN ($placeholders)
+
+        UNION
+
+        SELECT p.id AS player_id, p.name, 'none' AS status, m.id AS event_id
+        FROM matches m
+        JOIN team_players tp ON m.team_id = tp.team_id
+        JOIN players p ON tp.player_id = p.id
+        LEFT JOIN attendance a ON a.event_id = m.id AND a.event_type = 'match' AND a.player_id = p.id
+        WHERE m.id IN ($placeholders)
+        AND tp.isMatchPlayer = true
+        AND a.player_id IS NULL
+    ");
+    $stmt->execute(array_merge($matchIds, $matchIds));
+
+    $results = [];
+    foreach ($stmt->fetchAll() as $row) {
+        $results[$row['event_id']][] = $row;
+    }
+    return $results;
+}
+
+/**
+ * Lädt Attendance-Daten für alle Trainings auf einmal (Batch).
+ */
+function getAttendanceBatchForTrainings(array $trainings): array {
+    global $pdo;
+    if (empty($trainings)) return [];
+
+    // Trainings mit und ohne occurrence_date getrennt behandeln
+    $withOccurrence = [];
+    $withoutOccurrence = [];
+    foreach ($trainings as $t) {
+        $occ = $t['occurrence_date'] ?? null;
+        if ($occ !== null) {
+            $withOccurrence[] = $t;
+        } else {
+            $withoutOccurrence[] = $t;
+        }
+    }
+
+    $results = [];
+
+    // Trainings ohne occurrence_date
+    if (!empty($withoutOccurrence)) {
+        $ids = array_column($withoutOccurrence, 'id');
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $stmt = $pdo->prepare("
+            SELECT a.player_id, p.name, a.status, a.event_id
+            FROM attendance a
+            JOIN players p ON a.player_id = p.id
+            WHERE a.event_id IN ($placeholders)
+            AND a.event_type = 'training'
+
+            UNION
+
+            SELECT p.id AS player_id, p.name, 'none' AS status, t.id AS event_id
+            FROM trainings t
+            JOIN training_teams tt ON tt.team_id = t.id
+            JOIN team_players tp ON tt.team_id = tp.team_id
+            JOIN players p ON tp.player_id = p.id
+            LEFT JOIN attendance a ON a.event_id = t.id AND a.event_type = 'training' AND a.player_id = p.id
+            WHERE t.id IN ($placeholders)
+            AND a.player_id IS NULL
+        ");
+        $stmt->execute(array_merge($ids, $ids));
+        foreach ($stmt->fetchAll() as $row) {
+            $key = (string) $row['event_id'];
+            $results[$key][] = $row;
+        }
+    }
+
+    // Trainings mit occurrence_date – einzeln laden (verschiedene Dates pro ID)
+    foreach ($withOccurrence as $t) {
+        $key = $t['id'] . '_' . $t['occurrence_date'];
+        $results[$key] = getAttendanceForTraining($t['id'], $t['occurrence_date']);
+    }
+
+    return $results;
+}
 ?>
