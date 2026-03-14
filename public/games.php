@@ -36,12 +36,12 @@ printHeader($player, $playerTeams, "games");
                         $canEditMatch = $isClubAdmin || isTeamAdmin($match['team_id'], $player_id);
                         if ($canEditMatch): ?>
                             <div class="club-admin-actions">
-                                <button class="edit-btn" onclick='editMatch(<?php echo json_encode($match); ?>)' title="Bearbeiten">✎</button>
+                                <button class="edit-btn" onclick='editMatch(<?php echo json_encode($match); ?>)' title="Bearbeiten"><i class="fa-solid fa-pen"></i></button>
                                 <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll dieses Spiel wirklich gelöscht werden?')">
                                     <?php echo csrfField(); ?>
                                     <input type="hidden" name="action" value="delete_match">
                                     <input type="hidden" name="match_id" value="<?php echo $match['id']; ?>">
-                                    <button type="submit" class="delete-btn" title="Löschen">🗑</button>
+                                    <button type="submit" class="delete-btn" title="Löschen"><i class="fa-solid fa-trash"></i></button>
                                 </form>
                             </div>
                         <?php endif; ?>
@@ -84,7 +84,7 @@ printHeader($player, $playerTeams, "games");
                         </div>
                         <div class="location-info">
                             <?php if (!$match['is_home_game'] && !empty($match['location'])): ?>
-                            📍 <a href="https://www.google.com/maps/search/?api=1&query=<?php echo urlencode($match['location']); ?>" target="_blank" class="location-link"><?php echo htmlspecialchars($match['location']); ?></a>
+                            <i class="fa-solid fa-location-dot"></i> <a href="https://www.google.com/maps/search/?api=1&query=<?php echo urlencode($match['location']); ?>" target="_blank" class="location-link"><?php echo htmlspecialchars($match['location']); ?></a>
                             <?php else: ?>
                                 &nbsp;
                             <?php endif; ?>
@@ -128,16 +128,16 @@ printHeader($player, $playerTeams, "games");
                                 <input type="hidden" name="event_type" value="match">
                                 <input type="hidden" name="event_id" value="<?php echo $match['id']; ?>">
                                 <input type="hidden" name="target_player_id" value="<?php echo $player_id; ?>">
-                                <button type="submit" name="status" value="yes" title="Zusage" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'yes') ? 'active' : ''; ?>">👍 <span class="count"><?php echo $counts['yes']; ?></span></button>
-                                <button type="submit" name="status" value="maybe" title="Vielleicht" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'maybe') ? 'active' : ''; ?>">❓ <span class="count"><?php echo $counts['maybe']; ?></span></button>
-                                <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'no') ? 'active' : ''; ?>">👎 <span class="count"><?php echo $counts['no']; ?></span></button>
+                                <button type="submit" name="status" value="yes" title="Zusage" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'yes') ? 'active' : ''; ?>"><i class="fa-solid fa-thumbs-up"></i> <span class="count"><?php echo $counts['yes']; ?></span></button>
+                                <button type="submit" name="status" value="maybe" title="Vielleicht" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'maybe') ? 'active' : ''; ?>"><i class="fa-solid fa-question"></i> <span class="count"><?php echo $counts['maybe']; ?></span></button>
+                                <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'no') ? 'active' : ''; ?>"><i class="fa-solid fa-thumbs-down"></i> <span class="count"><?php echo $counts['no']; ?></span></button>
                             </form>
                         <?php endif; ?>
                         <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "<?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>) <?php
                         $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                         $timestamp = strtotime($match['match_date']);
                         echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
-                        ?>")'>👥</button>
+                        ?>")'><i class="fa-solid fa-users"></i></button>
                     </div>
                 </div>
             <?php endforeach; ?>

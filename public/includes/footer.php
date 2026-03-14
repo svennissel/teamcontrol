@@ -502,10 +502,10 @@
             navigator.clipboard.writeText(copyText.value).then(() => {
                 const btn = copyText.nextElementSibling;
                 const originalTitle = btn.title;
-                btn.innerText = '✓';
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
                 btn.title = 'Kopiert!';
                 setTimeout(() => {
-                    btn.innerText = '📋';
+                    btn.innerHTML = '<i class="fa-regular fa-clipboard"></i>';
                     btn.title = originalTitle;
                 }, 2000);
             });
@@ -516,7 +516,7 @@
             navigator.clipboard.writeText(url).then(() => {
             const btn = document.querySelector('.copy-link-btn');
             const originalContent = btn.innerHTML;
-            btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
             btn.style.backgroundColor = '#2ecc71';
             btn.style.borderColor = '#2ecc71';
             setTimeout(() => {
@@ -546,5 +546,6 @@
             });
         });
     </script>
+    <footer style="text-align:center;padding:1rem;color:#aaa;font-size:0.75rem;">Version 1.0.1</footer>
 </body>
 </html>

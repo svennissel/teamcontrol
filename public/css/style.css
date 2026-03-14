@@ -62,8 +62,7 @@ p {margin: 0.5rem;}
 .event-card h3 { margin-top: 0; color: var(--primary-red); font-size: 1.1rem; margin-bottom: 0rem; display: flex; align-items: center; gap: 0.6rem; }
 .card-details { margin-bottom: 0.5rem; font-size: 1rem; }
 .location-info { font-size: 1rem; margin-top: 1em; margin-bottom: 1em }
-.location-link { color: var(--primary-red); text-decoration: none; font-weight: 500; }
-.location-link:hover { text-decoration: underline; }
+.location-link { color: var(--primary-red); text-decoration: underline; font-weight: 500; }
 
 /* Meta Chips (date, time tiles) */
 .time-tiles { display: flex; gap: 8px; margin-bottom: 0.3rem; }
@@ -75,13 +74,16 @@ p {margin: 0.5rem;}
 /* Vote Buttons */
 .vote-buttons { display: flex; gap: 0.8rem; margin-top: 0.5rem; padding-top: 0.5rem; align-items: stretch; }
 .vote-buttons form { display: flex; gap: 0.8rem; width: 100%; align-items: stretch; margin-bottom: 0; }
-.vote-buttons button .count { font-weight: bold; margin-left: 2px; color: var(--text-dark); }
+.vote-buttons button .count { font-weight: bold; margin-left: 0.5rem; color: var(--text-dark); }
 .vote-buttons button, .btn-attendance { flex: 1; font-size: 1.2rem; height: 2.8rem; cursor: pointer; border: 1px solid #ddd; background: #fff; border-radius: 8px; transition: all 0.2s; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
 .vote-buttons button:hover, .btn-attendance:hover { background: #f5f5f5; border-color: #bbb; }
 .btn-attendance { max-width: 80px; padding: 0 1rem; color: #555; }
 .vote-buttons button.active[value="yes"] { background: #e8f5e9; border-color: #4caf50; box-shadow: 0 0 5px rgba(76,175,80,0.3); }
+.vote-buttons button[value="yes"] .fa-thumbs-up, .attendance-group .fa-thumbs-up { color: #4caf50; }
 .vote-buttons button.active[value="no"] { background: #ffebee; border-color: var(--primary-red); box-shadow: 0 0 5px rgba(211,47,47,0.3); }
+.vote-buttons button[value="no"] .fa-thumbs-down, .attendance-group .fa-thumbs-down { color: #d32f2f; }
 .vote-buttons button.active[value="maybe"] { background: #fff3e0; border-color: #ff9800; box-shadow: 0 0 5px rgba(255,152,0,0.3); }
+.vote-buttons button[value="maybe"] .fa-question, .attendance-group .fa-question { color: #ff9800; }
 
 /* Vote Target Menu */
 .vote-target-menu { position: fixed; min-width: 200px; background: #fff; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); padding: 0.5rem; z-index: 2000; max-width: 90vw; max-height: 80vh; overflow-y: auto; transform: translate(-50%,-50%); display: none; }

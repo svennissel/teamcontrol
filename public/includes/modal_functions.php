@@ -8,15 +8,15 @@ function renderAttendanceModal() {
             <h2 id="attendanceModalTitle">Teilnehmerliste</h2>
             <div id="attendanceContent">
                 <div class="attendance-group">
-                    <h4>👍 Zugesagt</h4>
+                    <h4><i class="fa-solid fa-thumbs-up"></i> Zugesagt</h4>
                     <ul id="list-yes"></ul>
                 </div>
                 <div class="attendance-group">
-                    <h4>❓ Vielleicht</h4>
+                    <h4><i class="fa-solid fa-question"></i> Vielleicht</h4>
                     <ul id="list-maybe"></ul>
                 </div>
                 <div class="attendance-group">
-                    <h4>👎 Abgesagt</h4>
+                    <h4><i class="fa-solid fa-thumbs-down"></i> Abgesagt</h4>
                     <ul id="list-no"></ul>
                 </div>
                 <div class="attendance-group">

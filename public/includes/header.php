@@ -12,6 +12,7 @@ function printHeader($player, $playerTeams, $current_page) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TeamControl - <?php echo htmlspecialchars($title ?? 'Termine'); ?></title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/fontawesome.min.css">
     <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="shortcut icon" href="favicon.ico" />
@@ -25,7 +26,7 @@ function printHeader($player, $playerTeams, $current_page) {
             <div class="header-left">
                 <div class="header-player-row">
                     <span class="player-name"><?php echo htmlspecialchars($player['name']); ?></span>
-                    <button class="copy-link-btn" onclick="copyLoginLink('<?php echo htmlspecialchars($player['hash']); ?>')" title="Login-Link kopieren">📋</button>
+                    <button class="copy-link-btn" onclick="copyLoginLink('<?php echo htmlspecialchars($player['hash']); ?>')" title="Login-Link kopieren"><i class="fa-regular fa-clipboard"></i></button>
                 </div>
                 <div class="team-info-header">
                     <?php if (!empty($playerTeams[0]['logo'])): ?>
@@ -54,13 +55,13 @@ function printHeader($player, $playerTeams, $current_page) {
             <?php if ($isClubAdmin || isAnyTeamAdmin($player['id'])): ?>
             <div class="tab-actions">
                 <?php if ($current_page === 'games'): ?>
-                    <button id="add-match-btn" onclick="openModal('addMatchModal')" class="btn-add" title="Spiel hinzufügen">+</button>
+                    <button id="add-match-btn" onclick="openModal('addMatchModal')" class="btn-add" title="Spiel hinzufügen"><i class="fa-solid fa-plus"></i></button>
                 <?php elseif ($current_page === 'trainings'): ?>
-                    <button id="add-training-btn" onclick="openModal('addTrainingModal')" class="btn-add" title="Training hinzufügen">+</button>
+                    <button id="add-training-btn" onclick="openModal('addTrainingModal')" class="btn-add" title="Training hinzufügen"><i class="fa-solid fa-plus"></i></button>
                 <?php elseif ($current_page === 'teams' && $isClubAdmin): ?>
-                    <button id="add-team-btn" onclick="openModal('addTeamModal')" class="btn-add" title="Mannschaft hinzufügen">+</button>
+                    <button id="add-team-btn" onclick="openModal('addTeamModal')" class="btn-add" title="Mannschaft hinzufügen"><i class="fa-solid fa-plus"></i></button>
                 <?php elseif ($current_page === 'players'): ?>
-                    <button id="add-player-btn" onclick="openModal('addPlayerModal')" class="btn-add" title="Spieler hinzufügen">+</button>
+                    <button id="add-player-btn" onclick="openModal('addPlayerModal')" class="btn-add" title="Spieler hinzufügen"><i class="fa-solid fa-plus"></i></button>
                 <?php endif; ?>
             </div>
             <?php endif; ?>
@@ -74,13 +75,13 @@ function printHeader($player, $playerTeams, $current_page) {
                 <a href="players.php" class="tab-btn <?php echo $current_page === 'players' ? 'active' : ''; ?>">Spieler</a>
                 <div class="tab-actions">
                     <?php if ($current_page === 'games'): ?>
-                        <button id="add-match-btn" onclick="openModal('addMatchModal')" class="btn-add" title="Spiel hinzufügen">+</button>
+                        <button id="add-match-btn" onclick="openModal('addMatchModal')" class="btn-add" title="Spiel hinzufügen"><i class="fa-solid fa-plus"></i></button>
                     <?php elseif ($current_page === 'trainings'): ?>
-                        <button id="add-training-btn" onclick="openModal('addTrainingModal')" class="btn-add" title="Training hinzufügen">+</button>
+                        <button id="add-training-btn" onclick="openModal('addTrainingModal')" class="btn-add" title="Training hinzufügen"><i class="fa-solid fa-plus"></i></button>
                     <?php elseif ($current_page === 'teams' && $isClubAdmin): ?>
-                        <button id="add-team-btn" onclick="openModal('addTeamModal')" class="btn-add" title="Mannschaft hinzufügen">+</button>
+                        <button id="add-team-btn" onclick="openModal('addTeamModal')" class="btn-add" title="Mannschaft hinzufügen"><i class="fa-solid fa-plus"></i></button>
                     <?php elseif ($current_page === 'players'): ?>
-                        <button id="add-player-btn" onclick="openModal('addPlayerModal')" class="btn-add" title="Spieler hinzufügen">+</button>
+                        <button id="add-player-btn" onclick="openModal('addPlayerModal')" class="btn-add" title="Spieler hinzufügen"><i class="fa-solid fa-plus"></i></button>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>

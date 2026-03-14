@@ -96,14 +96,14 @@ printHeader($player, $playerTeams, "trainings");
                             <?php endif; ?>
                         </h3>
                         <div class="club-admin-actions">
-                            <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten">✎</button>
+                            <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten"><i class="fa-solid fa-pen"></i></button>
                             <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDeleteTraining(event, <?php echo !empty($training['is_weekly']) ? 'true' : 'false'; ?>)">
                                 <?php echo csrfField(); ?>
                                 <input type="hidden" name="action" value="delete_training">
                                 <input type="hidden" name="training_id" value="<?php echo $training['id']; ?>">
                                 <input type="hidden" name="delete_mode" value="single">
                                 <input type="hidden" name="occurrence_date" value="<?php echo $training['occurrence_date'] ?? ''; ?>">
-                                <button type="submit" class="delete-btn" title="Löschen">🗑</button>
+                                <button type="submit" class="delete-btn" title="Löschen"><i class="fa-solid fa-trash"></i></button>
                             </form>
                         </div>
                     </div>
@@ -169,16 +169,16 @@ printHeader($player, $playerTeams, "trainings");
                                 <input type="hidden" name="event_id" value="<?php echo $training['id']; ?>">
                                 <input type="hidden" name="target_player_id" value="<?php echo $player_id; ?>">
                                 <input type="hidden" name="occurrence_date" value="<?php echo $occurrenceDate ?? ''; ?>">
-                                <button type="submit" name="status" value="yes" title="Zusage" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'yes') ? 'active' : ''; ?>">👍 <span class="count"><?php echo $counts['yes']; ?></span></button>
-                                <button type="submit" name="status" value="maybe" title="Vielleicht" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'maybe') ? 'active' : ''; ?>">❓ <span class="count"><?php echo $counts['maybe']; ?></span></button>
-                                <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'no') ? 'active' : ''; ?>">👎 <span class="count"><?php echo $counts['no']; ?></span></button>
+                                <button type="submit" name="status" value="yes" title="Zusage" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'yes') ? 'active' : ''; ?>"><i class="fa-solid fa-thumbs-up"></i> <span class="count"><?php echo $counts['yes']; ?></span></button>
+                                <button type="submit" name="status" value="maybe" title="Vielleicht" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'maybe') ? 'active' : ''; ?>"><i class="fa-solid fa-question"></i> <span class="count"><?php echo $counts['maybe']; ?></span></button>
+                                <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'no') ? 'active' : ''; ?>"><i class="fa-solid fa-thumbs-down"></i> <span class="count"><?php echo $counts['no']; ?></span></button>
                             </form>
                         <?php endif; ?>
                         <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "Training <?php
                         $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                         $timestamp = strtotime($training['training_date']);
                         echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
-                        ?>")'>👥</button>
+                        ?>")'><i class="fa-solid fa-users"></i></button>
                     </div>
                 </div>
             <?php endforeach; ?>
