@@ -268,7 +268,6 @@ section form input[type="checkbox"] { width: fit-content; }
         gap: 0.5rem;
     }
     .event-card { padding: 0.8rem; }
-    .card-header h3 { font-size: 1rem; flex-wrap: wrap; }
     .card-subtitle { font-size: 1.1rem; }
     .vote-buttons button { padding: 0.5rem 0.3rem; flex: 1; }
     .event-date-inline, .time-tile { padding: 0.2rem 0.2rem; }
