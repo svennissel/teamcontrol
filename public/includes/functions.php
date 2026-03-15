@@ -499,7 +499,7 @@ function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = [], 
     if ($stmt->execute([$name, $playerHash, $is_club_admin ? 1 : 0])) {
         $playerId = $pdo->lastInsertId();
         foreach ($teamIds as $teamId) {
-            addPlayerToTeam($teamId, $playerId);
+            addPlayerToTeam($teamId, $playerId, false, true);
         }
         foreach ($adminTeamIds as $teamId) {
             addTeamAdmin($teamId, $playerId);
