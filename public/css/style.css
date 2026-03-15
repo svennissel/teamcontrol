@@ -277,6 +277,12 @@ section form input[type="checkbox"] { width: fit-content; }
     .tab-btn { padding: 0.4rem 0.3rem; font-size: 1.1rem }
     .modal-content { padding: 1.2rem; width: 85%; max-width: 590px; margin: 5% auto; }
     .modal-content form div { display: grid !important; grid-template-columns: 1fr;  }
+
+}
+
+/* 1 Column */
+@media (max-width: 41.2rem) {
+    .location-info-empty { display: none; }
 }
 
 /* 1 Column for normal smartphones */
@@ -288,6 +294,7 @@ section form input[type="checkbox"] { width: fit-content; }
     .tab-btn { padding: 0.4rem 0.1rem; font-size: 0.9rem }
     .event-date-inline, .time-tile { padding: 0.2rem 0.1rem; }
     .team-role-item { gap: 0.5rem; padding: 0.5rem 0.8rem; }
+
 }
 
 /* Big text size as long as posible */

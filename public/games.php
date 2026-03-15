@@ -82,13 +82,14 @@ printHeader($player, $playerTeams, "games");
                                 <span class="time"><?php echo substr($match['start_time'], 0, 5); ?></span>
                             </div>
                         </div>
+                        <?php if (!$match['is_home_game'] && !empty($match['location'])): ?>
                         <div class="location-info">
-                            <?php if (!$match['is_home_game'] && !empty($match['location'])): ?>
                             <i class="fa-solid fa-location-dot"></i> <a href="https://www.google.com/maps/search/?api=1&query=<?php echo urlencode($match['location']); ?>" target="_blank" class="location-link"><?php echo htmlspecialchars($match['location']); ?></a>
-                            <?php else: ?>
-                                &nbsp;
-                            <?php endif; ?>
                         </div>
+                        <?php else: ?>
+                            <div class="location-info location-info-empty">&nbsp;</div>
+                        <?php endif; ?>
+
 
                     </div>
 

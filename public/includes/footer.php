@@ -546,6 +546,6 @@
             });
         });
     </script>
-    <footer style="text-align:center;padding:1rem;color:#aaa;font-size:0.75rem;">Version 1.0.1</footer>
+    <footer style="text-align:center;padding:1rem;color:#aaa;font-size:0.75rem;">Version 1.0.2</footer>
 </body>
 </html>
