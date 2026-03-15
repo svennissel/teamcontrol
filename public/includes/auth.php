@@ -9,8 +9,10 @@ function isSecureServer() : bool {
     return false;
 }
 
+require_once __DIR__ . '/config.php';
+
 session_start([
-    'cookie_lifetime' => 31536000,
+    'cookie_lifetime' => COOKIE_LIFETIME,
     'cookie_httponly' => true,
     'cookie_samesite' => 'Strict',
     'cookie_secure' => isSecureServer() //Safari block session on localhost if it is secure but running on http
@@ -72,7 +74,7 @@ function loginByHash($hash) : bool {
     if ($player) {
         $_SESSION['hash'] = $player['hash'];
         setcookie('hash', $player['hash'], [
-            "expires" => time() + 86400,
+            "expires" => time() + COOKIE_LIFETIME,
             "path" => '/',
             "domain" => $_SERVER['SERVER_NAME'],
             "secure" => isSecureServer(),
@@ -88,6 +90,8 @@ function logout() : void {
     session_destroy();
     unset($_COOKIE['hash']);
     setcookie('hash', '', 1, '/');
+    setcookie('hash_lastupdate', '', 1, '/');
+    setcookie('last_tab', '', 1, '/');
 }
 
 function generateCsrfToken(): string {

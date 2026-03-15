@@ -5,7 +5,7 @@ const adminHash = 'testHash';
 
 async function login(page: Page) {
   await page.goto(`login.php?hash=${adminHash}`);
-  await page.waitForURL('**/games.php');
+  await page.waitForURL(/.*\/(games|trainings|teams|players)\.php/);
 }
 
 async function decodeQrFromModal(page: Page): Promise<string> {

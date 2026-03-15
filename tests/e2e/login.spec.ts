@@ -12,8 +12,8 @@ test('Login über Hash-Link', async ({ page }) => {
   await page.goto(`login.php?hash=${testHash}`);
 
   // Nach dem Login sollte localStorage gesetzt sein und eine Weiterleitung erfolgen
-  // Wir prüfen, ob wir auf games.php gelandet sind
-  await expect(page).toHaveURL(/.*games.php/);
+  // Wir prüfen, ob wir auf einen der erlaubten Tabs gelandet sind
+  await expect(page).toHaveURL(/.*(games|trainings|teams|players)\.php/);
 
   // Prüfen ob der Header geladen wurde (Anzeichen für erfolgreichen Login)
   await expect(page.locator('header')).toBeVisible();

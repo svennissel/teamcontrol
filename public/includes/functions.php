@@ -595,7 +595,7 @@ function getLoggedInPlayer() {
     $one_day_in_seconds = 86400;
     if($player != null && $hash_lastupdate < time() - $one_day_in_seconds) {
         setcookie('hash', $player['hash'], [
-            "expires" => time() + 31536000,
+            "expires" => time() + COOKIE_LIFETIME,
             "path" => '/',
             "domain" => $_SERVER['SERVER_NAME'],
             "secure" => isSecureServer(),
@@ -603,7 +603,7 @@ function getLoggedInPlayer() {
             "samesite" => "Strict"
         ]);
         setcookie('hash_lastupdate', (string)time(), [
-            "expires" => time() + 31536000,
+            "expires" => time() + COOKIE_LIFETIME,
             "path" => '/',
             "domain" => $_SERVER['SERVER_NAME'],
             "secure" => isSecureServer(),

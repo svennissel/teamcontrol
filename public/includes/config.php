@@ -25,3 +25,21 @@
  * @var int
  */
 const TRAINING_DISPLAY_COUNT = 10;
+
+/**
+ * Lebensdauer von Cookies und Sessions in Sekunden
+ *
+ * Dieser Wert wird für die Gültigkeitsdauer aller Cookies (z.B. Login-Hash,
+ * zuletzt besuchter Tab) sowie für die Session-Cookie-Lifetime verwendet.
+ *
+ * Der Wert entspricht der Anzahl der Sekunden in einem Jahr (365 Tage).
+ * Nach Ablauf dieser Zeit müssen sich Benutzer erneut anmelden, da sowohl
+ * die Session als auch das Login-Cookie ungültig werden.
+ *
+ * Berechnung: 365 Tage × 24 Stunden × 60 Minuten × 60 Sekunden = 31.536.000 Sekunden
+ *
+ * Standardwert: 31536000 (1 Jahr)
+ *
+ * @var int
+ */
+const COOKIE_LIFETIME = 31536000;

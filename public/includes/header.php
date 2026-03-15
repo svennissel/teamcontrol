@@ -4,6 +4,14 @@ require_once __DIR__ . '/functions.php';
 
 function printHeader($player, $playerTeams, $current_page) {
     $isClubAdmin = $player['is_club_admin'];
+    setcookie('last_tab', $current_page, [
+            'expires' => time() + COOKIE_LIFETIME,
+            'path' => '/',
+            "domain" => $_SERVER['SERVER_NAME'],
+            "secure" => isSecureServer(),
+            "httponly" => true,
+            "samesite" => "Strict"
+    ]);
     ?>
 <!DOCTYPE html>
 <html lang="de">

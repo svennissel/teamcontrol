@@ -31,7 +31,8 @@ if (isset($_GET['hash']) || isset($_COOKIE['hash']) || isset($_SESSION['hash']))
         // If the hash is manipulated, it will be converted with htmlspecialchars().
         // Normally it is not necessary, because it is base64 encoded.
         localStorage.setItem('playerHash', '<?=htmlspecialchars($hash)?>');
-        window.location.href = 'games.php';
+        //Redirect to index.php. There will be redirect to the last visited page.
+        window.location.href = 'index.php';
     </script>
     <?php endif; ?>
 
