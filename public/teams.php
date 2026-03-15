@@ -29,7 +29,8 @@ printHeader($player, $playerTeams, "teams");
 <div id="teams" class="tab-content active">
     <section>
         <div class="events">
-            <?php foreach ($teams as $team): ?>
+            <?php foreach ($teams as $team):
+                $isTeamAdminOfThisTeam = isTeamAdmin($team['id'], $player_id); ?>
                 <div class="event-card">
                     <div class="card-header">
                         <h3>
@@ -45,45 +46,12 @@ printHeader($player, $playerTeams, "teams");
                                     <?php echo csrfField(); ?>
                                     <input type="hidden" name="action" value="delete_team">
                                     <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
-                                    <button type="submit" class="delete-btn" id="delete-team-btn" title="Löschen"><i class="fa-solid fa-trash"></i></button>
+                                    <button type="submit" class="delete-btn" id="delete-team-btn" title="Mannschaft löschen"><i class="fa-solid fa-trash"></i></button>
                                 </form>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="card-details">
-                        <h4>Spieler</h4>
-                        <ul class="team-list">
-                            <?php
-                            $teamPlayers = getTeamPlayers($team['id']);
-                            $isTeamAdminOfThisTeam = isTeamAdmin($team['id'], $player_id);
-                            foreach ($teamPlayers as $tp): ?>
-                                <li class="team-list-item team-player-role-item">
-                                    <span class="team-player-name"><?php echo htmlspecialchars($tp['name']); ?></span>
-                                    <?php if ($isTeamAdminOfThisTeam || $isClubAdmin): ?>
-                                        <form action="action.php" method="POST" class="inline-form">
-                                            <?php echo csrfField(); ?>
-                                            <input type="hidden" name="action" value="remove_player">
-                                            <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
-                                            <input type="hidden" name="player_id" value="<?php echo $tp['id']; ?>">
-                                            <button type="submit" class="delete-btn">&times;</button>
-                                        </form>
-                                        <span class="team-player-roles">
-                                            <label><input type="checkbox" checked disabled> Training</label>
-                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchViewer" <?php echo $tp['isMatchViewer'] ? 'checked' : ''; ?>> Spiele anzeigen</label>
-                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchPlayer" <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele abstimmen</label>
-                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isTeamAdmin" <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
-                                        </span>
-                                    <?php else: ?>
-                                        <span class="team-player-roles">
-                                            <label><input type="checkbox" checked disabled> Training</label>
-                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchViewer'] ? 'checked' : ''; ?>> Spiele anzeigen</label>
-                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele abstimmen</label>
-                                            <label><input type="checkbox" disabled <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
-                                        </span>
-                                    <?php endif; ?>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
                         <?php if ($isTeamAdminOfThisTeam): ?>
                             <form action="action.php" method="POST" class="team-assign-form">
                                 <?php echo csrfField(); ?>
@@ -91,7 +59,11 @@ printHeader($player, $playerTeams, "teams");
                                 <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
                                 <select name="player_id" required>
                                     <option value="">Spieler hinzufügen...</option>
-                                    <?php foreach ($all_players as $p): ?>
+                                    <?php
+                                    $teamPlayerIds = array_column(getTeamPlayers($team['id']), 'id');
+                                    foreach ($all_players as $p):
+                                        if (in_array($p['id'], $teamPlayerIds)) continue;
+                                    ?>
                                         <option value="<?php echo $p['id']; ?>"><?php echo htmlspecialchars($p['name']); ?></option>
                                     <?php endforeach; ?>
                                 </select>
@@ -114,6 +86,40 @@ printHeader($player, $playerTeams, "teams");
                             </div>
                             </p>
                         <?php endif; ?>
+
+                        <h4>Spieler</h4>
+                        <ul class="team-list">
+                            <?php
+                            $teamPlayers = getTeamPlayers($team['id']);
+                            foreach ($teamPlayers as $tp): ?>
+                                <li class="team-list-item team-player-role-item">
+                                    <span class="team-player-name"><?php echo htmlspecialchars($tp['name']); ?></span>
+                                    <?php if ($isTeamAdminOfThisTeam || $isClubAdmin): ?>
+                                        <form action="action.php" method="POST" class="inline-form">
+                                            <?php echo csrfField(); ?>
+                                            <input type="hidden" name="action" value="remove_player">
+                                            <input type="hidden" name="team_id" value="<?php echo $team['id']; ?>">
+                                            <input type="hidden" name="player_id" value="<?php echo $tp['id']; ?>">
+                                            <button type="submit" class="delete-btn" title="Spieler aus Mannschaft entfernen"><i class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                        <span class="team-player-roles">
+                                            <label><input type="checkbox" checked disabled> Training</label>
+                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchViewer" <?php echo $tp['isMatchViewer'] ? 'checked' : ''; ?>> Spiele anzeigen</label>
+                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchPlayer" <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele abstimmen</label>
+                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isTeamAdmin" <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="team-player-roles">
+                                            <label><input type="checkbox" checked disabled> Training</label>
+                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchViewer'] ? 'checked' : ''; ?>> Spiele anzeigen</label>
+                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele abstimmen</label>
+                                            <label><input type="checkbox" disabled <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
+                                        </span>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+
                     </div>
                 </div>
             <?php endforeach; ?>
