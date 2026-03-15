@@ -69,13 +69,15 @@ printHeader($player, $playerTeams, "teams");
                                         </form>
                                         <span class="team-player-roles">
                                             <label><input type="checkbox" checked disabled> Training</label>
-                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchPlayer" <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele</label>
+                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchViewer" <?php echo $tp['isMatchViewer'] ? 'checked' : ''; ?>> Spiele anzeigen</label>
+                                            <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isMatchPlayer" <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele abstimmen</label>
                                             <label><input type="checkbox" class="role-checkbox" data-team="<?php echo $team['id']; ?>" data-player="<?php echo $tp['id']; ?>" data-role="isTeamAdmin" <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
                                         </span>
                                     <?php else: ?>
                                         <span class="team-player-roles">
                                             <label><input type="checkbox" checked disabled> Training</label>
-                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele</label>
+                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchViewer'] ? 'checked' : ''; ?>> Spiele anzeigen</label>
+                                            <label><input type="checkbox" disabled <?php echo $tp['isMatchPlayer'] ? 'checked' : ''; ?>> Spiele abstimmen</label>
                                             <label><input type="checkbox" disabled <?php echo $tp['isTeamAdmin'] ? 'checked' : ''; ?>> Admin</label>
                                         </span>
                                     <?php endif; ?>

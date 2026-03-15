@@ -186,18 +186,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $team_training = $_POST['team_training'] ?? [];
                 $team_admin = $_POST['team_admin'] ?? [];
                 $team_player = $_POST['team_player'] ?? [];
+                $team_viewer = $_POST['team_viewer'] ?? [];
                 // Team-IDs: alle Teams bei denen mindestens eine Option gewählt ist
-                $team_ids = array_unique(array_merge(array_keys($team_training), array_keys($team_admin), array_keys($team_player)));
+                $team_ids = array_unique(array_merge(array_keys($team_training), array_keys($team_admin), array_keys($team_player), array_keys($team_viewer)));
                 $is_club_admin = isset($_POST['is_club_admin']) && $isClubAdmin;
                 $admin_team_ids = array_keys($team_admin);
                 $match_player_team_ids = array_keys($team_player);
+                $match_viewer_team_ids = array_keys($team_viewer);
                 if (!$isClubAdmin) {
                     $my_admin_teams = getAdminTeams($player_id);
                     $my_admin_team_ids = array_column($my_admin_teams, 'id');
                     $admin_team_ids = array_intersect($admin_team_ids, $my_admin_team_ids);
                 }
                 $voter_permission_player_ids = $_POST['voter_permission_player_ids'] ?? [];
-                createPlayer($_POST['name'], $is_club_admin, $team_ids, $admin_team_ids, $voter_permission_player_ids, $match_player_team_ids);
+                createPlayer($_POST['name'], $is_club_admin, $team_ids, $admin_team_ids, $voter_permission_player_ids, $match_player_team_ids, $match_viewer_team_ids);
             }
         } elseif ($_POST['action'] === 'edit_player') {
 
@@ -224,12 +226,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $team_training = $_POST['team_training'] ?? [];
                 $team_admin = $_POST['team_admin'] ?? [];
                 $team_player = $_POST['team_player'] ?? [];
-                $team_ids = array_unique(array_merge(array_keys($team_training), array_keys($team_admin), array_keys($team_player)));
+                $team_viewer = $_POST['team_viewer'] ?? [];
+                $team_ids = array_unique(array_merge(array_keys($team_training), array_keys($team_admin), array_keys($team_player), array_keys($team_viewer)));
                 $admin_team_ids = array_keys($team_admin);
                 $match_player_team_ids = array_keys($team_player);
+                $match_viewer_team_ids = array_keys($team_viewer);
 
                 $voter_permission_player_ids = $_POST['voter_permission_player_ids'] ?? [];
-                updatePlayer($id, $name, $is_club_admin, $team_ids, $admin_team_ids, $voter_permission_player_ids, $match_player_team_ids);
+                updatePlayer($id, $name, $is_club_admin, $team_ids, $admin_team_ids, $voter_permission_player_ids, $match_player_team_ids, $match_viewer_team_ids);
             }
         } elseif ($_POST['action'] === 'remove_player') {
             $teamId = (int)$_POST['team_id'];
@@ -243,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $role = $_POST['role'];
             $value = $_POST['value'] === '1';
             if ($isClubAdmin || isTeamAdmin($teamId, $player_id)) {
-                if (in_array($role, ['isTeamAdmin', 'isMatchPlayer'])) {
+                if (in_array($role, ['isTeamAdmin', 'isMatchPlayer', 'isMatchViewer'])) {
                     updateTeamPlayerRole($teamId, $targetPlayerId, $role, $value);
                 }
             }

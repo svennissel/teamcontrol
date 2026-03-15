@@ -80,7 +80,6 @@ printHeader($player, $playerTeams, "trainings");
                 }
                 ?>
                 <div class="event-card<?php echo $teamClasses; ?>">
-                    <?php if ($canEditTraining): ?>
                     <div class="card-header">
                         <h3>
                             <?php if (!empty($training['teams'])): ?>
@@ -95,6 +94,7 @@ printHeader($player, $playerTeams, "trainings");
                                 ?>
                             <?php endif; ?>
                         </h3>
+                        <?php if ($canEditTraining): ?>
                         <div class="club-admin-actions">
                             <button class="edit-btn" onclick='editTraining(<?php echo json_encode($training); ?>)' title="Bearbeiten"><i class="fa-solid fa-pen"></i></button>
                             <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDeleteTraining(event, <?php echo !empty($training['is_weekly']) ? 'true' : 'false'; ?>)">
@@ -106,8 +106,9 @@ printHeader($player, $playerTeams, "trainings");
                                 <button type="submit" class="delete-btn" title="Löschen"><i class="fa-solid fa-trash"></i></button>
                             </form>
                         </div>
+                        <?php endif; ?>
                     </div>
-                    <?php endif; ?>
+
                     <div class="card-subtitle">
 
                     </div>

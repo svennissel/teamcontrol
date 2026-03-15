@@ -35,6 +35,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                 $admin_team_ids = array_column($admin_teams, 'id');
                 $player_team_roles = getPlayerTeamRoles($player['id']);
                 $match_player_team_ids = array_column(array_filter($player_team_roles, fn($r) => $r['isMatchPlayer']), 'team_id');
+                $match_viewer_team_ids = array_column(array_filter($player_team_roles, fn($r) => $r['isMatchViewer']), 'team_id');
 
                 // Wenn Team-Admin, nur Spieler der eigenen Teams sehen
                 if (!$isClubAdmin && isAnyTeamAdmin($player_id)) {
@@ -60,7 +61,7 @@ printHeader($loggedInPlayer, $playerTeams, "players");
                             }
                             if ($canEdit): ?>
                                 <?php $voter_perm_ids = getVoterPermissions($player['id']); ?>
-                                <button class="edit-btn" onclick='editPlayer(<?php echo json_encode(array_merge($player, ["team_ids" => $player_team_ids, "admin_team_ids" => $admin_team_ids, "match_player_team_ids" => $match_player_team_ids, "voter_permission_player_ids" => $voter_perm_ids])); ?>)' title="Bearbeiten"><i class="fa-solid fa-pen"></i></button>
+                                <button class="edit-btn" onclick='editPlayer(<?php echo json_encode(array_merge($player, ["team_ids" => $player_team_ids, "admin_team_ids" => $admin_team_ids, "match_player_team_ids" => $match_player_team_ids, "match_viewer_team_ids" => $match_viewer_team_ids, "voter_permission_player_ids" => $voter_perm_ids])); ?>)' title="Bearbeiten"><i class="fa-solid fa-pen"></i></button>
                             <?php endif; ?>
                             <?php if ($isClubAdmin): ?>
                                 <form action="action.php" method="POST" class="inline-form" onsubmit="confirmDelete(event, 'Soll dieser Spieler wirklich gelöscht werden?')">

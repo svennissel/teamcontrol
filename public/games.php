@@ -13,6 +13,8 @@ $matches = getMatches($player_id);
 $myAttendance = getPlayerAttendance($player_id);
 $playerTeams = getPlayerTeams($player_id);
 $teams = getTeams($player_id, $isClubAdmin);
+$playerTeamRoles = getPlayerTeamRoles($player_id);
+$matchPlayerTeamIds = array_column(array_filter($playerTeamRoles, fn($r) => $r['isMatchPlayer']), 'team_id');
 
 // Batch: Alle Attendance-Daten und Voter-Daten vorladen
 $matchIds = array_column($matches, 'id');
@@ -99,6 +101,9 @@ printHeader($player, $playerTeams, "games");
                     foreach ($attendance as $a) { $counts[$a['status']]++; }
                     ?>
 
+                    <?php
+                    $isMatchPlayerForThis = in_array($match['team_id'], $matchPlayerTeamIds);
+                    ?>
                     <div class="vote-buttons">
                         <?php
                         $playerInMatchTeam = false;
@@ -108,7 +113,7 @@ printHeader($player, $playerTeams, "games");
                                 $playerInMatchTeam = true;
                             }
                         }
-                        if ($playerInMatchTeam): ?>
+                        if ($playerInMatchTeam && $isMatchPlayerForThis): ?>
                             <?php 
                             // Erlaubte Zielspieler (inkl. man selbst) für dieses Event ermitteln
                             $voteTargets = [];
@@ -134,11 +139,13 @@ printHeader($player, $playerTeams, "games");
                                 <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['match'][$match['id']]) && $myAttendance['match'][$match['id']] === 'no') ? 'active' : ''; ?>"><i class="fa-solid fa-thumbs-down"></i> <span class="count"><?php echo $counts['no']; ?></span></button>
                             </form>
                         <?php endif; ?>
+                        <?php if ($isMatchPlayerForThis): ?>
                         <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "<?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>) <?php
                         $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                         $timestamp = strtotime($match['match_date']);
                         echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
                         ?>")'><i class="fa-solid fa-users"></i></button>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>

@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS team_players (
     player_id INT NOT NULL,
     isTeamAdmin BOOLEAN DEFAULT FALSE,
     isMatchPlayer BOOLEAN DEFAULT TRUE,
+    isMatchViewer BOOLEAN DEFAULT TRUE,
     PRIMARY KEY (team_id, player_id),
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE

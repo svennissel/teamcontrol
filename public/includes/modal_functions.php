@@ -335,8 +335,9 @@ function renderAddPlayerModal($teams, $player_id) {
                             foreach ($selectable_teams as $team): ?>
                                 <div class="team-role-item">
                                     <span class="team-role-name"><?php echo htmlspecialchars($team['name']); ?></span>
-                                    <label><input type="checkbox" name="team_training[<?php echo $team['id']; ?>]" value="1"> Training</label>
-                                    <label><input type="checkbox" name="team_player[<?php echo $team['id']; ?>]" value="1"> Spiele</label>
+                                    <label><input type="checkbox" name="team_training[<?php echo $team['id']; ?>]" value="1"> Training abstimmen</label>
+                                    <label><input type="checkbox" name="team_viewer[<?php echo $team['id']; ?>]" value="1"> Spiele anzeigen</label>
+                                    <label><input type="checkbox" name="team_player[<?php echo $team['id']; ?>]" value="1"> Spiele abstimmen</label>
                                     <label><input type="checkbox" name="team_admin[<?php echo $team['id']; ?>]" value="1"> Admin</label>
                                 </div>
                             <?php endforeach; ?>
@@ -395,8 +396,9 @@ function renderEditPlayerModal($teams, $player_id) {
                             foreach ($selectable_teams as $team): ?>
                                 <div class="team-role-item" data-team-id="<?php echo $team['id']; ?>">
                                     <span class="team-role-name"><?php echo htmlspecialchars($team['name']); ?></span>
-                                    <label><input type="checkbox" name="team_training[<?php echo $team['id']; ?>]" value="1" class="team-training-cb"> Training</label>
-                                    <label><input type="checkbox" name="team_player[<?php echo $team['id']; ?>]" value="1" class="team-player-cb"> Spiele</label>
+                                    <label><input type="checkbox" name="team_training[<?php echo $team['id']; ?>]" value="1" class="team-training-cb"> Training abstimmen</label>
+                                    <label><input type="checkbox" name="team_viewer[<?php echo $team['id']; ?>]" value="1" class="team-viewer-cb"> Spiele anzeigen</label>
+                                    <label><input type="checkbox" name="team_player[<?php echo $team['id']; ?>]" value="1" class="team-player-cb"> Spiele abstimmen</label>
                                     <label><input type="checkbox" name="team_admin[<?php echo $team['id']; ?>]" value="1" class="team-admin-cb"> Admin</label>
                                 </div>
                             <?php endforeach; ?>

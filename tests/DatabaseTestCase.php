@@ -95,6 +95,7 @@ abstract class DatabaseTestCase extends TestCase
                 player_id INTEGER NOT NULL,
                 isTeamAdmin BOOLEAN DEFAULT FALSE,
                 isMatchPlayer BOOLEAN DEFAULT TRUE,
+                isMatchViewer BOOLEAN DEFAULT FALSE,
                 PRIMARY KEY (team_id, player_id)
             )",
             "CREATE TABLE training_teams (

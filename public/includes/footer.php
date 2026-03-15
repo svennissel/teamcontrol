@@ -394,9 +394,11 @@
                     const isInTeam = player.team_ids && player.team_ids.includes(teamId);
                     const isAdmin = player.admin_team_ids && player.admin_team_ids.includes(teamId);
                     const isMatchPlayer = player.match_player_team_ids && player.match_player_team_ids.includes(teamId);
+                    const isMatchViewer = player.match_viewer_team_ids && player.match_viewer_team_ids.includes(teamId);
                     item.querySelector('.team-training-cb').checked = isInTeam;
                     item.querySelector('.team-admin-cb').checked = isAdmin;
                     item.querySelector('.team-player-cb').checked = isMatchPlayer;
+                    item.querySelector('.team-viewer-cb').checked = isMatchViewer;
                 });
             }
             const voterPermSelect = document.getElementById('edit_player_voter_permissions');
@@ -529,8 +531,34 @@
             alert('Fehler beim Kopieren des Links.');
         });
         }
+        // In Spieler-Modals: "Spiele abstimmen" aktiviert automatisch "Spiele anzeigen"
+        document.querySelectorAll('input[name^="team_player["]').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                if (this.checked) {
+                    const row = this.closest('.team-role-item');
+                    if (row) {
+                        const viewerCb = row.querySelector('input[name^="team_viewer["]');
+                        if (viewerCb && !viewerCb.checked) {
+                            viewerCb.checked = true;
+                        }
+                    }
+                }
+            });
+        });
+
         document.querySelectorAll('.role-checkbox').forEach(function(cb) {
             cb.addEventListener('change', function() {
+                // Wenn "Spiele abstimmen" aktiviert wird, auch "Spiele anzeigen" aktivieren
+                if (this.dataset.role === 'isMatchPlayer' && this.checked) {
+                    const row = this.closest('.team-player-roles');
+                    if (row) {
+                        const viewerCb = row.querySelector('[data-role="isMatchViewer"]');
+                        if (viewerCb && !viewerCb.checked) {
+                            viewerCb.checked = true;
+                            viewerCb.dispatchEvent(new Event('change'));
+                        }
+                    }
+                }
                 const data = new URLSearchParams();
                 data.append('action', 'update_team_player_role');
                 data.append('team_id', this.dataset.team);

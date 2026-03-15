@@ -9,8 +9,8 @@ function getMatches(?int $playerId = null): array {
             FROM matches m 
             JOIN team_players tp ON m.team_id = tp.team_id 
            WHERE tp.player_id = ? 
-             AND tp.isMatchPlayer = 1 
-             AND (STR_TO_DATE(CONCAT(m.match_date, ' ', m.start_time), '%Y-%m-%d %H:%i:%s') >= NOW() - INTERVAL 6 HOUR) 
+             AND (tp.isMatchPlayer = 1 OR tp.isMatchViewer = 1) 
+             AND (STR_TO_DATE(CONCAT(m.match_date, ' ', m.start_time), '%Y-%m-%d %H:%i:%s') >= NOW() - INTERVAL 6 HOUR)
            ORDER BY match_date ASC, start_time ASC";
 
     $stmt = $pdo->prepare($sql);
@@ -446,7 +446,7 @@ function getTeamByHash($hash) {
 
 function getTeamPlayers($teamId) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT p.*, tp.isTeamAdmin, tp.isMatchPlayer FROM players p JOIN team_players tp ON p.id = tp.player_id WHERE tp.team_id = ?");
+    $stmt = $pdo->prepare("SELECT p.*, tp.isTeamAdmin, tp.isMatchPlayer, tp.isMatchViewer FROM players p JOIN team_players tp ON p.id = tp.player_id WHERE tp.team_id = ?");
     $stmt->execute([$teamId]);
     return $stmt->fetchAll();
 }
@@ -456,21 +456,28 @@ function updateTeamPlayerRole($teamId, $playerId, $role, $value) {
     if ($role === 'isTeamAdmin') {
         $stmt = $pdo->prepare("UPDATE team_players SET isTeamAdmin = ? WHERE team_id = ? AND player_id = ?");
     } elseif ($role === 'isMatchPlayer') {
+        // isMatchPlayer impliziert isMatchViewer
+        if ($value) {
+            $stmt = $pdo->prepare("UPDATE team_players SET isMatchPlayer = 1, isMatchViewer = 1 WHERE team_id = ? AND player_id = ?");
+            return $stmt->execute([$teamId, $playerId]);
+        }
         $stmt = $pdo->prepare("UPDATE team_players SET isMatchPlayer = ? WHERE team_id = ? AND player_id = ?");
+    } elseif ($role === 'isMatchViewer') {
+        $stmt = $pdo->prepare("UPDATE team_players SET isMatchViewer = ? WHERE team_id = ? AND player_id = ?");
     } else {
         return false;
     }
     return $stmt->execute([$value ? 1 : 0, $teamId, $playerId]);
 }
 
-function addPlayerToTeam($teamId, $playerId,  $isMatchPlayer = false) {
+function addPlayerToTeam($teamId, $playerId,  $isMatchPlayer = false, $isMatchViewer = false) {
     global $pdo;
     $stmt = $pdo->prepare("SELECT 1 FROM team_players WHERE team_id = ? AND player_id = ?");
     $stmt->execute([$teamId, $playerId]);
     if ($stmt->fetch()) return true;
 
-    $stmt = $pdo->prepare("INSERT INTO team_players (team_id, player_id, isTeamAdmin, isMatchPlayer) VALUES (?, ?, FALSE, ?)");
-    return $stmt->execute([$teamId, $playerId, $isMatchPlayer ? 1 : 0]);
+    $stmt = $pdo->prepare("INSERT INTO team_players (team_id, player_id, isTeamAdmin, isMatchPlayer, isMatchViewer) VALUES (?, ?, FALSE, ?, ?)");
+    return $stmt->execute([$teamId, $playerId, $isMatchPlayer ? 1 : 0, $isMatchViewer ? 1 : 0]);
 }
 
 function removePlayerFromTeam($playerId, $teamId) {
@@ -485,7 +492,7 @@ function getAllPlayers() {
     return $stmt->fetchAll();
 }
 
-function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = [], $matchPlayerTeamIds = []) {
+function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = [], $matchPlayerTeamIds = [], $matchViewerTeamIds = []) {
     global $pdo;
     $playerHash = createHash();
     $stmt = $pdo->prepare("INSERT INTO players (name, hash, is_club_admin) VALUES (?, ?, ?)");
@@ -499,6 +506,9 @@ function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = [], 
         }
         foreach ($matchPlayerTeamIds as $teamId) {
             setMatchPlayer($teamId, $playerId);
+        }
+        foreach ($matchViewerTeamIds as $teamId) {
+            setMatchViewer($teamId, $playerId);
         }
         foreach ($voterPermissionPlayerIds as $targetPlayerId) {
             addVoterPermission($playerId, $targetPlayerId);
@@ -519,7 +529,7 @@ function createHash() : String {
     return rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
 }
 
-function updatePlayer($id, $name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = [], $matchPlayerTeamIds = []) {
+function updatePlayer($id, $name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = [], $matchPlayerTeamIds = [], $matchViewerTeamIds = []) {
     global $pdo;
     $stmt = $pdo->prepare("UPDATE players SET name = ?, is_club_admin = ? WHERE id = ?");
     $result = $stmt->execute([$name, $is_club_admin ? 1 : 0, $id]);
@@ -545,6 +555,13 @@ function updatePlayer($id, $name, $is_club_admin, $teamIds = [], $adminTeamIds =
         setMatchPlayer($teamId, $id);
     }
 
+    // Match-Viewer-Zuordnungen aktualisieren
+    $stmt = $pdo->prepare("UPDATE team_players SET isMatchViewer = FALSE WHERE player_id = ?");
+    $stmt->execute([$id]);
+    foreach ($matchViewerTeamIds as $teamId) {
+        setMatchViewer($teamId, $id);
+    }
+
     // Voter Permissions aktualisieren
     $stmt = $pdo->prepare("DELETE FROM voter_permissions WHERE voter_id = ?");
     $stmt->execute([$id]);
@@ -564,8 +581,15 @@ function addTeamAdmin($teamId, $playerId) {
 
 function setMatchPlayer($teamId, $playerId) {
     global $pdo;
+    // Spieler muss bereits im Team sein; isMatchPlayer impliziert isMatchViewer
+    $stmt = $pdo->prepare("UPDATE team_players SET isMatchPlayer = TRUE, isMatchViewer = TRUE WHERE team_id = ? AND player_id = ?");
+    return $stmt->execute([$teamId, $playerId]);
+}
+
+function setMatchViewer($teamId, $playerId) {
+    global $pdo;
     // Spieler muss bereits im Team sein
-    $stmt = $pdo->prepare("UPDATE team_players SET isMatchPlayer = TRUE WHERE team_id = ? AND player_id = ?");
+    $stmt = $pdo->prepare("UPDATE team_players SET isMatchViewer = TRUE WHERE team_id = ? AND player_id = ?");
     return $stmt->execute([$teamId, $playerId]);
 }
 
@@ -637,7 +661,7 @@ function getPlayerTeams($playerId) {
 
 function getPlayerTeamRoles($playerId) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT team_id, isTeamAdmin, isMatchPlayer FROM team_players WHERE player_id = ?");
+    $stmt = $pdo->prepare("SELECT team_id, isTeamAdmin, isMatchPlayer, isMatchViewer FROM team_players WHERE player_id = ?");
     $stmt->execute([$playerId]);
     return $stmt->fetchAll();
 }
