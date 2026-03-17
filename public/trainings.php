@@ -138,6 +138,7 @@ printHeader($player, $playerTeams, "trainings");
 
                     <div class="vote-buttons">
                         <?php
+                        $voteTargets = [];
                         $playerInTrainingTeam = false;
                         if (!empty($playerTeams) && !empty($training['teams'])) {
                             $playerTeamIds = array_column($playerTeams, 'id');
@@ -175,11 +176,23 @@ printHeader($player, $playerTeams, "trainings");
                                 <button type="submit" name="status" value="no" title="Absage" class="<?php echo (isset($myAttendance['training'][$attendanceKey]) && $myAttendance['training'][$attendanceKey] === 'no') ? 'active' : ''; ?>"><i class="fa-solid fa-thumbs-down"></i> <span class="count"><?php echo $counts['no']; ?></span></button>
                             </form>
                         <?php endif; ?>
+                        <?php
+                        $attendanceVoteContext = null;
+                        if ($playerInTrainingTeam && !empty($voteTargets)) {
+                            $attendanceVoteContext = [
+                                'voteTargetIds' => array_map(fn($t) => $t['player_id'], $voteTargets),
+                                'eventType' => 'training',
+                                'eventId' => $training['id'],
+                                'occurrenceDate' => $occurrenceDate ?? '',
+                                'defaultPlayerId' => $player_id
+                            ];
+                        }
+                        ?>
                         <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "Training <?php
                         $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                         $timestamp = strtotime($training['training_date']);
                         echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
-                        ?>")'><i class="fa-solid fa-users"></i></button>
+                        ?>"<?php if ($attendanceVoteContext): ?>, <?php echo htmlspecialchars(json_encode($attendanceVoteContext), ENT_QUOTES, 'UTF-8'); ?><?php endif; ?>)'><i class="fa-solid fa-users"></i></button>
                     </div>
                 </div>
             <?php endforeach; ?>

@@ -60,7 +60,11 @@
             });
         };
 
-        function showAttendance(attendance, title) {
+        // voteContext: { voteTargetIds: [id,...], eventType, eventId, occurrenceDate, defaultPlayerId } oder null
+        let _currentAttendanceVoteContext = null;
+
+        function showAttendance(attendance, title, voteContext) {
+            _currentAttendanceVoteContext = voteContext || null;
             document.getElementById('attendanceModalTitle').innerText = title;
             const lists = {
                 yes: document.getElementById('list-yes'),
@@ -69,9 +73,29 @@
                 none: document.getElementById('list-none')
             };
             Object.values(lists).forEach(list => list.innerHTML = '');
+            const voteTargetIds = voteContext ? voteContext.voteTargetIds : [];
+            const defaultPlayerId = voteContext ? String(voteContext.defaultPlayerId) : null;
             attendance.forEach(entry => {
                 const li = document.createElement('li');
-                li.textContent = entry.name;
+                li.dataset.playerId = entry.player_id;
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = entry.name;
+                li.appendChild(nameSpan);
+                // Mini-Vote-Buttons für andere Spieler, für die man abstimmen darf
+                if (voteTargetIds.includes(entry.player_id) || String(entry.player_id) === defaultPlayerId) {
+                    const btnGroup = document.createElement('span');
+                    btnGroup.className = 'attendance-vote-btns';
+                    [{status: 'yes', icon: 'fa-thumbs-up', title: 'Zusage'}, {status: 'maybe', icon: 'fa-question', title: 'Vielleicht'}, {status: 'no', icon: 'fa-thumbs-down', title: 'Absage'}].forEach(v => {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'attendance-vote-btn attendance-vote-' + v.status;
+                        btn.title = v.title;
+                        btn.innerHTML = '<i class="fa-solid ' + v.icon + '"></i>';
+                        btn.addEventListener('click', () => attendanceVote(entry.player_id, v.status, li));
+                        btnGroup.appendChild(btn);
+                    });
+                    li.appendChild(btnGroup);
+                }
                 if (lists[entry.status]) lists[entry.status].appendChild(li);
             });
             Object.keys(lists).forEach(status => {
@@ -83,6 +107,75 @@
                 }
             });
             openModal('attendanceModal');
+        }
+
+        async function attendanceVote(playerId, status, liElement) {
+            const ctx = _currentAttendanceVoteContext;
+            if (!ctx) return;
+            const formData = new FormData();
+            formData.append('action', 'vote');
+            formData.append('event_type', ctx.eventType);
+            formData.append('event_id', ctx.eventId);
+            formData.append('target_player_id', playerId);
+            formData.append('status', status);
+            formData.append('csrf_token', csrfToken);
+            if (ctx.occurrenceDate) formData.append('occurrence_date', ctx.occurrenceDate);
+            try {
+                const response = await fetch('action.php', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.attendance) {
+                        // Modal mit neuen Daten aktualisieren
+                        const title = document.getElementById('attendanceModalTitle').innerText;
+                        showAttendance(data.attendance, title, ctx);
+                        // Auch den Attendance-Button auf der Karte aktualisieren
+                        updateCardAttendanceButton(ctx, data);
+                    }
+                }
+            } catch (error) {
+                console.error('Error voting from attendance:', error);
+            }
+        }
+
+        function updateCardAttendanceButton(ctx, data) {
+            // Finde die vote-form auf der Karte und aktualisiere counts + attendance-btn
+            const forms = document.querySelectorAll('.vote-form');
+            forms.forEach(form => {
+                const eventIdInput = form.querySelector('input[name="event_id"]');
+                const eventTypeInput = form.querySelector('input[name="event_type"]');
+                const occurrenceDateInput = form.querySelector('input[name="occurrence_date"]');
+                if (!eventIdInput || !eventTypeInput) return;
+                const formOccurrence = occurrenceDateInput ? occurrenceDateInput.value : '';
+                const ctxOccurrence = ctx.occurrenceDate || '';
+                if (eventIdInput.value === String(ctx.eventId) && eventTypeInput.value === ctx.eventType && formOccurrence === ctxOccurrence) {
+                    // Counts aktualisieren
+                    if (data.counts) {
+                        form.querySelectorAll('button[type="submit"]').forEach(btn => {
+                            if (data.counts[btn.value] !== undefined) {
+                                const countSpan = btn.querySelector('.count');
+                                if (countSpan) countSpan.textContent = data.counts[btn.value];
+                            }
+                        });
+                    }
+                    // Attendance-Button aktualisieren
+                    if (data.attendance) {
+                        const voteButtonsDiv = form.closest('.vote-buttons');
+                        const attendanceBtn = voteButtonsDiv ? voteButtonsDiv.querySelector('.btn-attendance') : null;
+                        if (attendanceBtn) {
+                            const originalOnclick = attendanceBtn.getAttribute('onclick');
+                            if (originalOnclick) {
+                                const titleMatch = originalOnclick.match(/,\s*"([^"]+)"/);
+                                const title = titleMatch ? titleMatch[1] : 'Teilnehmerliste';
+                                attendanceBtn.setAttribute('onclick', `showAttendance(${JSON.stringify(data.attendance)}, "${title}", ${JSON.stringify(ctx)})`);
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         async function performVote(form, status) {
@@ -122,9 +215,12 @@
                         if (attendanceBtn) {
                             const originalOnclick = attendanceBtn.getAttribute('onclick');
                             if (originalOnclick) {
-                                const titleMatch = originalOnclick.match(/,\s*"([^"]+)"\)/);
+                                const titleMatch = originalOnclick.match(/,\s*"([^"]+)"/);
                                 const title = titleMatch ? titleMatch[1] : 'Teilnehmerliste';
-                                attendanceBtn.setAttribute('onclick', `showAttendance(${JSON.stringify(data.attendance)}, "${title}")`);
+                                // Preserve voteContext if present
+                                const ctxMatch = originalOnclick.match(/,\s*"[^"]+"\s*,\s*(\{.*\})\s*\)/);
+                                const ctxArg = ctxMatch ? ', ' + ctxMatch[1] : '';
+                                attendanceBtn.setAttribute('onclick', `showAttendance(${JSON.stringify(data.attendance)}, "${title}"${ctxArg})`);
                             }
                         }
                     }
@@ -574,6 +670,6 @@
             });
         });
     </script>
-    <footer style="text-align:center;padding:1rem;color:#aaa;font-size:0.75rem;">Version 1.0.2</footer>
+    <footer style="text-align:center;padding:1rem;color:#aaa;font-size:0.75rem;">Version 1.0.3</footer>
 </body>
 </html>

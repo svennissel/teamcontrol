@@ -252,6 +252,15 @@ section form input[type="checkbox"] { width: fit-content; }
 .register-input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing:border-box;}
 .register-submit { width: 100%; padding: 10px; float: none; }
 
+/* Attendance Vote Buttons (inline in attendance modal) */
+.attendance-group li { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.attendance-vote-btns { display: inline-flex; gap: 0.25rem; margin-left: auto; flex-shrink: 0; }
+.attendance-vote-btn { border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; padding: 0.5rem 1rem; font-size: 1.2rem; line-height: 1; }
+.attendance-vote-btn:hover { background: #f0f0f0; }
+.attendance-vote-yes .fa-thumbs-up { color: #4caf50; }
+.attendance-vote-maybe .fa-question { color: #ff9800; }
+.attendance-vote-no .fa-thumbs-down { color: #d32f2f; }
+
 /* Modal Margin */
 .modal-section { margin-bottom: 20px; }
 

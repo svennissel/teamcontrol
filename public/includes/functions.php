@@ -227,7 +227,7 @@ function getAttendanceForTraining(int $trainingId, ?string $occurrenceDate = nul
                             
                             SELECT p.id AS player_id, p.name, 'none' AS status
                             FROM trainings t
-                            JOIN training_teams tt ON tt.team_id = t.id
+                            JOIN training_teams tt ON tt.training_id = t.id
                             JOIN team_players tp ON tt.team_id = tp.team_id 
                             JOIN players p ON tp.player_id = p.id 
                             LEFT JOIN attendance a ON a.event_id = t.id AND a.event_type = 'training' AND a.player_id = p.id $occurrenceCondition
@@ -830,7 +830,7 @@ function getAttendanceBatchForTrainings(array $trainings): array {
 
             SELECT p.id AS player_id, p.name, 'none' AS status, t.id AS event_id
             FROM trainings t
-            JOIN training_teams tt ON tt.team_id = t.id
+            JOIN training_teams tt ON tt.training_id = t.id
             JOIN team_players tp ON tt.team_id = tp.team_id
             JOIN players p ON tp.player_id = p.id
             LEFT JOIN attendance a ON a.event_id = t.id AND a.event_type = 'training' AND a.player_id = p.id

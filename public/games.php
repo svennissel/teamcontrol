@@ -106,6 +106,7 @@ printHeader($player, $playerTeams, "games");
                     ?>
                     <div class="vote-buttons">
                         <?php
+                        $voteTargets = [];
                         $playerInMatchTeam = false;
                         if (!empty($playerTeams)) {
                             $playerTeamIds = array_column($playerTeams, 'id');
@@ -140,11 +141,23 @@ printHeader($player, $playerTeams, "games");
                             </form>
                         <?php endif; ?>
                         <?php if ($isMatchPlayerForThis): ?>
+                        <?php
+                        $attendanceVoteContext = null;
+                        if ($playerInMatchTeam && !empty($voteTargets)) {
+                            $attendanceVoteContext = [
+                                'voteTargetIds' => array_map(fn($t) => $t['player_id'], $voteTargets),
+                                'eventType' => 'match',
+                                'eventId' => $match['id'],
+                                'occurrenceDate' => '',
+                                'defaultPlayerId' => $player_id
+                            ];
+                        }
+                        ?>
                         <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "<?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>) <?php
                         $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                         $timestamp = strtotime($match['match_date']);
                         echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
-                        ?>")'><i class="fa-solid fa-users"></i></button>
+                        ?>"<?php if ($attendanceVoteContext): ?>, <?php echo htmlspecialchars(json_encode($attendanceVoteContext), ENT_QUOTES, 'UTF-8'); ?><?php endif; ?>)'><i class="fa-solid fa-users"></i></button>
                         <?php endif; ?>
                     </div>
                 </div>
