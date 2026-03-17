@@ -14,6 +14,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     locale: 'de-DE',
     timezoneId: 'Europe/Berlin',
+    screenshot: 'on',
     video: {
       mode: 'off',
       size: { width: 1600, height: 900 }

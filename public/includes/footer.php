@@ -670,6 +670,9 @@
             });
         });
     </script>
-    <footer style="text-align:center;padding:1rem;color:#aaa;font-size:0.75rem;">Version 1.0.3</footer>
+    <footer style="text-align:center;padding:1rem;color:#aaa;font-size:0.75rem;">
+        <a href="help/" style="color:#aaa;text-decoration:none;" title="Hilfe"><i class="fa-solid fa-circle-question"></i> Hilfe</a>
+        &middot; Version 1.0.3
+    </footer>
 </body>
 </html>

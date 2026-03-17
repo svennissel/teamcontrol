@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamControl - Hilfe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #c0392b;
+            color: white;
+            padding: 1.2rem 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            margin-bottom: 0.3rem;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .help-nav {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 0.8rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .help-nav a {
+            display: inline-block;
+            color: #c0392b;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #c0392b;
+            margin-right: 0.4rem;
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .help-nav a:hover {
+            background: #c0392b;
+            color: white;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .help-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .help-section h2 {
+            color: #c0392b;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #c0392b;
+        }
+
+        .help-section h3 {
+            color: #555;
+            font-size: 1.1rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .help-section p {
+            margin-bottom: 0.8rem;
+            color: #444;
+        }
+
+        .help-section ul, .help-section ol {
+            margin: 0.5rem 0 1rem 1.5rem;
+            color: #444;
+        }
+
+        .help-section li {
+            margin-bottom: 0.4rem;
+        }
+
+        .screenshot-container {
+            text-align: center;
+            margin: 1.2rem 0;
+        }
+
+        .screenshot-container img {
+            max-width: 320px;
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #ddd;
+        }
+
+        .screenshot-container .caption {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .icon-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+
+        .icon-badge.green { background: #e8f5e9; color: #2e7d32; }
+        .icon-badge.yellow { background: #fff8e1; color: #f57f17; }
+        .icon-badge.red { background: #ffebee; color: #c62828; }
+        .icon-badge.gray { background: #f0f0f0; color: #555; }
+
+        .tip-box {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 0.8rem 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .tip-box strong {
+            color: #f57f17;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 0.8rem 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .info-box strong {
+            color: #1565c0;
+        }
+
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            padding: 0.6rem 0 0.6rem 2.5rem;
+            position: relative;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .step-list li:last-child {
+            border-bottom: none;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0.6rem;
+            width: 1.8rem;
+            height: 1.8rem;
+            background: #c0392b;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 1rem 0;
+            color: #c0392b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 480px) {
+            .help-section {
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            .screenshot-container img {
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="../" style="color: white; text-decoration: none; font-size: 0.85rem; opacity: 0.85;">← Zurück zu TeamControl</a>
+    <h1>TeamControl Hilfe</h1>
+    <p>Anleitung zu allen wichtigen Funktionen</p>
+</header>
+
+<nav class="help-nav">
+    <a href="#training">Training</a>
+    <a href="#spiele">Spiele</a>
+    <a href="#abstimmen">Abstimmen</a>
+    <a href="#training-erstellen">Training erstellen</a>
+    <a href="#spiel-erstellen">Spiel erstellen</a>
+    <a href="#link-kopieren">Link kopieren</a>
+</nav>
+
+<main>
+
+    <!-- ==================== TRAINING ==================== -->
+    <section id="training" class="help-section">
+        <h2>Training</h2>
+
+        <p>Die Trainingsübersicht zeigt alle anstehenden Trainingstermine deiner Mannschaften an. Hier siehst du auf einen Blick, wann das nächste Training stattfindet und wie viele Spieler bereits zu- oder abgesagt haben.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/training-uebersicht.png" alt="Trainingsübersicht auf dem Smartphone">
+            <div class="caption">Trainingsübersicht mit mehreren Mannschaften</div>
+        </div>
+
+        <h3>Aufbau eines Trainingseintrags</h3>
+        <p>Jeder Trainingseintrag zeigt folgende Informationen:</p>
+        <ul>
+            <li><strong>Mannschaftsname</strong> – Für welches Team das Training stattfindet (z.&nbsp;B. „Sichtbarkeit Test Team")</li>
+            <li><strong>Datum und Uhrzeit</strong> – Wann das Training beginnt (z.&nbsp;B. „Fr 01.01.27, Beginn 18:18")</li>
+            <li><strong>Abstimmungsbuttons</strong> – Drei Buttons zum Abstimmen:
+                <span class="icon-badge green">👍</span> Zusage,
+                <span class="icon-badge yellow">❓</span> Vielleicht,
+                <span class="icon-badge red">👎</span> Absage
+            </li>
+            <li><strong>Teilnehmer-Icon</strong> <span class="icon-badge gray">👥</span> – Zeigt die Übersicht aller Abstimmungen</li>
+        </ul>
+
+        <h3>Mannschaftsfilter</h3>
+        <p>Wenn du in mehreren Mannschaften spielst, kannst du die Trainingsanzeige nach Teams filtern. Über die Filter-Buttons oberhalb der Trainingsliste wählst du aus, welche Mannschaften angezeigt werden sollen. Der Button <strong>„Alle"</strong> zeigt die Trainings aller Mannschaften an.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/training-filter.png" alt="Trainingsfilter nach Mannschaften">
+            <div class="caption">Filterung der Trainings nach Mannschaften</div>
+        </div>
+
+        <h3>Admin-Funktionen</h3>
+        <p>Als Trainer oder Administrator siehst du zusätzlich bei jedem Training:</p>
+        <ul>
+            <li><strong>Bearbeiten-Button</strong> (Stift-Icon) – Training bearbeiten</li>
+            <li><strong>Löschen-Button</strong> (Mülleimer-Icon) – Training löschen</li>
+            <li><strong>Plus-Button</strong> (+) – Neues Training hinzufügen (oben rechts neben der Navigation)</li>
+        </ul>
+
+        <div class="tip-box">
+            <strong>Tipp:</strong> Auf dem Smartphone wird die Navigation als Dropdown-Menü angezeigt. Tippe auf das Auswahlfeld, um zwischen Spiele, Training, Mannschaften und Spieler zu wechseln.
+        </div>
+    </section>
+
+    <!-- ==================== SPIELE ==================== -->
+    <section id="spiele" class="help-section">
+        <h2>Spiele</h2>
+
+        <p>Die Spieleübersicht zeigt alle anstehenden Spiele deiner Mannschaften. Hier findest du alle wichtigen Informationen zu jedem Spiel auf einen Blick.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/spiele-uebersicht.png" alt="Spieleübersicht auf dem Smartphone">
+            <div class="caption">Spieleübersicht mit Spieldetails</div>
+        </div>
+
+        <h3>Aufbau eines Spieleintrags</h3>
+        <p>Jedes Spiel zeigt folgende Informationen:</p>
+        <ul>
+            <li><strong>Gegner</strong> – Name des gegnerischen Teams (z.&nbsp;B. „Test Gegner")</li>
+            <li><strong>Heim/Auswärts</strong> – Ob das Spiel zu Hause oder auswärts stattfindet</li>
+            <li><strong>Mannschaft</strong> – Welches deiner Teams spielt</li>
+            <li><strong>Datum und Uhrzeit</strong> – Wann das Spiel beginnt</li>
+            <li><strong>Abstimmungsbuttons</strong> – Gleiche Abstimmungsmöglichkeiten wie beim Training:
+                <span class="icon-badge green">👍</span> Zusage,
+                <span class="icon-badge yellow">❓</span> Vielleicht,
+                <span class="icon-badge red">👎</span> Absage
+            </li>
+            <li><strong>Teilnehmer-Icon</strong> <span class="icon-badge gray">👥</span> – Übersicht aller Abstimmungen</li>
+        </ul>
+
+        <h3>Admin-Funktionen</h3>
+        <p>Als Administrator stehen dir auch bei Spielen die Bearbeiten- und Löschen-Buttons zur Verfügung, sowie der Plus-Button zum Erstellen neuer Spiele.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/vote-button.png" alt="Spieleansicht für Spieler">
+            <div class="caption">Spieleansicht aus Sicht eines Spielers mit Abstimmungsbuttons</div>
+        </div>
+
+        <div class="info-box">
+            <strong>Hinweis:</strong> Spieler sehen nur die Spiele der Mannschaften, denen sie zugeordnet sind. Die Abstimmungsbuttons sind nur für Spieler der jeweiligen Mannschaft sichtbar.
+        </div>
+    </section>
+
+    <!-- ==================== ABSTIMMEN ==================== -->
+    <section id="abstimmen" class="help-section">
+        <h2>Abstimmen</h2>
+
+        <p>Mit der Abstimmungsfunktion kannst du für jedes Training und jedes Spiel angeben, ob du teilnehmen kannst. So weiß dein Trainer immer, mit wie vielen Spielern er planen kann.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/abstimmen.png" alt="Abstimmungsbuttons bei Trainings">
+            <div class="caption">Abstimmung bei Trainingsterminen</div>
+        </div>
+
+        <h3>So stimmst du ab</h3>
+        <p>Bei jedem Termin findest du drei Abstimmungsbuttons:</p>
+        <ol class="step-list">
+            <li>Tippe auf <span class="icon-badge green">👍</span> <strong>Zusage</strong>, wenn du sicher teilnehmen kannst.</li>
+            <li>Tippe auf <span class="icon-badge yellow">❓</span> <strong>Vielleicht</strong>, wenn du dir noch nicht sicher bist.</li>
+            <li>Tippe auf <span class="icon-badge red">👎</span> <strong>Absage</strong>, wenn du nicht teilnehmen kannst.</li>
+        </ol>
+
+        <p>Die Zahl neben jedem Button zeigt an, wie viele Spieler bereits so abgestimmt haben.</p>
+
+        <h3>Abstimmung bei Trainingsserien</h3>
+        <p>Wenn ein Training als Serie angelegt wurde (z.&nbsp;B. wöchentliches Training), kannst du für jeden einzelnen Termin separat abstimmen. So kannst du flexibel angeben, an welchen Terminen du dabei bist.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/abstimmen-serie.png" alt="Abstimmung bei Trainingsserien">
+            <div class="caption">Einzelne Abstimmung bei Trainingsserien</div>
+        </div>
+
+        <h3>Teilnehmerübersicht</h3>
+        <p>Über das Teilnehmer-Icon <span class="icon-badge gray">👥</span> kannst du sehen, welche Spieler bereits abgestimmt haben und wie sie abgestimmt haben. Das ist besonders nützlich für Trainer, um die Mannschaftsaufstellung zu planen.</p>
+
+        <div class="tip-box">
+            <strong>Tipp:</strong> Stimme so früh wie möglich ab, damit dein Trainer besser planen kann. Du kannst deine Abstimmung jederzeit ändern, indem du einfach einen anderen Button antippst.
+        </div>
+    </section>
+
+    <!-- ==================== TRAINING ERSTELLEN ==================== -->
+    <section id="training-erstellen" class="help-section">
+        <h2>Training erstellen</h2>
+
+        <p>Als Trainer oder Administrator kannst du neue Trainingstermine für deine Mannschaft anlegen. Diese Funktion ist nur für berechtigte Benutzer sichtbar.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/training-uebersicht.png" alt="Training erstellen über Plus-Button">
+            <div class="caption">Der Plus-Button (+) rechts neben der Navigation öffnet das Formular</div>
+        </div>
+
+        <h3>So erstellst du ein Training</h3>
+        <ol class="step-list">
+            <li>Navigiere zum Tab <strong>„Training"</strong> über die Navigation oder das Dropdown-Menü.</li>
+            <li>Tippe auf den <strong>Plus-Button (+)</strong> rechts neben der Navigation.</li>
+            <li>Es öffnet sich ein Formular, in dem du folgende Angaben machst:
+                <ul>
+                    <li><strong>Mannschaft</strong> – Wähle die Mannschaft aus</li>
+                    <li><strong>Datum</strong> – Wähle das Trainingsdatum</li>
+                    <li><strong>Uhrzeit</strong> – Gib die Startzeit ein</li>
+                    <li><strong>Serie</strong> – Optional: Erstelle eine wiederkehrende Trainingsserie</li>
+                </ul>
+            </li>
+            <li>Bestätige die Eingabe, um das Training zu speichern.</li>
+        </ol>
+
+        <h3>Trainingsserien</h3>
+        <p>Du kannst Trainings als Serie anlegen, z.&nbsp;B. für wöchentlich wiederkehrende Termine. Dabei werden automatisch mehrere Trainingstermine erstellt, für die die Spieler einzeln abstimmen können.</p>
+
+        <h3>Training bearbeiten oder löschen</h3>
+        <p>Bestehende Trainings kannst du über die Icons im Trainingseintrag bearbeiten oder löschen:</p>
+        <ul>
+            <li><strong>Stift-Icon</strong> – Öffnet das Bearbeitungsformular</li>
+            <li><strong>Mülleimer-Icon</strong> – Löscht das Training (nach Bestätigung)</li>
+        </ul>
+
+        <div class="info-box">
+            <strong>Hinweis:</strong> Nur Trainer und Administratoren können Trainings erstellen, bearbeiten und löschen. Normale Spieler sehen diese Buttons nicht.
+        </div>
+    </section>
+
+    <!-- ==================== SPIEL ERSTELLEN ==================== -->
+    <section id="spiel-erstellen" class="help-section">
+        <h2>Spiel erstellen</h2>
+
+        <p>Als Trainer oder Administrator kannst du neue Spiele für deine Mannschaft anlegen. So können sich die Spieler frühzeitig für anstehende Spiele an- oder abmelden.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/spiele-uebersicht.png" alt="Spiel erstellen über Plus-Button">
+            <div class="caption">Der Plus-Button (+) auf der Spiele-Seite öffnet das Formular</div>
+        </div>
+
+        <h3>So erstellst du ein Spiel</h3>
+        <ol class="step-list">
+            <li>Navigiere zum Tab <strong>„Spiele"</strong> über die Navigation oder das Dropdown-Menü.</li>
+            <li>Tippe auf den <strong>Plus-Button (+)</strong> rechts neben der Navigation.</li>
+            <li>Es öffnet sich ein Formular, in dem du folgende Angaben machst:
+                <ul>
+                    <li><strong>Gegner</strong> – Name des gegnerischen Teams</li>
+                    <li><strong>Mannschaft</strong> – Wähle deine Mannschaft aus</li>
+                    <li><strong>Heim/Auswärts</strong> – Wo findet das Spiel statt?</li>
+                    <li><strong>Datum</strong> – Wähle das Spieldatum</li>
+                    <li><strong>Uhrzeit</strong> – Gib die Anstoßzeit ein</li>
+                </ul>
+            </li>
+            <li>Bestätige die Eingabe, um das Spiel zu speichern.</li>
+        </ol>
+
+        <h3>Spiel bearbeiten oder löschen</h3>
+        <p>Bestehende Spiele kannst du über die Icons im Spieleintrag bearbeiten oder löschen:</p>
+        <ul>
+            <li><strong>Stift-Icon</strong> – Öffnet das Bearbeitungsformular</li>
+            <li><strong>Mülleimer-Icon</strong> – Löscht das Spiel (nach Bestätigung)</li>
+        </ul>
+
+        <div class="tip-box">
+            <strong>Tipp:</strong> Lege Spiele möglichst frühzeitig an, damit deine Spieler genug Zeit haben, ihre Teilnahme zu bestätigen.
+        </div>
+    </section>
+
+    <!-- ==================== LINK KOPIEREN ==================== -->
+    <section id="link-kopieren" class="help-section">
+        <h2>Link kopieren</h2>
+
+        <p>Mit der Funktion „Link kopieren" kannst du deinen persönlichen Login-Link in die Zwischenablage kopieren. Diesen Link kannst du dann z.&nbsp;B. als Lesezeichen speichern oder an einem sicheren Ort aufbewahren, um dich schnell wieder einzuloggen.</p>
+
+        <div class="screenshot-container">
+            <img src="screenshots/link-kopieren.png" alt="Link kopieren Button mit Bestätigung">
+            <div class="caption">Nach dem Kopieren erscheint ein Häkchen als Bestätigung</div>
+        </div>
+
+        <h3>So kopierst du deinen Login-Link</h3>
+        <ol class="step-list">
+            <li>Schaue in den <strong>Header-Bereich</strong> (roter Bereich oben) – dort siehst du deinen Spielernamen.</li>
+            <li>Tippe auf das <strong>Clipboard-Icon</strong> (📋) neben deinem Namen.</li>
+            <li>Der Login-Link wird in deine Zwischenablage kopiert.</li>
+            <li>Als Bestätigung verwandelt sich das Icon kurzzeitig in ein <strong>Häkchen</strong> (✓).</li>
+        </ol>
+
+        <h3>Wozu dient der Login-Link?</h3>
+        <p>Dein persönlicher Login-Link ist dein Zugang zu TeamControl. Mit diesem Link kannst du dich ohne Passwort einloggen. Du kannst ihn nutzen, um:</p>
+        <ul>
+            <li>Ein <strong>Lesezeichen</strong> in deinem Browser zu erstellen</li>
+            <li>Den Link auf deinem <strong>Homescreen</strong> zu speichern</li>
+            <li>Dich auf einem <strong>anderen Gerät</strong> einzuloggen</li>
+        </ul>
+
+        <div class="screenshot-container">
+            <img src="screenshots/navigation-mobile.png" alt="Mobile Navigation mit Clipboard-Button">
+            <div class="caption">Der Clipboard-Button befindet sich im Header neben dem Spielernamen</div>
+        </div>
+
+        <div class="tip-box">
+            <strong>Wichtig:</strong> Teile deinen Login-Link nicht mit anderen Personen! Jeder, der diesen Link hat, kann sich mit deinem Konto einloggen.
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <a href="../" class="back-link">← Zurück zu TeamControl</a>
+    <p>TeamControl Hilfe</p>
+</footer>
+
+</body>
+</html>
