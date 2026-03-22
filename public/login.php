@@ -3,6 +3,11 @@ require_once './includes/auth.php';
 
 $error = '';
 $hash = '';
+$redirect = isset($_GET['redirect']) ? basename($_GET['redirect']) : '';
+$allowedRedirects = ['games.php', 'trainings.php', 'players.php', 'teams.php'];
+if (!in_array($redirect, $allowedRedirects, true)) {
+    $redirect = '';
+}
 if (isset($_GET['hash']) || isset($_COOKIE['hash']) || isset($_SESSION['hash'])) {
     $hash = $_GET['hash'] ?? $_COOKIE['hash'] ?? $_SESSION['hash'];
     if (!loginByHash($hash)) {
@@ -32,7 +37,7 @@ if (isset($_GET['hash']) || isset($_COOKIE['hash']) || isset($_SESSION['hash']))
         // Normally it is not necessary, because it is base64 encoded.
         localStorage.setItem('playerHash', '<?=htmlspecialchars($hash)?>');
         //Redirect to index.php. There will be redirect to the last visited page.
-        window.location.href = 'index.php';
+        window.location.href = '<?= $redirect ? htmlspecialchars($redirect) : 'index.php' ?>';
     </script>
     <?php endif; ?>
 
@@ -53,7 +58,7 @@ if (isset($_GET['hash']) || isset($_COOKIE['hash']) || isset($_SESSION['hash']))
 
         if (storedHash && !urlHash && !document.querySelector('.error')) {
             // Nur weiterleiten, wenn kein Fehler angezeigt wird und kein Hash in der URL ist
-            window.location.href = 'login.php?hash=' + storedHash;
+            window.location.href = 'login.php?hash=' + storedHash + '<?= $redirect ? '&redirect=' . urlencode($redirect) : '' ?>';
         }
     </script>
 </body>

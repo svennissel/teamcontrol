@@ -6,7 +6,7 @@ require_once './includes/header.php';
 
 $player = getLoggedInPlayer();
 if (!$player) {
-    header('Location: login.php');
+    header('Location: login.php?redirect=' . urlencode(basename($_SERVER['REQUEST_URI'])));
     exit;
 }
 $player_id = $player['id'];
