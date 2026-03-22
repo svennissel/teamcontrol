@@ -35,6 +35,7 @@
     <script src="js/qrcode.min.js"></script>
     <script>
         const csrfToken = <?php echo json_encode(generateCsrfToken()); ?>;
+        const playerHash = localStorage.getItem('playerHash') || '';
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -119,6 +120,7 @@
             formData.append('target_player_id', playerId);
             formData.append('status', status);
             formData.append('csrf_token', csrfToken);
+            formData.append('hash', playerHash);
             if (ctx.occurrenceDate) formData.append('occurrence_date', ctx.occurrenceDate);
             try {
                 const response = await fetch('action.php', {
@@ -182,6 +184,7 @@
             const formData = new FormData(form);
             formData.append('status', status);
             if (!formData.has('csrf_token')) formData.append('csrf_token', csrfToken);
+            if (!formData.has('hash')) formData.append('hash', playerHash);
             try {
                 const response = await fetch('action.php', {
                     method: 'POST',
@@ -662,6 +665,7 @@
                 data.append('role', this.dataset.role);
                 data.append('value', this.checked ? '1' : '0');
                 data.append('csrf_token', csrfToken);
+                data.append('hash', playerHash);
                 fetch('action.php', {
                     method: 'POST',
                     headers: {'X-Requested-With': 'XMLHttpRequest'},

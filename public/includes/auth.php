@@ -95,17 +95,59 @@ function logout() : void {
 }
 
 function generateCsrfToken(): string {
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
+    $key = 'V#&xgkvL5/]>BVbhbUg,qLLYVfvXs7zu';
+    $random = bin2hex(random_bytes(16));
+    $timestamp = time();
+    $payload = $random . '|' . $timestamp;
+
+    $cipher = 'aes-256-cbc';
+    $ivLength = openssl_cipher_iv_length($cipher);
+    $iv = openssl_random_pseudo_bytes($ivLength);
+    $encrypted = openssl_encrypt($payload, $cipher, $key, 0, $iv);
+
+    $token = base64_encode($iv . '::' . $encrypted);
+    $_SESSION['csrf_token'] = $token;
+    return $token;
 }
 
 function validateCsrfToken(?string $token): bool {
-    return isset($_SESSION['csrf_token']) && $token !== null && hash_equals($_SESSION['csrf_token'], $token);
+    if ($token === null) return false;
+
+    if (isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token)) {
+        return true;
+    }
+
+    $key = 'V#&xgkvL5/]>BVbhbUg,qLLYVfvXs7zu';
+    $cipher = 'aes-256-cbc';
+
+    $decoded = base64_decode($token, true);
+    if ($decoded === false) return false;
+
+    $parts = explode('::', $decoded, 2);
+    if (count($parts) !== 2) return false;
+
+    [$iv, $encrypted] = $parts;
+    $decrypted = openssl_decrypt($encrypted, $cipher, $key, 0, $iv);
+    if ($decrypted === false) return false;
+
+    $segments = explode('|', $decrypted, 2);
+    if (count($segments) !== 2) return false;
+
+    [$random, $timestamp] = $segments;
+
+    if (strlen($random) !== 32) return false;
+
+    $oneYear = 365 * 24 * 60 * 60;
+    if (!is_numeric($timestamp) || (time() - (int)$timestamp) > $oneYear) return false;
+
+    return true;
 }
 
 function csrfField(): string {
-    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(generateCsrfToken()) . '">';
+    $fields = '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(generateCsrfToken()) . '">';
+    if (isLoggedIn()) {
+        $fields .= '<input type="hidden" name="hash" value="' . htmlspecialchars(getLoginHash()) . '">';
+    }
+    return $fields;
 }
 ?>

@@ -609,7 +609,15 @@ function getPlayerByName($name) {
 
 function getLoggedInPlayer() {
     global $pdo;
-    $hash = $_SESSION['hash'];
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hash'])) {
+        $hash = $_POST['hash'];
+    } else if (isset($_SESSION['hash'])) {
+        $hash = $_SESSION['hash'];
+    } else {
+        return false;
+    }
+
     $stmt = $pdo->prepare("SELECT * FROM players WHERE hash = ?");
     $stmt->execute([$hash]);
     $player = $stmt->fetch();
