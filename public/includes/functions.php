@@ -1,6 +1,7 @@
 <?php
 require_once 'db.php';
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/hash.php';
 
 function getMatches(?int $playerId = null): array {
     global $pdo;
@@ -518,16 +519,7 @@ function createPlayer($name, $is_club_admin, $teamIds = [], $adminTeamIds = [], 
     return false;
 }
 
-/**
- * Generates a random hash of 16 bytes as a base64 string. This is used for player and team authentication.
- * If the length is changed, it will be only changed for new users, not for existing ones.
- *
- * @return String
- * @throws \Random\RandomException
- */
-function createHash() : String {
-    return rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
-}
+
 
 function updatePlayer($id, $name, $is_club_admin, $teamIds = [], $adminTeamIds = [], $voterPermissionPlayerIds = [], $matchPlayerTeamIds = [], $matchViewerTeamIds = []) {
     global $pdo;

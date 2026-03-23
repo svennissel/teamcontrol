@@ -80,6 +80,13 @@ CREATE TABLE IF NOT EXISTS voter_permissions (
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS meta_info (
+                                         `key` VARCHAR(255) PRIMARY KEY,
+                                         `value` VARCHAR(255)
+);
+
+INSERT INTO meta_info (`key`, `value`) VALUES ('version', '1');
+
 -- Initialer Admin-Benutzer
 INSERT INTO players (id, name, hash, is_club_admin) VALUES (1, 'Admin', 'testHash', TRUE);
 

@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config.php';
+
 $host = 'localhost';
 $db = DATABASE;
 $dbOverrideFile = __DIR__ . '/../../.tc_database';

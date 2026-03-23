@@ -6,11 +6,14 @@ if (file_exists(__DIR__ . '/config.php')) {
     exit;
 }
 
+require_once __DIR__ . '/includes/hash.php';
+
 $error = '';
 $success = false;
 $database = $_POST['database'] ?? '';
 $databaseUser = $_POST['database_user'] ?? '';
 $databasePassword = $_POST['database_password'] ?? '';
+$playerName = $_POST['player_name'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Eingaben prüfen
@@ -21,8 +24,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $dsn = 'mysql:host=localhost;dbname=' . $database . ';charset=utf8mb4';
             $pdo = new PDO($dsn, $databaseUser, $databasePassword, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_EMULATE_PREPARES => true
             ]);
+            // Prüfen ob Tabelle meta_info existiert, falls nicht: Schema importieren
+            $tableCheck = $pdo->query("SHOW TABLES LIKE 'meta_info'");
+            if ($tableCheck->rowCount() === 0) {
+                $schema = file_get_contents(__DIR__ . '/sql/schema.sql');
+                $pdo->exec($schema);
+
+                // Admin-Benutzer erstellen
+                $adminHash = createHash();
+                $stmt = $pdo->prepare("INSERT INTO players (name, hash, is_club_admin) VALUES (?, ?, TRUE)");
+                $stmt->execute([$playerName, $adminHash]);
+
+                // Session starten und Admin einloggen
+                session_start();
+                $_SESSION['hash'] = $adminHash;
+            }
+
             $pdo = null;
 
             // config-template.php lesen und Platzhalter ersetzen
@@ -78,6 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-row">
                 <label for="database_password">Datenbank Passwort</label>
                 <input type="password" id="database_password" name="database_password" value="<?= htmlspecialchars($databasePassword) ?>">
+            </div>
+
+            <div class="form-row">
+                <label for="database">Admin Spielername</label>
+                <input type="text" id="database" name="player_name" value="<?= htmlspecialchars($playerName) ?>" required>
             </div>
 
             <button type="submit" class="btn-confirm-ok">Speichern</button>
