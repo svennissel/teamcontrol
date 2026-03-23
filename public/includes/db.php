@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$db   = 'teamcontrol';
+$db = DATABASE;
 $dbOverrideFile = __DIR__ . '/../../.tc_database';
 if (file_exists($dbOverrideFile)) {
     $dbOverride = trim(file_get_contents($dbOverrideFile));
@@ -8,8 +8,6 @@ if (file_exists($dbOverrideFile)) {
         $db = $dbOverride;
     }
 }
-$user = '';
-$pass = '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -21,7 +19,7 @@ $options = [
 
 try {
      global $pdo;
-     $pdo = new PDO($dsn, $user, $pass, $options);
+     $pdo = new PDO($dsn, DATABASE_USER, DATABASE_PASSWORD, $options);
 } catch (PDOException $e) {
      throw new PDOException($e->getMessage(), (int)$e->getCode());
 }

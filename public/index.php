@@ -1,4 +1,8 @@
 <?php
+if (!file_exists(__DIR__ . '/config.php')) {
+    header('Location: installer.php');
+    exit;
+}
 require_once './includes/auth.php';
 
 $allowedTabs = ['games', 'trainings', 'teams', 'players'];

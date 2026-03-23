@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../config.php';
+require_once 'db.php';
+
 function isSecureServer() : bool {
     if (isset($_SERVER['HTTPS']) &&
         ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
@@ -9,7 +12,7 @@ function isSecureServer() : bool {
     return false;
 }
 
-require_once __DIR__ . '/config.php';
+
 
 session_start([
     'cookie_lifetime' => COOKIE_LIFETIME,
@@ -17,7 +20,7 @@ session_start([
     'cookie_samesite' => 'Strict',
     'cookie_secure' => isSecureServer() //Safari block session on localhost if it is secure but running on http
 ]);
-require_once 'db.php';
+
 
 function isLoggedIn() {
     return isset($_SESSION['hash']);
@@ -95,7 +98,6 @@ function logout() : void {
 }
 
 function generateCsrfToken(): string {
-    $key = 'V#&xgkvL5/]>BVbhbUg,qLLYVfvXs7zu';
     $random = bin2hex(random_bytes(16));
     $timestamp = time();
     $payload = $random . '|' . $timestamp;
@@ -103,7 +105,7 @@ function generateCsrfToken(): string {
     $cipher = 'aes-256-cbc';
     $ivLength = openssl_cipher_iv_length($cipher);
     $iv = openssl_random_pseudo_bytes($ivLength);
-    $encrypted = openssl_encrypt($payload, $cipher, $key, 0, $iv);
+    $encrypted = openssl_encrypt($payload, $cipher, CSRF_ENCRYPTION_KEY, 0, $iv);
 
     $token = base64_encode($iv . '::' . $encrypted);
     $_SESSION['csrf_token'] = $token;
@@ -117,28 +119,32 @@ function validateCsrfToken(?string $token): bool {
         return true;
     }
 
-    $key = 'V#&xgkvL5/]>BVbhbUg,qLLYVfvXs7zu';
     $cipher = 'aes-256-cbc';
 
     $decoded = base64_decode($token, true);
-    if ($decoded === false) return false;
+    if ($decoded === false)
+        return false;
 
     $parts = explode('::', $decoded, 2);
-    if (count($parts) !== 2) return false;
+    if (count($parts) !== 2)
+        return false;
 
     [$iv, $encrypted] = $parts;
-    $decrypted = openssl_decrypt($encrypted, $cipher, $key, 0, $iv);
-    if ($decrypted === false) return false;
+    $decrypted = openssl_decrypt($encrypted, $cipher, CSRF_ENCRYPTION_KEY, 0, $iv);
+    if ($decrypted === false)
+        return false;
 
     $segments = explode('|', $decrypted, 2);
-    if (count($segments) !== 2) return false;
+    if (count($segments) !== 2)
+        return false;
 
     [$random, $timestamp] = $segments;
 
-    if (strlen($random) !== 32) return false;
+    if (strlen($random) !== 32)
+        return false;
 
-    $oneYear = 365 * 24 * 60 * 60;
-    if (!is_numeric($timestamp) || (time() - (int)$timestamp) > $oneYear) return false;
+    if (!is_numeric($timestamp) || (time() - (int)$timestamp) > COOKIE_LIFETIME)
+        return false;
 
     return true;
 }

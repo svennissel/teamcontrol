@@ -1,6 +1,6 @@
 <?php
 require_once 'db.php';
-require_once 'config.php';
+require_once __DIR__ . '/../config.php';
 
 function getMatches(?int $playerId = null): array {
     global $pdo;

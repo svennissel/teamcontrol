@@ -1,4 +1,9 @@
 <?php
+if (!file_exists(__DIR__ . '/../config.php')) {
+    header('Location: installer.php');
+    exit;
+}
+
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/functions.php';
 

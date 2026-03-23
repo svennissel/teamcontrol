@@ -9,6 +9,52 @@
  */
 
 /**
+ * Name der Datenbank
+ *
+ * Der Name der MySQL-Datenbank, mit der sich die Anwendung verbindet.
+ * Dieser Wert wird in der PDO-Verbindung (db.php) als Teil des DSN verwendet.
+ *
+ * @var string
+ */
+const DATABASE = '{DATABASE}';
+
+/**
+ * Benutzername für die Datenbankverbindung
+ *
+ * Der MySQL-Benutzername, der für die Authentifizierung bei der Datenbank
+ * verwendet wird. Dieser Benutzer muss über die erforderlichen Berechtigungen
+ * (SELECT, INSERT, UPDATE, DELETE) auf die Datenbank verfügen.
+ *
+ * @var string
+ */
+const DATABASE_USER = '{DATABASE_USER}';
+
+/**
+ * Passwort für die Datenbankverbindung
+ *
+ * Das Passwort des Datenbankbenutzers für die Authentifizierung.
+ * Aus Sicherheitsgründen sollte dieses Passwort stark und einzigartig sein.
+ *
+ * @var string
+ */
+const DATABASE_PASSWORD = '{DATABASE_PASSWORD}';
+
+/**
+ * Verschlüsselungsschlüssel für CSRF-Tokens
+ *
+ * Dieser Schlüssel wird zur AES-256-CBC-Verschlüsselung von CSRF-Tokens
+ * verwendet. Er stellt sicher, dass Tokens nicht von Dritten gefälscht
+ * werden können. Der Schlüssel sollte geheim gehalten und bei Kompromittierung
+ * sofort geändert werden.
+ *
+ * Hinweis: Eine Änderung dieses Schlüssels invalidiert alle bestehenden
+ * CSRF-Tokens und kann aktive Formulare ungültig machen.
+ *
+ * @var string
+ */
+const CSRF_ENCRYPTION_KEY = '{CSRF_ENCRYPTION_KEY}';
+
+/**
  * Maximale Anzahl der angezeigten Trainings (wöchentliche Wiederholungen)
  *
  * Dieser Wert bestimmt, wie viele zukünftige Trainingstermine für jedes
@@ -43,3 +89,5 @@ const TRAINING_DISPLAY_COUNT = 10;
  * @var int
  */
 const COOKIE_LIFETIME = 31536000;
+
+
