@@ -43,7 +43,7 @@ function printHeader($player, $playerTeams, $current_page) {
                 </div>
                 <div class="team-info-header">
                     <?php if (!empty($playerTeams[0]['logo'])): ?>
-                        <img src="uploads/logos/<?php echo htmlspecialchars($playerTeams[0]['logo']); ?>" alt="Logo" class="header-team-logo">
+                        <img src="uploads/logos/<?php echo htmlspecialchars($playerTeams[0]['logo']); ?>_30.webp" alt="Logo" class="header-team-logo">
                     <?php endif; ?>
                     <?php foreach ($playerTeams as $team): ?>
                         <span class="team-name"><?php echo htmlspecialchars($team['name']); ?></span>

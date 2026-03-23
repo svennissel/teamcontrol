@@ -35,7 +35,7 @@ printHeader($player, $playerTeams, "teams");
                     <div class="card-header">
                         <h3>
                             <?php if ($team['logo']): ?>
-                                <img src="uploads/logos/<?php echo htmlspecialchars($team['logo']); ?>" alt="Logo" class="team-logo-inline">
+                                <img src="uploads/logos/<?php echo htmlspecialchars($team['logo']); ?>_30.webp" alt="Logo" class="team-logo-inline">
                             <?php endif; ?>
                             <?php echo htmlspecialchars($team['name']); ?>
                         </h3>

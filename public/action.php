@@ -173,7 +173,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $logo = '';
             if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
                 $logo = uniqid();
-                move_uploaded_file($_FILES['logo']['tmp_name'], 'uploads/logos/' . $logo);
+                $logoPath = 'uploads/logos/' . $logo;
+                if(!is_dir('uploads/logos') ) {
+                    mkdir('uploads/logos', 0775, true);
+                }
+                move_uploaded_file($_FILES['logo']['tmp_name'], $logoPath);
+
+                // Kleine Version (max 30x30) erstellen
+                $imageInfo = getimagesize($logoPath);
+                if ($imageInfo) {
+                    $srcWidth = $imageInfo[0];
+                    $srcHeight = $imageInfo[1];
+                    $mime = $imageInfo['mime'];
+
+                    $scale = min(30 / $srcWidth, 30 / $srcHeight, 1);
+                    $newWidth = (int)round($srcWidth * $scale);
+                    $newHeight = (int)round($srcHeight * $scale);
+
+                    switch ($mime) {
+                        case 'image/jpeg': $srcImage = imagecreatefromjpeg($logoPath); break;
+                        case 'image/png':  $srcImage = imagecreatefrompng($logoPath); break;
+                        case 'image/gif':  $srcImage = imagecreatefromgif($logoPath); break;
+                        case 'image/webp': $srcImage = imagecreatefromwebp($logoPath); break;
+                        case 'image/avif': $srcImage = imagecreatefromavif($logoPath); break;
+                        default: $srcImage = false;
+                    }
+
+                    if ($srcImage) {
+                        $thumb = imagecreatetruecolor($newWidth, $newHeight);
+                        imagealphablending($thumb, false);
+                        imagesavealpha($thumb, true);
+                        imagecopyresampled($thumb, $srcImage, 0, 0, 0, 0, $newWidth, $newHeight, $srcWidth, $srcHeight);
+                        imagewebp($thumb, 'uploads/logos/' . $logo . '_30.webp', 50);
+                    }
+                }
             }
             if($_POST['action'] === 'add_team')
                 createTeam($_POST['name'], $logo);

@@ -423,6 +423,7 @@ function createTeam($name, $logo) {
 
 function updateTeam($id, $name, $logo) {
     global $pdo;
+    deleteTeamLogoFromFileSystem($id);
     if ($logo) {
         $stmt = $pdo->prepare("UPDATE teams SET name = ?, logo = ? WHERE id = ?");
         return $stmt->execute([$name, $logo, $id]);
@@ -434,8 +435,31 @@ function updateTeam($id, $name, $logo) {
 
 function deleteTeam($id) {
     global $pdo;
+    deleteTeamLogoFromFileSystem($id);
     $stmt = $pdo->prepare("DELETE FROM teams WHERE id = ?");
     return $stmt->execute([$id]);
+}
+
+/**
+ * Delete the logo from a team from filesystem.
+ *
+ * @param $teamId
+ * @return void
+ */
+function deleteTeamLogoFromFileSystem($teamId): void {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT logo FROM teams WHERE id = ?");
+    $stmt->execute([$teamId]);
+    $logo = $stmt->fetchColumn();
+    if ($logo) {
+        $logoPath = __DIR__ . '/../uploads/logos/' . $logo;
+        if (file_exists($logoPath)) {
+            unlink($logoPath);
+        }
+        if (file_exists($logoPath . "_30.webp")) {
+            unlink($logoPath . "_30.webp");
+        }
+    }
 }
 
 function getTeamByHash($hash) {
