@@ -1,6 +1,9 @@
 # configuration
 config.php
-{CSRF_ENCRYPTION_KEY}
+
+#release
+teamcontrol_*.zip
+
 # Composer
 /vendor/
 composer.phar
