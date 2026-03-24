@@ -10,6 +10,7 @@ require_once __DIR__ . '/includes/hash.php';
 
 $error = '';
 $success = false;
+$databaseHost = $_POST['database_host'] ?? 'localhost';
 $database = $_POST['database'] ?? '';
 $databaseUser = $_POST['database_user'] ?? '';
 $databasePassword = $_POST['database_password'] ?? '';
@@ -50,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $csrfKey = bin2hex(random_bytes(16)); // 32 Zeichen Hex-String
 
             $config = str_replace(
-                ['{DATABASE}', '{DATABASE_USER}', '{DATABASE_PASSWORD}', '{CSRF_ENCRYPTION_KEY}'],
-                [$database, $databaseUser, $databasePassword, $csrfKey],
+                ['{DATABASE_HOST}', '{DATABASE}', '{DATABASE_USER}', '{DATABASE_PASSWORD}', '{CSRF_ENCRYPTION_KEY}'],
+                [$databaseHost, $database, $databaseUser, $databasePassword, $csrfKey],
                 $template
             );
 
@@ -85,6 +86,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="error"><?= $error ?></div>
         <?php endif; ?>
         <form method="post">
+
+            <div class="form-row">
+                <label for="database">Datenbank Hostname/IP</label>
+                <input type="text" id="database" name="database_host" value="<?= htmlspecialchars($databaseHost) ?>" required>
+            </div>
+
             <div class="form-row">
                 <label for="database">Datenbank</label>
                 <input type="text" id="database" name="database" value="<?= htmlspecialchars($database) ?>" required>

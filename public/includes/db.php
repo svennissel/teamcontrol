@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-$host = 'localhost';
+$host = DATABASE_HOST;
 $db = DATABASE;
 $dbOverrideFile = __DIR__ . '/../../.tc_database';
 if (file_exists($dbOverrideFile)) {

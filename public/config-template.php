@@ -8,6 +8,12 @@
  * global auf das Verhalten der Anwendung aus.
  */
 
+
+/**
+ * Hostname oder ip Adresse der Datenbank. In den meisten Fällen ist dies localhost.
+ */
+const DATABASE_HOST = '{DATABASE_HOST}';
+
 /**
  * Name der Datenbank
  *
