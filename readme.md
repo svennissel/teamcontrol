@@ -1,6 +1,9 @@
 # TeamControl
 
-TeamControl ist eine einfache Webanwendung zur Verwaltung von Spielen und Training für Sportmannschaften. Der Fokus liegt auf einer **unkomplizierten Bedienung ohne klassischen Login** – Spieler melden sich über einen persönlichen Hash-Link oder QR-Code an, ganz ohne Benutzername und Passwort.
+TeamControl ist eine einfache Webanwendung zur Verwaltung von Spielen und Training für Sportmannschaften.
+Der Fokus liegt auf einer **unkomplizierten Bedienung ohne klassischen Login** – Spieler melden sich über einen persönlichen Hash-Link oder QR-Code an, ganz ohne Benutzername und Passwort.
+
+Die Anwendung wurde größenteils mit KI entwickelt.
 
 ## Funktionen
 
