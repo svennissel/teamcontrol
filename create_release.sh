@@ -24,7 +24,7 @@ else
     exit 1
 fi
 
-cd "$PUBLIC_DIR" && zip -r "$OUTPUT_FILE" . -x "*/.*"
+cd "$PUBLIC_DIR" && zip -r "$OUTPUT_FILE" . -x "*/.*" -x "config.php"
 
 if [ $? -eq 0 ]; then
     echo "Release erstellt: $OUTPUT_FILE"
