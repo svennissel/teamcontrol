@@ -168,12 +168,8 @@
                         const voteButtonsDiv = form.closest('.vote-buttons');
                         const attendanceBtn = voteButtonsDiv ? voteButtonsDiv.querySelector('.btn-attendance') : null;
                         if (attendanceBtn) {
-                            const originalOnclick = attendanceBtn.getAttribute('onclick');
-                            if (originalOnclick) {
-                                const titleMatch = originalOnclick.match(/,\s*"([^"]+)"/);
-                                const title = titleMatch ? titleMatch[1] : 'Teilnehmerliste';
-                                attendanceBtn.setAttribute('onclick', `showAttendance(${JSON.stringify(data.attendance)}, "${title}", ${JSON.stringify(ctx)})`);
-                            }
+                            const title = attendanceBtn.dataset.attendanceTitle || 'Teilnehmerliste';
+                            attendanceBtn.setAttribute('onclick', `showAttendance(${JSON.stringify(data.attendance)}, "${title}", ${JSON.stringify(ctx)})`);
                         }
                     }
                 }
@@ -216,15 +212,12 @@
                         const voteButtonsDiv = form.closest('.vote-buttons');
                         const attendanceBtn = voteButtonsDiv ? voteButtonsDiv.querySelector('.btn-attendance') : null;
                         if (attendanceBtn) {
+                            const title = attendanceBtn.dataset.attendanceTitle || 'Teilnehmerliste';
+                            // Preserve voteContext if present
                             const originalOnclick = attendanceBtn.getAttribute('onclick');
-                            if (originalOnclick) {
-                                const titleMatch = originalOnclick.match(/,\s*"([^"]+)"/);
-                                const title = titleMatch ? titleMatch[1] : 'Teilnehmerliste';
-                                // Preserve voteContext if present
-                                const ctxMatch = originalOnclick.match(/,\s*"[^"]+"\s*,\s*(\{.*\})\s*\)/);
-                                const ctxArg = ctxMatch ? ', ' + ctxMatch[1] : '';
-                                attendanceBtn.setAttribute('onclick', `showAttendance(${JSON.stringify(data.attendance)}, "${title}"${ctxArg})`);
-                            }
+                            const ctxMatch = originalOnclick ? originalOnclick.match(/,\s*"[^"]+"\s*,\s*(\{.*\})\s*\)/) : null;
+                            const ctxArg = ctxMatch ? ', ' + ctxMatch[1] : '';
+                            attendanceBtn.setAttribute('onclick', `showAttendance(${JSON.stringify(data.attendance)}, "${title}"${ctxArg})`);
                         }
                     }
                 }
@@ -676,7 +669,7 @@
     </script>
     <footer style="text-align:center;padding:1rem;color:#aaa;font-size:0.75rem;">
         <a href="help/" style="color:#aaa;text-decoration:none;" title="Hilfe"><i class="fa-solid fa-circle-question"></i> Hilfe</a>
-        &middot; Version 1.0.7
+        &middot; Version 1.0.8
     </footer>
 </body>
 </html>

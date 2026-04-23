@@ -153,7 +153,11 @@ printHeader($player, $playerTeams, "games");
                             ];
                         }
                         ?>
-                        <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "<?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>) <?php
+                        <button type="button" class="btn-attendance" title="Teilnehmerliste" data-attendance-title="<?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>) <?php
+                        $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+                        $timestamp = strtotime($match['match_date']);
+                        echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
+                        ?>" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "<?php echo htmlspecialchars($match['opponent']); ?> (<?php echo $match['is_home_game'] ? 'Heim' : 'Auswärts'; ?>) <?php
                         $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                         $timestamp = strtotime($match['match_date']);
                         echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);

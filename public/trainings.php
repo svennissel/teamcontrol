@@ -188,7 +188,11 @@ printHeader($player, $playerTeams, "trainings");
                             ];
                         }
                         ?>
-                        <button type="button" class="btn-attendance" title="Teilnehmerliste" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "Training <?php
+                        <button type="button" class="btn-attendance" title="Teilnehmerliste" data-attendance-title="Training <?php
+                        $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+                        $timestamp = strtotime($training['training_date']);
+                        echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
+                        ?>" onclick='showAttendance(<?php echo json_encode($attendance); ?>, "Training <?php
                         $days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
                         $timestamp = strtotime($training['training_date']);
                         echo $days[date('w', $timestamp)] . ' ' . date('d.m.Y', $timestamp);
