@@ -68,6 +68,7 @@ function printHeader($player, $playerTeams, $current_page) {
             <?php if ($isClubAdmin || isAnyTeamAdmin($player['id'])): ?>
             <div class="tab-actions">
                 <?php if ($current_page === 'games'): ?>
+                    <button id="import-match-btn" onclick="openModal('importMatchModal')" class="btn-add" title="Spiele aus iCalendar importieren"><i class="fa-solid fa-file-import"></i></button>
                     <button id="add-match-btn" onclick="openModal('addMatchModal')" class="btn-add" title="Spiel hinzufügen"><i class="fa-solid fa-plus"></i></button>
                 <?php elseif ($current_page === 'trainings'): ?>
                     <button id="add-training-btn" onclick="openModal('addTrainingModal')" class="btn-add" title="Training hinzufügen"><i class="fa-solid fa-plus"></i></button>
@@ -88,6 +89,7 @@ function printHeader($player, $playerTeams, $current_page) {
                 <a href="players.php" class="tab-btn <?php echo $current_page === 'players' ? 'active' : ''; ?>">Spieler</a>
                 <div class="tab-actions">
                     <?php if ($current_page === 'games'): ?>
+                        <button id="import-match-btn" onclick="openModal('importMatchModal')" class="btn-add" title="Spiele aus iCalendar importieren"><i class="fa-solid fa-file-import"></i></button>
                         <button id="add-match-btn" onclick="openModal('addMatchModal')" class="btn-add" title="Spiel hinzufügen"><i class="fa-solid fa-plus"></i></button>
                     <?php elseif ($current_page === 'trainings'): ?>
                         <button id="add-training-btn" onclick="openModal('addTrainingModal')" class="btn-add" title="Training hinzufügen"><i class="fa-solid fa-plus"></i></button>

@@ -1,15 +1,19 @@
 /*!
- * Font Awesome Free 6.5.1 - Minimal subset
+ * Font Awesome Free 7.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
- * Copyright 2023 Fonticons, Inc.
+ * Copyright 2026 Fonticons, Inc.
  */
-@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:block;src:url("webfonts/fa-solid-900.woff2") format("woff2")}
-@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:400;font-display:block;src:url("webfonts/fa-regular-400.woff2") format("woff2")}
-.fa-solid,.fa-regular,.fas,.far{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;display:inline-block;font-style:normal;font-variant:normal;line-height:1;text-rendering:auto;font-family:"Font Awesome 6 Free"}
+/* Generiert durch update_fontawesome.sh - verwendete Icons: 13 */
+@font-face{font-family:"Font Awesome 7 Free";font-style:normal;font-weight:900;font-display:block;src:url("webfonts/fa-solid-900.woff2") format("woff2")}
+@font-face{font-family:"Font Awesome 7 Free";font-style:normal;font-weight:400;font-display:block;src:url("webfonts/fa-regular-400.woff2") format("woff2")}
+.fa-solid,.fa-regular,.fas,.far{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;display:inline-block;font-style:normal;font-variant:normal;line-height:1;text-rendering:auto;font-family:"Font Awesome 7 Free"}
 .fa-solid,.fas{font-weight:900}
 .fa-regular,.far{font-weight:400}
 .fa-check:before{content:"\f00c"}
+.fa-circle-question:before{content:"\f059"}
 .fa-clipboard:before{content:"\f328"}
+.fa-f:before{content:"\f"}
+.fa-file-import:before{content:"\f56f"}
 .fa-location-dot:before{content:"\f3c5"}
 .fa-pen:before{content:"\f304"}
 .fa-plus:before{content:"\2b"}

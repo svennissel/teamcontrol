@@ -156,6 +156,48 @@ function renderEditMatchModal($teams) {
     <?php
 }
 
+function renderImportMatchModal($teams) {
+    ?>
+    <div id="importMatchModal" class="modal">
+        <div class="modal-content modal-content-wide">
+            <span class="close" onclick="closeModal('importMatchModal')">&times;</span>
+            <h2>Spiele aus iCalendar importieren</h2>
+            <form id="importMatchForm" action="action.php" method="POST">
+                <?php echo csrfField(); ?>
+                <input type="hidden" name="action" value="import_ics_matches">
+                <div class="form-row">
+                    <div>
+                        <label>ICS-URL:</label>
+                        <input type="url" name="ics_url" id="import_ics_url" placeholder="https://.../spielplan.ics" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>Mannschaft:</label>
+                        <select name="team_id" id="import_team_id" required>
+                            <option value="">-- Mannschaft wählen --</option>
+                            <?php foreach ($teams as $team): ?>
+                                <option value="<?php echo $team['id']; ?>"><?php echo htmlspecialchars($team['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <button type="button" id="loadIcsPreviewBtn" class="btn-confirm-ok">Vorschau laden</button>
+                    </div>
+                </div>
+
+                <div id="icsPreviewMessage" class="ics-preview-message" style="display:none"></div>
+                <div id="icsPreviewContainer" class="ics-preview-container" style="display:none"></div>
+
+                <button type="submit" id="submitIcsImportBtn" class="btn-confirm-ok" style="display:none">Importieren</button>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+
 function renderAddTrainingModal($teams) {
     ?>
     <div id="addTrainingModal" class="modal">

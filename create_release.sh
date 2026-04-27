@@ -5,7 +5,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PUBLIC_DIR="$SCRIPT_DIR/public"
-VERSION="1.0.8"
+VERSION="1.0.9"
 FOOTER_FILE="$PUBLIC_DIR/includes/footer.php"
 RELEASE_NAME="teamcontrol_${VERSION}.zip"
 OUTPUT_FILE="$SCRIPT_DIR/$RELEASE_NAME"

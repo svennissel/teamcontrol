@@ -1,6 +1,7 @@
 <?php
 require_once './includes/auth.php';
 require_once './includes/functions.php';
+require_once './includes/ics_import.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if (!validateCsrfToken($_POST['csrf_token'] ?? null)) {
@@ -39,6 +40,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             exit;
         }
     } elseif ($isClubAdmin || isAnyTeamAdmin($player_id)) {
+        if ($_POST['action'] === 'preview_ics_matches') {
+            header('Content-Type: application/json');
+
+            $team_id = (int)($_POST['team_id'] ?? 0);
+            if (!$isClubAdmin) {
+                $my_admin_teams = getAdminTeams($player_id);
+                $my_admin_team_ids = array_column($my_admin_teams, 'id');
+                if (!in_array($team_id, $my_admin_team_ids)) {
+                    echo json_encode(['success' => false, 'error' => 'Ungültige Mannschaft.']);
+                    exit;
+                }
+            }
+
+            try {
+                $icsUrl = trim($_POST['ics_url'] ?? '');
+                $icsContent = fetchIcsContent($icsUrl);
+                $matches = parseIcsMatches($icsContent);
+                echo json_encode(['success' => true, 'matches' => $matches]);
+            } catch (Throwable $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+            exit;
+        }
+
         if ($_POST['action'] === 'add_match') {
             $team_id = (int)($_POST['team_id'] ?? 0);
             if (!$isClubAdmin) {
@@ -50,6 +75,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             if ($team_id > 0) {
                 createMatch($_POST['match_date'], $_POST['start_time'], $_POST['meeting_time'], $_POST['opponent'], isset($_POST['is_home_game']), $_POST['location'] ?? '', $team_id);
+            }
+        } elseif ($_POST['action'] === 'import_ics_matches') {
+            $team_id = (int)($_POST['team_id'] ?? 0);
+            if (!$isClubAdmin) {
+                $my_admin_teams = getAdminTeams($player_id);
+                $my_admin_team_ids = array_column($my_admin_teams, 'id');
+                if (!in_array($team_id, $my_admin_team_ids)) {
+                    $team_id = 0;
+                }
+            }
+
+            if ($team_id > 0) {
+                $matches = $_POST['matches'] ?? [];
+                if (is_array($matches)) {
+                    foreach ($matches as $match) {
+                        $date = trim($match['match_date'] ?? '');
+                        $start = trim($match['start_time'] ?? '');
+                        $meeting = trim($match['meeting_time'] ?? '');
+                        $opponent = trim($match['opponent'] ?? '');
+                        $isHome = isset($match['is_home_game']) && (string)$match['is_home_game'] === '1';
+                        $location = trim($match['location'] ?? '');
+
+                        if ($date === '' || $start === '' || $opponent === '') {
+                            continue;
+                        }
+
+                        createMatch($date, $start, $meeting, $opponent, $isHome, $location, $team_id);
+                    }
+                }
             }
         } elseif ($_POST['action'] === 'edit_match') {
             $matchId = (int)$_POST['match_id'];

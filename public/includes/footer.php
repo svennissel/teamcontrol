@@ -11,6 +11,7 @@
         renderAddPlayerModal($teams ?? [], $player_id ?? 0);
         renderEditPlayerModal($teams ?? [], $player_id ?? 0);
         renderAddMatchModal($teams ?? []);
+        renderImportMatchModal($teams ?? []);
         renderAddTrainingModal($teams ?? []);
         renderEditMatchModal($teams ?? []);
         renderEditTrainingModal($teams ?? []);
@@ -309,6 +310,48 @@
             }
         }
 
+        function createIcsPreviewRow(match, index) {
+            return `<div class="ics-match-row">
+                <input type="hidden" name="matches[${index}][is_home_game]" value="${match.is_home_game ? '1' : '0'}" class="ics-is-home-input">
+                <div class="form-row">
+                    <div>
+                        <label>Datum:</label>
+                        <input type="date" name="matches[${index}][match_date]" value="${match.match_date || ''}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>Startzeit:</label>
+                        <input type="time" name="matches[${index}][start_time]" value="${match.start_time || ''}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>Treffen:</label>
+                        <input type="time" name="matches[${index}][meeting_time]" value="${match.meeting_time || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>Gegner:</label>
+                        <input type="text" name="matches[${index}][opponent]" value="${match.opponent || ''}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>Heimspiel:</label>
+                        <input type="checkbox" class="ics-home-check" ${match.is_home_game ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="form-row ics-location-wrap ${match.is_home_game ? 'ics-location-hidden' : ''}">
+                    <div>
+                        <label>Anschrift (für Auswärtsspiele):</label>
+                        <input type="text" name="matches[${index}][location]" value="${match.location || ''}" placeholder="Straße, PLZ Ort">
+                    </div>
+                </div>
+            </div>`;
+        }
+
         function filterEvents(teamClass, btn) {
             // Filter Buttons Status aktualisieren
             const buttons = document.querySelectorAll('.filter-btn');
@@ -342,6 +385,88 @@
             if (editHomeCheckbox) {
                 editHomeCheckbox.addEventListener('change', function() {
                     toggleLocation('edit_match_is_home', 'edit_location_container');
+                });
+            }
+
+            const previewButton = document.getElementById('loadIcsPreviewBtn');
+            const importForm = document.getElementById('importMatchForm');
+            const previewContainer = document.getElementById('icsPreviewContainer');
+            const previewMessage = document.getElementById('icsPreviewMessage');
+            const submitIcsImportBtn = document.getElementById('submitIcsImportBtn');
+            if (previewButton && importForm && previewContainer && previewMessage && submitIcsImportBtn) {
+                previewButton.addEventListener('click', async function() {
+                    const teamIdEl = document.getElementById('import_team_id');
+                    const urlEl = document.getElementById('import_ics_url');
+                    const teamId = teamIdEl ? teamIdEl.value : '';
+                    const icsUrl = urlEl ? urlEl.value.trim() : '';
+
+                    previewMessage.style.display = 'none';
+                    previewContainer.style.display = 'none';
+                    previewContainer.innerHTML = '';
+                    submitIcsImportBtn.style.display = 'none';
+
+                    if (!teamId || !icsUrl) {
+                        previewMessage.textContent = 'Bitte zuerst URL und Mannschaft ausfüllen.';
+                        previewMessage.className = 'ics-preview-message error';
+                        previewMessage.style.display = 'block';
+                        return;
+                    }
+
+                    previewButton.disabled = true;
+                    previewButton.textContent = 'Lade...';
+
+                    try {
+                        const payload = new URLSearchParams();
+                        payload.set('csrf_token', csrfToken);
+                        payload.set('action', 'preview_ics_matches');
+                        payload.set('team_id', teamId);
+                        payload.set('ics_url', icsUrl);
+
+                        const response = await fetch('action.php', {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: payload.toString()
+                        });
+                        const result = await response.json();
+
+                        if (!result.success) {
+                            throw new Error(result.error || 'Import-Vorschau konnte nicht geladen werden.');
+                        }
+
+                        if (!Array.isArray(result.matches) || result.matches.length === 0) {
+                            previewMessage.textContent = 'Es wurden keine importierbaren Spiele gefunden.';
+                            previewMessage.className = 'ics-preview-message';
+                            previewMessage.style.display = 'block';
+                            return;
+                        }
+
+                        previewContainer.innerHTML = result.matches.map((match, index) => createIcsPreviewRow(match, index)).join('');
+                        previewContainer.style.display = 'block';
+                        submitIcsImportBtn.style.display = 'inline-flex';
+
+                        previewContainer.querySelectorAll('.ics-home-check').forEach(check => {
+                            check.addEventListener('change', function() {
+                                const row = check.closest('.ics-match-row');
+                                if (!row) return;
+                                const hiddenIsHome = row.querySelector('.ics-is-home-input');
+                                const locationWrap = row.querySelector('.ics-location-wrap');
+                                if (hiddenIsHome) hiddenIsHome.value = check.checked ? '1' : '0';
+                                if (locationWrap) {
+                                    locationWrap.classList.toggle('ics-location-hidden', check.checked);
+                                }
+                            });
+                        });
+                    } catch (error) {
+                        previewMessage.textContent = error.message || 'Import-Vorschau fehlgeschlagen.';
+                        previewMessage.className = 'ics-preview-message error';
+                        previewMessage.style.display = 'block';
+                    } finally {
+                        previewButton.disabled = false;
+                        previewButton.textContent = 'Vorschau laden';
+                    }
                 });
             }
 
